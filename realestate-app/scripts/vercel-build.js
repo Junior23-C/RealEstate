@@ -16,18 +16,18 @@ async function build() {
     execSync('npx prisma generate', { stdio: 'inherit' });
     console.log('Prisma client generated successfully!');
     
-    // Use db push instead of migrate for production
-    console.log('Pushing database schema...');
-    try {
-      execSync('npx prisma db push --skip-seed', { stdio: 'inherit' });
-      console.log('Database schema pushed successfully!');
-    } catch (dbError) {
-      console.log('Database push skipped (may already be up to date)');
-    }
+    // Skip database operations during build
+    // These should be done after deployment
+    console.log('Skipping database operations during build...');
     
     console.log('Building Next.js application...');
-    execSync('next build', { stdio: 'inherit' });
-    console.log('Build completed successfully!');
+    try {
+      execSync('next build', { stdio: 'inherit' });
+      console.log('Build completed successfully!');
+    } catch (buildError) {
+      console.error('Next.js build failed:', buildError.message);
+      throw buildError;
+    }
     
   } catch (error) {
     console.error('Build failed:', error);

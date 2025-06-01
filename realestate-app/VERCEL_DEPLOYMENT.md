@@ -29,11 +29,14 @@ Add these environment variables in your Vercel project settings:
    - Push to GitHub
    - Vercel will automatically build and deploy
 
-4. **Initialize Database**
-   - The build process will automatically:
-     - Run migrations
-     - Seed the database with initial data
-     - Create admin user
+4. **Initialize Database** (After first deployment)
+   - Go to your Vercel project
+   - Navigate to the Functions tab
+   - Run this command in the Vercel CLI or create a one-time function:
+   ```bash
+   npm run db:init
+   ```
+   - This will create tables and seed initial data
 
 ## Database Providers
 
