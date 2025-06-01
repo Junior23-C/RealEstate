@@ -1,6 +1,6 @@
 {
-  "buildCommand": "cp prisma/schema.prod.prisma prisma/schema.prisma && prisma generate && prisma migrate deploy && next build",
+  "buildCommand": "npm run vercel-build",
   "env": {
-    "PRISMA_SCHEMA_PATH": "./prisma/schema.prod.prisma"
+    "NODE_ENV": "production"
   }
 }

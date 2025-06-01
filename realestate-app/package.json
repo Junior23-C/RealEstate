@@ -12,7 +12,7 @@
     "db:seed": "prisma db seed",
     "db:setup": "prisma migrate deploy && prisma db seed",
     "postinstall": "DATABASE_URL=${DATABASE_URL:-postgresql://build:build@localhost:5432/build} prisma generate",
-    "vercel-build": "node scripts/migrate-prod.js && next build"
+    "vercel-build": "node scripts/vercel-build.js"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
