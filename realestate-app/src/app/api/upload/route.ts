@@ -37,7 +37,8 @@ export async function POST(request: NextRequest) {
     // Create unique filename
     const timestamp = Date.now()
     const randomString = Math.random().toString(36).substring(2, 15)
-    const extension = file.name.split(".").pop()
+    const originalName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_') // Sanitize filename
+    const extension = originalName.split(".").pop()?.toLowerCase() || 'jpg'
     const filename = `property-${timestamp}-${randomString}.${extension}`
     
     // Ensure upload directory exists

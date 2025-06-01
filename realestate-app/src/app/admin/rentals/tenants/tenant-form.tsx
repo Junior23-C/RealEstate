@@ -58,7 +58,7 @@ export function TenantForm({ tenant, isEdit = false }: TenantFormProps) {
         phone: formData.phone,
         dateOfBirth: formData.dateOfBirth || null,
         emergencyContact: formData.emergencyContact,
-        emergencyPhone: formData.emergencyContactPhone, // Map to emergencyPhone for API
+        emergencyPhone: formData.emergencyContactPhone,
         employer: formData.employer,
         employerPhone: formData.employerPhone,
         monthlyIncome: formData.monthlyIncome ? parseFloat(formData.monthlyIncome as string) : null,
