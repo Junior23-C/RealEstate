@@ -11,20 +11,25 @@ Error validating datasource `db`: the URL must start with the protocol `postgres
 Go to: https://vercel.com/dashboard
 
 ### 2. Click Your Project
-Click on: **real-estate-pied-nine-85**
+Click on your Real Estate project
 
 ### 3. Go to Environment Variables
 - Click **Settings** (top menu)
 - Click **Environment Variables** (left sidebar)
 
 ### 4. Add DATABASE_URL
-Click **Add New** and paste:
+Click **Add New** and add:
 
 | Field | Value |
 |-------|-------|
 | **Key** | `DATABASE_URL` |
-| **Value** | `postgresql://neondb_owner:npg_38YswXVMGexc@ep-delicate-grass-a9r77zyh-pooler.gwc.azure.neon.tech/neondb?sslmode=require` |
+| **Value** | Your PostgreSQL connection string from Neon/Supabase |
 | **Environment** | ✅ Production ✅ Preview ✅ Development |
+
+**IMPORTANT**: Never commit your actual database URL to git! Get your connection string from:
+- **Neon**: Dashboard → Connection Details → Connection string
+- **Supabase**: Settings → Database → Connection string
+- **Other providers**: Check their dashboard for PostgreSQL connection details
 
 Click **Save**
 
@@ -38,8 +43,11 @@ Click **Save**
 Your site should work in ~1 minute after redeployment starts.
 
 ## Still Having Issues?
-Make sure you also add these:
-- `NEXTAUTH_URL` = `https://real-estate-pied-nine-85.vercel.app`
+Make sure you also add these environment variables:
+- `NEXTAUTH_URL` = `https://your-app-name.vercel.app`
 - `NEXTAUTH_SECRET` = (run `openssl rand -base64 32` to generate)
-- `ADMIN_EMAIL` = `admin@yourdomain.com`
-- `ADMIN_PASSWORD` = `YourPassword123!`
+- `ADMIN_EMAIL` = Your admin email
+- `ADMIN_PASSWORD` = Your secure password
+
+## Security Note
+⚠️ **NEVER** commit database credentials to your repository. Always use environment variables!

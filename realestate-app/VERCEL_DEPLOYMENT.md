@@ -7,8 +7,10 @@ Add these environment variables in your Vercel project settings:
 ### Database
 - `DATABASE_URL` - Your PostgreSQL connection string
   ```
-  postgresql://neondb_owner:npg_38YswXVMGexc@ep-delicate-grass-a9r77zyh-pooler.gwc.azure.neon.tech/neondb?sslmode=require
+  postgresql://your-username:your-password@your-host/your-database?sslmode=require
   ```
+  
+  **⚠️ SECURITY WARNING**: Never commit your actual database credentials to git!
 
 ### Authentication
 - `NEXTAUTH_URL` - Your production URL (e.g., https://real-estate-pied-nine-85.vercel.app)

@@ -4,7 +4,7 @@
 
 ### 1. Go to Your Vercel Project
 1. Log in to [Vercel Dashboard](https://vercel.com/dashboard)
-2. Click on your project: **real-estate-pied-nine-85**
+2. Click on your Real Estate project
 
 ### 2. Navigate to Settings
 1. Click on the **"Settings"** tab at the top
@@ -16,15 +16,17 @@ Add each of these variables:
 
 #### DATABASE_URL
 - **Key**: `DATABASE_URL`
-- **Value**: 
-  ```
-  postgresql://neondb_owner:npg_38YswXVMGexc@ep-delicate-grass-a9r77zyh-pooler.gwc.azure.neon.tech/neondb?sslmode=require
-  ```
+- **Value**: Your PostgreSQL connection string from your database provider
+  - **Neon**: Dashboard → Connection Details → Connection string
+  - **Supabase**: Settings → Database → Connection string
+  - **Vercel Postgres**: Automatically added when you create the database
 - **Environment**: ✅ Production, ✅ Preview, ✅ Development
+
+**⚠️ SECURITY WARNING**: Never commit database credentials to your repository!
 
 #### NEXTAUTH_URL
 - **Key**: `NEXTAUTH_URL`
-- **Value**: `https://real-estate-pied-nine-85.vercel.app`
+- **Value**: Your Vercel app URL (e.g., `https://your-app-name.vercel.app`)
 - **Environment**: ✅ Production
 
 #### NEXTAUTH_SECRET
@@ -33,17 +35,16 @@ Add each of these variables:
   ```bash
   openssl rand -base64 32
   ```
-  Example: `k5H8Q2+b7w6QW3Kd9VS2mFjB9Xl5Oj8W7aBD9GVQ+pE=`
 - **Environment**: ✅ Production, ✅ Preview, ✅ Development
 
 #### ADMIN_EMAIL
 - **Key**: `ADMIN_EMAIL`
-- **Value**: `admin@aliajrealestate.com` (or your preferred email)
+- **Value**: Your admin email address
 - **Environment**: ✅ Production, ✅ Preview, ✅ Development
 
 #### ADMIN_PASSWORD
 - **Key**: `ADMIN_PASSWORD`
-- **Value**: Choose a strong password (e.g., `AliajAdmin2024!`)
+- **Value**: Choose a strong password
 - **Environment**: ✅ Production, ✅ Preview, ✅ Development
 
 ### 4. Save and Redeploy
@@ -63,7 +64,7 @@ Once deployed, you need to initialize the database:
 ## Troubleshooting
 
 ### If you see database connection errors:
-1. Make sure the DATABASE_URL is copied exactly as provided
+1. Make sure the DATABASE_URL is copied exactly from your database provider
 2. Check that all environment variables are set
 3. Try redeploying
 
@@ -72,5 +73,9 @@ Once deployed, you need to initialize the database:
 2. Check the Vercel function logs for any errors
 3. You may need to run the seed script manually
 
-## Security Note
-Never commit these environment variables to Git. They should only be stored in Vercel's environment settings.
+## Security Best Practices
+1. **Never commit environment variables to Git**
+2. **Use strong passwords**
+3. **Rotate your NEXTAUTH_SECRET periodically**
+4. **Keep your database credentials secure**
+5. **Only share credentials through secure channels**
