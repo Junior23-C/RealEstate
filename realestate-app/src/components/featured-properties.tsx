@@ -10,7 +10,12 @@ export async function FeaturedProperties() {
       }
     },
     include: {
-      images: true
+      images: {
+        where: {
+          isPrimary: true
+        },
+        take: 1
+      }
     },
     take: 3,
     orderBy: {

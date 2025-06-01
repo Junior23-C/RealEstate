@@ -33,27 +33,28 @@ export function Navbar({ companyName = "Aliaj Real Estate" }: NavbarProps) {
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center">
-        <Link href="/" className="mr-6 flex items-center space-x-2">
-          <Building2 className="h-6 w-6" />
+        <Link href="/" className="mr-6 flex items-center space-x-2" aria-label="Aliaj Real Estate - Home">
+          <Building2 className="h-6 w-6" aria-hidden="true" />
           <span className="hidden font-bold sm:inline-block">
             {companyName}
           </span>
         </Link>
         
         <div className="flex flex-1 items-center justify-between space-x-2">
-          <nav className="flex items-center space-x-6">
+          <nav className="flex items-center space-x-6" role="navigation" aria-label="Main navigation">
             {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "flex items-center text-sm font-medium transition-colors hover:text-primary",
+                  "flex items-center text-sm font-medium transition-colors hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-md px-2 py-1",
                   pathname === item.href
                     ? "text-foreground"
                     : "text-foreground/60"
                 )}
+                aria-current={pathname === item.href ? "page" : undefined}
               >
-                <item.icon className="mr-2 h-4 w-4" />
+                <item.icon className="mr-2 h-4 w-4" aria-hidden="true" />
                 {item.label}
               </Link>
             ))}

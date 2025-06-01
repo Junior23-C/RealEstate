@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
@@ -14,13 +15,19 @@ export function HeroSection() {
           initial={{ scale: 1.1 }}
           animate={{ scale: 1 }}
           transition={{ duration: 10, ease: "easeOut" }}
-          className="h-full w-full"
-          style={{
-            backgroundImage: "url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600')",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        />
+          className="h-full w-full relative"
+        >
+          <Image
+            src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600"
+            alt="Beautiful modern home - Find your dream property with Aliaj Real Estate"
+            fill
+            className="object-cover"
+            priority
+            sizes="100vw"
+            placeholder="blur"
+            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkbHB0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyLYqI3LR8mptDZdF1u5uOwlstlHIdCrXN0EJxuaAAzKlT3xkBKMjfWzE2tljQ7ljxCMy6PkLqc1WJQeqKB6SHaZCc+XKTXLQ1r6HTa//Z"
+          />
+        </motion.div>
       </div>
       
       <div className="container relative z-20">

@@ -86,6 +86,10 @@ export function PropertyCard({ property, index = 0 }: PropertyCardProps) {
                 alt={primaryImage.alt || property.title}
                 fill
                 className="object-cover transition-transform duration-300 hover:scale-110"
+                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                priority={index < 3}
+                placeholder="blur"
+                blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkbHB0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyLYqI3LR8mptDZdF1u5uOwlstlHIdCrXN0EJxuaAAzKlT3xkBKMjfWzE2tljQ7ljxCMy6PkLqc1WJQeqKB6SHaZCc+XKTXLQ1r6HTa//Z"
               />
             ) : (
               <div className="h-full w-full bg-muted flex items-center justify-center">
