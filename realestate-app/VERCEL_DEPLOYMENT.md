@@ -5,14 +5,17 @@
 Add these environment variables in your Vercel project settings:
 
 ### Database
-- `DATABASE_URL` - PostgreSQL connection string (e.g., from Vercel Postgres, Supabase, or Neon)
+- `DATABASE_URL` - Your PostgreSQL connection string
+  ```
+  postgresql://neondb_owner:npg_38YswXVMGexc@ep-delicate-grass-a9r77zyh-pooler.gwc.azure.neon.tech/neondb?sslmode=require
+  ```
 
 ### Authentication
-- `NEXTAUTH_URL` - Your production URL (e.g., https://your-app.vercel.app)
+- `NEXTAUTH_URL` - Your production URL (e.g., https://real-estate-pied-nine-85.vercel.app)
 - `NEXTAUTH_SECRET` - Generate with `openssl rand -base64 32`
 
 ### Admin Credentials (for initial setup)
-- `ADMIN_EMAIL` - Admin email for login
+- `ADMIN_EMAIL` - Admin email for login (e.g., admin@aliajrealestate.com)
 - `ADMIN_PASSWORD` - Admin password (will be hashed)
 
 ## Setup Steps
