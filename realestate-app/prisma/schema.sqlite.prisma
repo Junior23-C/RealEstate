@@ -29,6 +29,8 @@ model Property {
   features      String?   // JSON string for features array
   images        PropertyImage[]
   inquiries     Inquiry[]
+  leases        Lease[]
+  maintenanceRequests MaintenanceRequest[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 }
@@ -91,4 +93,151 @@ enum InquiryStatus {
 enum UserRole {
   USER
   ADMIN
+}
+
+enum LeaseStatus {
+  ACTIVE
+  EXPIRED
+  TERMINATED
+  PENDING
+}
+
+model ContactSettings {
+  id              String    @id @default(cuid())
+  companyName     String    @default("Aliaj Real Estate")
+  email           String    @default("info@premiumestate.com")
+  phone           String    @default("(555) 123-4567")
+  address         String    @default("123 Main Street")
+  city            String    @default("City")
+  state           String    @default("State")
+  zipCode         String    @default("12345")
+  businessHours   String?   // JSON string for business hours
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model Tenant {
+  id                String    @id @default(cuid())
+  firstName         String
+  lastName          String
+  email             String    @unique
+  phone             String
+  dateOfBirth       DateTime?
+  emergencyContact  String?
+  emergencyContactPhone String?
+  employer          String?
+  employerPhone     String?
+  monthlyIncome     Float?
+  previousAddress   String?
+  reasonForLeaving  String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  
+  leases             Lease[]
+  payments           Payment[]
+  maintenanceRequests MaintenanceRequest[]
+}
+
+model Lease {
+  id              String    @id @default(cuid())
+  leaseNumber     String    @unique
+  propertyId      String
+  tenantId        String
+  startDate       DateTime
+  endDate         DateTime
+  monthlyRent     Float
+  securityDeposit Float
+  status          LeaseStatus @default(PENDING)
+  terms           String?   // JSON string for lease terms
+  documents       String?   // JSON string for document URLs
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  property        Property  @relation(fields: [propertyId], references: [id])
+  tenant          Tenant    @relation(fields: [tenantId], references: [id])
+  payments        Payment[]
+  notifications   Notification[]
+}
+
+model Payment {
+  id                String    @id @default(cuid())
+  leaseId           String
+  lease             Lease     @relation(fields: [leaseId], references: [id])
+  tenantId          String
+  tenant            Tenant    @relation(fields: [tenantId], references: [id])
+  amount            Float
+  type              PaymentType
+  status            PaymentStatus @default(PENDING)
+  dueDate           DateTime
+  paidDate          DateTime?
+  paymentMethod     String?
+  transactionId     String?
+  notes             String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+}
+
+model MaintenanceRequest {
+  id              String    @id @default(cuid())
+  propertyId      String
+  tenantId        String
+  title           String
+  description     String
+  priority        String    @default("MEDIUM")  // LOW, MEDIUM, HIGH, URGENT
+  status          String    @default("OPEN")    // OPEN, IN_PROGRESS, RESOLVED, CLOSED
+  resolvedDate    DateTime?
+  notes           String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  property        Property  @relation(fields: [propertyId], references: [id])
+  tenant          Tenant    @relation(fields: [tenantId], references: [id])
+}
+
+model Notification {
+  id                String    @id @default(cuid())
+  type              NotificationType
+  title             String
+  message           String
+  recipientEmail    String
+  recipientPhone    String?
+  status            NotificationStatus @default(PENDING)
+  sentAt            DateTime?
+  metadata          String?   // JSON string for additional data
+  leaseId           String?
+  lease             Lease?    @relation(fields: [leaseId], references: [id])
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+}
+
+enum NotificationType {
+  PAYMENT_REMINDER
+  RENT_DUE
+  RENT_OVERDUE
+  LEASE_EXPIRY
+  MAINTENANCE_UPDATE
+  GENERAL
+}
+
+enum NotificationStatus {
+  PENDING
+  SENT
+  FAILED
+  CANCELLED
+}
+
+enum PaymentType {
+  RENT
+  SECURITY_DEPOSIT
+  LATE_FEE
+  MAINTENANCE
+  OTHER
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  LATE
+  PARTIAL
+  CANCELLED
 }

@@ -141,11 +141,13 @@ model Tenant {
   updatedAt         DateTime  @updatedAt
   
   leases             Lease[]
+  payments           Payment[]
   maintenanceRequests MaintenanceRequest[]
 }
 
 model Lease {
   id              String    @id @default(cuid())
+  leaseNumber     String    @unique
   propertyId      String
   tenantId        String
   startDate       DateTime
@@ -153,7 +155,8 @@ model Lease {
   monthlyRent     Float
   securityDeposit Float
   status          LeaseStatus @default(PENDING)
-  notes           String?
+  terms           String?   // JSON string for lease terms
+  documents       String?   // JSON string for document URLs
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
   
@@ -164,19 +167,21 @@ model Lease {
 }
 
 model Payment {
-  id              String    @id @default(cuid())
-  leaseId         String
-  amount          Float
-  dueDate         DateTime
-  paidDate        DateTime?
-  status          PaymentStatus @default(PENDING)
-  paymentMethod   String?
-  transactionId   String?
-  notes           String?
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  
-  lease           Lease     @relation(fields: [leaseId], references: [id])
+  id                String    @id @default(cuid())
+  leaseId           String
+  lease             Lease     @relation(fields: [leaseId], references: [id])
+  tenantId          String
+  tenant            Tenant    @relation(fields: [tenantId], references: [id])
+  amount            Float
+  type              PaymentType
+  status            PaymentStatus @default(PENDING)
+  dueDate           DateTime
+  paidDate          DateTime?
+  paymentMethod     String?
+  transactionId     String?
+  notes             String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
 }
 
 model MaintenanceRequest {
@@ -197,17 +202,49 @@ model MaintenanceRequest {
 }
 
 model Notification {
-  id          String   @id @default(cuid())
-  leaseId     String?
-  type        String   // RENT_DUE, RENT_OVERDUE, LEASE_EXPIRING, MAINTENANCE
-  title       String
-  message     String
-  scheduledFor DateTime
-  sentAt      DateTime?
-  method      String   @default("EMAIL")  // EMAIL, SMS, PUSH
-  status      String   @default("PENDING")  // PENDING, SENT, FAILED
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
-  lease       Lease?   @relation(fields: [leaseId], references: [id], onDelete: Cascade)
+  id                String    @id @default(cuid())
+  type              NotificationType
+  title             String
+  message           String
+  recipientEmail    String
+  recipientPhone    String?
+  status            NotificationStatus @default(PENDING)
+  sentAt            DateTime?
+  metadata          String?   // JSON string for additional data
+  leaseId           String?
+  lease             Lease?    @relation(fields: [leaseId], references: [id])
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+}
+
+enum NotificationType {
+  PAYMENT_REMINDER
+  RENT_DUE
+  RENT_OVERDUE
+  LEASE_EXPIRY
+  MAINTENANCE_UPDATE
+  GENERAL
+}
+
+enum NotificationStatus {
+  PENDING
+  SENT
+  FAILED
+  CANCELLED
+}
+
+enum PaymentType {
+  RENT
+  SECURITY_DEPOSIT
+  LATE_FEE
+  MAINTENANCE
+  OTHER
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  LATE
+  PARTIAL
+  CANCELLED
 }
