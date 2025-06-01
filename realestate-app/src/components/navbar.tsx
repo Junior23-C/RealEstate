@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Home, Building2, Phone, User } from "lucide-react"
+import { useEffect, useState } from "react"
 
 interface NavbarProps {
   companyName?: string
@@ -14,6 +15,14 @@ interface NavbarProps {
 export function Navbar({ companyName = "Aliaj Real Estate" }: NavbarProps) {
   const pathname = usePathname()
   const { data: session } = useSession()
+  const [isAdminSubdomain, setIsAdminSubdomain] = useState(false)
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const hostname = window.location.hostname
+      setIsAdminSubdomain(hostname.startsWith("admin."))
+    }
+  }, [])
 
   const navItems = [
     { href: "/", label: "Home", icon: Home },
@@ -51,20 +60,25 @@ export function Navbar({ companyName = "Aliaj Real Estate" }: NavbarProps) {
           </nav>
           
           <div className="flex items-center space-x-4">
-            {session?.user?.role === "ADMIN" ? (
-              <Button variant="default" size="sm" asChild>
-                <Link href="/admin">
-                  <User className="h-4 w-4 mr-2" />
-                  Admin
-                </Link>
-              </Button>
-            ) : (
-              <Button variant="ghost" size="icon" asChild>
-                <Link href="/admin/login">
-                  <User className="h-5 w-5" />
-                  <span className="sr-only">Admin Login</span>
-                </Link>
-              </Button>
+            {/* Only show admin buttons on admin subdomain or localhost */}
+            {(isAdminSubdomain || (typeof window !== 'undefined' && window.location.hostname === "localhost")) && (
+              <>
+                {session?.user?.role === "ADMIN" ? (
+                  <Button variant="default" size="sm" asChild>
+                    <Link href="/admin">
+                      <User className="h-4 w-4 mr-2" />
+                      Admin
+                    </Link>
+                  </Button>
+                ) : (
+                  <Button variant="ghost" size="icon" asChild>
+                    <Link href="/admin/login">
+                      <User className="h-5 w-5" />
+                      <span className="sr-only">Admin Login</span>
+                    </Link>
+                  </Button>
+                )}
+              </>
             )}
           </div>
         </div>
