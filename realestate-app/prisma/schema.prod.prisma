@@ -1,0 +1,108 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Property {
+  id            String    @id @default(cuid())
+  title         String
+  description   String
+  price         Float
+  type          PropertyType
+  status        PropertyStatus
+  address       String
+  city          String
+  state         String
+  zipCode       String
+  bedrooms      Int
+  bathrooms     Float
+  squareFeet    Int
+  lotSize       Float?
+  yearBuilt     Int?
+  features      String?   // JSON string for features array
+  images        PropertyImage[]
+  inquiries     Inquiry[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model PropertyImage {
+  id          String    @id @default(cuid())
+  url         String
+  alt         String?
+  isPrimary   Boolean   @default(false)
+  propertyId  String
+  property    Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
+}
+
+model Inquiry {
+  id          String    @id @default(cuid())
+  name        String
+  email       String
+  phone       String?
+  message     String
+  propertyId  String
+  property    Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  status      InquiryStatus @default(PENDING)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model User {
+  id          String    @id @default(cuid())
+  email       String    @unique
+  password    String
+  name        String?
+  role        UserRole  @default(USER)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+enum PropertyType {
+  HOUSE
+  APARTMENT
+  CONDO
+  TOWNHOUSE
+  LAND
+  COMMERCIAL
+}
+
+enum PropertyStatus {
+  FOR_RENT
+  FOR_SALE
+  RENTED
+  SOLD
+}
+
+enum InquiryStatus {
+  PENDING
+  CONTACTED
+  CLOSED
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+model ContactSettings {
+  id              String    @id @default(cuid())
+  companyName     String    @default("Aliaj Real Estate")
+  email           String    @default("info@premiumestate.com")
+  phone           String    @default("(555) 123-4567")
+  address         String    @default("123 Main Street")
+  city            String    @default("City")
+  state           String    @default("State")
+  zipCode         String    @default("12345")
+  businessHours   String?   // JSON string for business hours
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}

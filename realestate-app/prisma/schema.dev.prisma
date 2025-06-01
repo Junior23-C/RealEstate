@@ -1,0 +1,67 @@
+// This is your Prisma schema file for LOCAL DEVELOPMENT ONLY
+// Uses SQLite for easy local development
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Property {
+  id            String    @id @default(cuid())
+  title         String
+  description   String
+  price         Float
+  type          String    // Changed from enum for SQLite compatibility
+  status        String    // Changed from enum for SQLite compatibility
+  address       String
+  city          String
+  state         String
+  zipCode       String
+  bedrooms      Int
+  bathrooms     Float
+  squareFeet    Int
+  lotSize       Float?
+  yearBuilt     Int?
+  features      String?   // JSON string for features array
+  images        PropertyImage[]
+  inquiries     Inquiry[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model PropertyImage {
+  id          String    @id @default(cuid())
+  url         String
+  alt         String?
+  isPrimary   Boolean   @default(false)
+  propertyId  String
+  property    Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
+}
+
+model Inquiry {
+  id          String    @id @default(cuid())
+  name        String
+  email       String
+  phone       String?
+  message     String
+  propertyId  String
+  property    Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  status      String    @default("PENDING") // Changed from enum for SQLite compatibility
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model User {
+  id          String    @id @default(cuid())
+  email       String    @unique
+  password    String
+  name        String?
+  role        String    @default("USER") // Changed from enum for SQLite compatibility
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}

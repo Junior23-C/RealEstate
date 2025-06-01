@@ -1,0 +1,94 @@
+// This is the SQLite version for local development
+// To use: copy this content to schema.prisma for local development
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Property {
+  id            String    @id @default(cuid())
+  title         String
+  description   String
+  price         Float
+  type          PropertyType
+  status        PropertyStatus
+  address       String
+  city          String
+  state         String
+  zipCode       String
+  bedrooms      Int
+  bathrooms     Float
+  squareFeet    Int
+  lotSize       Float?
+  yearBuilt     Int?
+  features      String?   // JSON string for features array
+  images        PropertyImage[]
+  inquiries     Inquiry[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model PropertyImage {
+  id          String    @id @default(cuid())
+  url         String
+  alt         String?
+  isPrimary   Boolean   @default(false)
+  propertyId  String
+  property    Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
+}
+
+model Inquiry {
+  id          String    @id @default(cuid())
+  name        String
+  email       String
+  phone       String?
+  message     String
+  propertyId  String
+  property    Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  status      InquiryStatus @default(PENDING)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model User {
+  id          String    @id @default(cuid())
+  email       String    @unique
+  password    String
+  name        String?
+  role        UserRole  @default(USER)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+enum PropertyType {
+  HOUSE
+  APARTMENT
+  CONDO
+  TOWNHOUSE
+  LAND
+  COMMERCIAL
+}
+
+enum PropertyStatus {
+  FOR_RENT
+  FOR_SALE
+  RENTED
+  SOLD
+}
+
+enum InquiryStatus {
+  PENDING
+  CONTACTED
+  CLOSED
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
