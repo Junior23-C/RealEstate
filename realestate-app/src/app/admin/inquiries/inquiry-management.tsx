@@ -166,7 +166,8 @@ export function InquiryManagement({ inquiries }: InquiryManagementProps) {
                       </TableCell>
                       <TableCell>
                         <Link 
-                          href={`/properties/${inquiry.property.id}`}
+                          href={`https://aliaj-re.com/properties/${inquiry.property.id}`}
+                          target="_blank"
                           className="text-primary hover:underline"
                         >
                           {inquiry.property.title}
@@ -249,7 +250,8 @@ export function InquiryManagement({ inquiries }: InquiryManagementProps) {
                 <div>
                   <h4 className="font-medium">Property</h4>
                   <Link 
-                    href={`/properties/${selectedInquiry.property.id}`}
+                    href={`https://aliaj-re.com/properties/${selectedInquiry.property.id}`}
+                    target="_blank"
                     className="text-primary hover:underline"
                   >
                     {selectedInquiry.property.title}

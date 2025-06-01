@@ -15,16 +15,16 @@ export function CTASection() {
           viewport={{ once: true }}
           className="text-center max-w-2xl mx-auto"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Ready to Find Your Dream Home?</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Jeni gati per shtepine tuaj te re?</h2>
           <p className="text-lg mb-8 opacity-90">
-            Let our expert team guide you through the process
+            Ju ndihmojmë të gjeni shtepinë tuaj të re.
           </p>
           <div className="flex gap-4 justify-center">
             <Button size="lg" variant="secondary" asChild>
-              <Link href="/properties">Browse Properties</Link>
+              <Link href="/properties">Kërko shtepi</Link>
             </Button>
             <Button size="lg" variant="outline" className="bg-transparent border-primary-foreground hover:bg-primary-foreground hover:text-primary" asChild>
-              <Link href="/contact">Get in Touch</Link>
+              <Link href="/contact">Na kontaktoni</Link>
             </Button>
           </div>
         </motion.div>
