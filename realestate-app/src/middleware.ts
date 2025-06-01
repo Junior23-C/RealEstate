@@ -8,10 +8,15 @@ export default withAuth(
     
     // Handle subdomain routing
     if (isAdminSubdomain) {
+      // If accessing admin subdomain root, redirect to main site
+      if (req.nextUrl.pathname === "/") {
+        const mainUrl = new URL("/", `https://aliaj-re.com`)
+        return NextResponse.redirect(mainUrl)
+      }
       // On admin subdomain - ensure we're on admin routes
       if (!req.nextUrl.pathname.startsWith("/admin")) {
         const url = req.nextUrl.clone()
-        url.pathname = "/admin" + (req.nextUrl.pathname === "/" ? "" : req.nextUrl.pathname)
+        url.pathname = "/admin" + req.nextUrl.pathname
         return NextResponse.rewrite(url)
       }
     } else {

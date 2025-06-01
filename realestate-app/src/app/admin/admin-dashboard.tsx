@@ -38,16 +38,17 @@ export function AdminDashboard({ stats, recentInquiries }: AdminDashboardProps) 
         <div className="container flex h-16 items-center justify-between">
           <Link href="/admin" className="flex items-center space-x-2">
             <Building2 className="h-6 w-6" />
-            <span className="font-bold">Admin Dashboard</span>
+            <span className="font-bold hidden sm:inline-block">Admin Dashboard</span>
+            <span className="font-bold sm:hidden">Admin</span>
           </Link>
           
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-muted-foreground">
+          <div className="flex items-center gap-2 md:gap-4">
+            <span className="text-sm text-muted-foreground hidden md:block">
               Welcome, {session?.user?.name || session?.user?.email}
             </span>
             <Button variant="ghost" size="sm" onClick={handleSignOut}>
-              <LogOut className="h-4 w-4 mr-2" />
-              Sign Out
+              <LogOut className="h-4 w-4 md:mr-2" />
+              <span className="hidden md:inline">Sign Out</span>
             </Button>
           </div>
         </div>
@@ -59,18 +60,19 @@ export function AdminDashboard({ stats, recentInquiries }: AdminDashboardProps) 
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <div className="flex items-center justify-between mb-8">
-            <h1 className="text-3xl font-bold">Dashboard Overview</h1>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+            <h1 className="text-2xl md:text-3xl font-bold">Dashboard Overview</h1>
             <Button asChild>
               <Link href="/admin/properties/new">
                 <Plus className="h-4 w-4 mr-2" />
-                Add Property
+                <span className="hidden sm:inline">Add Property</span>
+                <span className="sm:hidden">Add</span>
               </Link>
             </Button>
           </div>
 
           {/* Stats Grid */}
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
+          <div className="grid gap-3 md:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 mb-6 md:mb-8">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Total Properties</CardTitle>
@@ -125,7 +127,7 @@ export function AdminDashboard({ stats, recentInquiries }: AdminDashboardProps) 
           </div>
 
           {/* Quick Actions */}
-          <div className="grid gap-4 md:grid-cols-3 mb-8">
+          <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mb-6 md:mb-8">
             <Card>
               <CardHeader>
                 <CardTitle>Property Management</CardTitle>
@@ -204,9 +206,9 @@ export function AdminDashboard({ stats, recentInquiries }: AdminDashboardProps) 
               <CardTitle>Quick Links</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 md:gap-4">
                 <Button asChild variant="outline">
-                  <Link href="/">View Website</Link>
+                  <Link href="https://aliaj-re.com" target="_blank">View Website</Link>
                 </Button>
                 <Button asChild variant="outline">
                   <Link href="/admin/properties">Properties</Link>
