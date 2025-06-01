@@ -56,9 +56,6 @@ export async function POST(request: Request) {
       endDate,
       monthlyRent,
       securityDeposit,
-      petDeposit,
-      lateFee,
-      rentDueDay,
       notes
     } = body
 
@@ -94,7 +91,7 @@ export async function POST(request: Request) {
     const start = new Date(startDate)
     const end = new Date(endDate)
     
-    const currentDate = new Date(start.getFullYear(), start.getMonth(), rentDueDay || 1)
+    const currentDate = new Date(start.getFullYear(), start.getMonth(), 1)
     
     // If the rent due day is before the start date, move to next month
     if (currentDate < start) {
