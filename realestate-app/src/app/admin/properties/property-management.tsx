@@ -111,47 +111,67 @@ export function PropertyManagement({ properties }: PropertyManagementProps) {
   }
 
   return (
-    <div className="min-h-screen bg-muted/50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
       {/* Header */}
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur">
+      <header className="sticky top-0 z-50 w-full border-b bg-white/95 dark:bg-slate-900/95 backdrop-blur shadow-sm">
         <div className="container flex h-16 items-center">
-          <Link href="/admin" className="flex items-center space-x-2 mr-6">
+          <Link href="/admin" className="flex items-center space-x-2 mr-6 hover:opacity-70 transition-opacity">
             <ArrowLeft className="h-4 w-4" />
             <span>Back to Dashboard</span>
           </Link>
           <div className="flex items-center space-x-2">
-            <Building2 className="h-6 w-6" />
-            <span className="font-bold">Property Management</span>
+            <div className="p-2 bg-primary rounded-lg">
+              <Building2 className="h-5 w-5 text-primary-foreground" />
+            </div>
+            <div>
+              <span className="font-bold text-lg">Property Management</span>
+              <p className="text-xs text-muted-foreground">View and manage listings</p>
+            </div>
           </div>
         </div>
       </header>
 
-      <div className="container py-8">
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold">All Properties ({properties.length})</h1>
-          <Button asChild>
-            <Link href="/admin/properties/new">
-              <Plus className="h-4 w-4 mr-2" />
-              Add New Property
-            </Link>
-          </Button>
+      <div className="container py-6 md:py-8">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+          <div>
+            <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-300 bg-clip-text text-transparent">
+              All Properties ({properties.length})
+            </h1>
+            <p className="text-muted-foreground mt-1">
+              Manage your property listings and view details
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <Button variant="outline" asChild>
+              <Link href="https://aliaj-re.com/properties" target="_blank">
+                <Eye className="h-4 w-4 mr-2" />
+                View on Site
+              </Link>
+            </Button>
+            <Button asChild className="shadow-lg">
+              <Link href="/admin/properties/new">
+                <Plus className="h-4 w-4 mr-2" />
+                Add New Property
+              </Link>
+            </Button>
+          </div>
         </div>
 
-        <Card>
+        <Card className="border-0 shadow-lg bg-white dark:bg-slate-800">
           <CardContent className="p-0">
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
-                  <TableRow>
-                    <TableHead>Image</TableHead>
-                    <TableHead>Title</TableHead>
-                    <TableHead>Location</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Price</TableHead>
-                    <TableHead>Rental Info</TableHead>
-                    <TableHead>Inquiries</TableHead>
-                    <TableHead>Actions</TableHead>
+                  <TableRow className="bg-muted/50">
+                    <TableHead className="font-semibold">Image</TableHead>
+                    <TableHead className="font-semibold">Title</TableHead>
+                    <TableHead className="font-semibold">Location</TableHead>
+                    <TableHead className="font-semibold">Type</TableHead>
+                    <TableHead className="font-semibold">Status</TableHead>
+                    <TableHead className="font-semibold">Price</TableHead>
+                    <TableHead className="font-semibold">Rental Info</TableHead>
+                    <TableHead className="font-semibold">Inquiries</TableHead>
+                    <TableHead className="font-semibold text-center">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -229,29 +249,33 @@ export function PropertyManagement({ properties }: PropertyManagementProps) {
                           </div>
                         </TableCell>
                         <TableCell>
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center justify-center gap-1">
                             <Button
                               variant="ghost"
-                              size="icon"
+                              size="sm"
                               asChild
+                              className="h-8 w-8 hover:bg-blue-100 hover:text-blue-600 dark:hover:bg-blue-900 dark:hover:text-blue-400"
                             >
-                              <Link href={`/properties/${property.id}`}>
+                              <Link href={`https://aliaj-re.com/properties/${property.id}`} target="_blank" title="View Property">
                                 <Eye className="h-4 w-4" />
                               </Link>
                             </Button>
                             <Button
                               variant="ghost"
-                              size="icon"
+                              size="sm"
                               asChild
+                              className="h-8 w-8 hover:bg-green-100 hover:text-green-600 dark:hover:bg-green-900 dark:hover:text-green-400"
                             >
-                              <Link href={`/admin/properties/${property.id}/edit`}>
+                              <Link href={`/admin/properties/${property.id}/edit`} title="Edit Property">
                                 <Edit className="h-4 w-4" />
                               </Link>
                             </Button>
                             <Button
                               variant="ghost"
-                              size="icon"
+                              size="sm"
                               onClick={() => setDeletingId(property.id)}
+                              className="h-8 w-8 hover:bg-red-100 hover:text-red-600 dark:hover:bg-red-900 dark:hover:text-red-400"
+                              title="Delete Property"
                             >
                               <Trash2 className="h-4 w-4" />
                             </Button>
