@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/db"
+import { PaymentType, PaymentStatus } from "@prisma/client"
 
 export async function GET() {
   const session = await getServerSession(authOptions)
@@ -64,17 +65,15 @@ export async function POST(request: Request) {
     // Create the lease
     const lease = await prisma.lease.create({
       data: {
+        leaseNumber: `LEASE-${Date.now()}`,
         propertyId,
         tenantId,
         startDate: new Date(startDate),
         endDate: new Date(endDate),
         monthlyRent: parseFloat(monthlyRent),
-        securityDeposit: securityDeposit ? parseFloat(securityDeposit) : null,
-        petDeposit: petDeposit ? parseFloat(petDeposit) : null,
-        lateFee: lateFee ? parseFloat(lateFee) : 50,
-        rentDueDay: rentDueDay ? parseInt(rentDueDay) : 1,
-        notes,
-        status: "ACTIVE"
+        securityDeposit: securityDeposit ? parseFloat(securityDeposit) : 0,
+        status: "ACTIVE",
+        terms: notes || null
       },
       include: {
         property: true,
@@ -86,12 +85,7 @@ export async function POST(request: Request) {
     await prisma.property.update({
       where: { id: propertyId },
       data: {
-        status: "RENTED",
-        rentedDate: new Date(startDate),
-        rentEndDate: new Date(endDate),
-        tenantName: `${lease.tenant.firstName} ${lease.tenant.lastName}`,
-        tenantEmail: lease.tenant.email,
-        tenantPhone: lease.tenant.phone
+        status: "RENTED"
       }
     })
 
@@ -110,9 +104,11 @@ export async function POST(request: Request) {
     while (currentDate <= end) {
       payments.push({
         leaseId: lease.id,
+        tenantId: lease.tenantId,
         amount: parseFloat(monthlyRent),
+        type: "RENT" as PaymentType,
         dueDate: new Date(currentDate),
-        status: "PENDING"
+        status: "PENDING" as PaymentStatus
       })
       
       // Move to next month

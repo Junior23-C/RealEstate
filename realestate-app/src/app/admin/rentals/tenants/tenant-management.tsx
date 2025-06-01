@@ -37,8 +37,7 @@ interface TenantManagementProps {
     employer: string | null
     monthlyIncome: number | null
     emergencyContact: string | null
-    emergencyPhone: string | null
-    notes: string | null
+    emergencyContactPhone: string | null
     createdAt: Date
     leases: Array<{
       id: string

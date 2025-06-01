@@ -18,7 +18,7 @@ interface TenantFormProps {
     phone: string
     dateOfBirth: Date | null
     emergencyContact: string | null
-    emergencyPhone: string | null
+    emergencyContactPhone: string | null
     employer: string | null
     employerPhone: string | null
     monthlyIncome: number | null
@@ -38,7 +38,7 @@ export function TenantForm({ tenant, isEdit = false }: TenantFormProps) {
     phone: tenant?.phone || "",
     dateOfBirth: tenant?.dateOfBirth ? new Date(tenant.dateOfBirth).toISOString().split('T')[0] : "",
     emergencyContact: tenant?.emergencyContact || "",
-    emergencyPhone: tenant?.emergencyPhone || "",
+    emergencyContactPhone: tenant?.emergencyContactPhone || "",
     employer: tenant?.employer || "",
     employerPhone: tenant?.employerPhone || "",
     monthlyIncome: tenant?.monthlyIncome || "",
@@ -52,9 +52,18 @@ export function TenantForm({ tenant, isEdit = false }: TenantFormProps) {
 
     try {
       const requestData = {
-        ...formData,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        phone: formData.phone,
+        dateOfBirth: formData.dateOfBirth || null,
+        emergencyContact: formData.emergencyContact,
+        emergencyPhone: formData.emergencyContactPhone, // Map to emergencyPhone for API
+        employer: formData.employer,
+        employerPhone: formData.employerPhone,
         monthlyIncome: formData.monthlyIncome ? parseFloat(formData.monthlyIncome as string) : null,
-        dateOfBirth: formData.dateOfBirth || null
+        previousAddress: formData.previousAddress,
+        reasonForLeaving: formData.reasonForLeaving
       }
 
       const url = isEdit ? `/api/rentals/tenants/${tenant?.id}` : "/api/rentals/tenants"
@@ -191,12 +200,12 @@ export function TenantForm({ tenant, isEdit = false }: TenantFormProps) {
                   </div>
 
                   <div>
-                    <Label htmlFor="emergencyPhone">Emergency Contact Phone</Label>
+                    <Label htmlFor="emergencyContactPhone">Emergency Contact Phone</Label>
                     <Input
-                      id="emergencyPhone"
+                      id="emergencyContactPhone"
                       type="tel"
-                      value={formData.emergencyPhone}
-                      onChange={(e) => handleChange("emergencyPhone", e.target.value)}
+                      value={formData.emergencyContactPhone}
+                      onChange={(e) => handleChange("emergencyContactPhone", e.target.value)}
                       disabled={isLoading}
                     />
                   </div>

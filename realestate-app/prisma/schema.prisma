@@ -97,10 +97,14 @@ enum UserRole {
 
 model ContactSettings {
   id              String    @id @default(cuid())
-  email           String?
-  phone           String?
-  address         String?
-  businessHours   String?
+  companyName     String    @default("Your Company Name")
+  email           String    @default("contact@example.com")
+  phone           String    @default("(555) 123-4567")
+  address         String    @default("123 Main Street")
+  city            String    @default("Your City")
+  state           String    @default("CA")
+  zipCode         String    @default("12345")
+  businessHours   String?   // Optional field
   socialMedia     String?   // JSON string for social media links
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
@@ -112,13 +116,14 @@ model Tenant {
   lastName              String
   email                 String    @unique
   phone                 String
+  dateOfBirth           DateTime?
   emergencyContact      String?
   emergencyContactPhone String?
-  idNumber              String?
   employer              String?
+  employerPhone         String?
   monthlyIncome         Float?
   previousAddress       String?
-  moveInDate            DateTime?
+  reasonForLeaving      String?
   leases                Lease[]
   payments              Payment[]
   maintenanceRequests   MaintenanceRequest[]
@@ -251,6 +256,8 @@ enum MaintenanceStatus {
 
 enum NotificationType {
   PAYMENT_REMINDER
+  RENT_DUE
+  RENT_OVERDUE
   LEASE_EXPIRY
   MAINTENANCE_UPDATE
   GENERAL

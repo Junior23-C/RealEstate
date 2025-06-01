@@ -59,23 +59,53 @@ export async function POST(request: Request) {
     const body = await request.json()
     const {
       leaseId,
+      tenantId,
       amount,
+      type = "RENT", // Default to RENT if not specified
       dueDate,
       paymentMethod,
-      checkNumber,
+      transactionId, // Replaces checkNumber
       lateFeePaid,
       notes
     } = body
 
+    // Get tenant from lease if not provided
+    let finalTenantId = tenantId
+    if (!finalTenantId && leaseId) {
+      const lease = await prisma.lease.findUnique({
+        where: { id: leaseId },
+        select: { tenantId: true }
+      })
+      if (lease) {
+        finalTenantId = lease.tenantId
+      }
+    }
+
+    if (!finalTenantId) {
+      return NextResponse.json(
+        { error: "Tenant ID is required" },
+        { status: 400 }
+      )
+    }
+
+    // Build notes to include late fee information if provided
+    let finalNotes = notes || ""
+    if (lateFeePaid && parseFloat(lateFeePaid) > 0) {
+      finalNotes = finalNotes 
+        ? `${finalNotes}. Late fee paid: $${lateFeePaid}`
+        : `Late fee paid: $${lateFeePaid}`
+    }
+
     const payment = await prisma.payment.create({
       data: {
         leaseId,
+        tenantId: finalTenantId,
         amount: parseFloat(amount),
+        type,
         dueDate: new Date(dueDate),
         paymentMethod,
-        checkNumber,
-        lateFeePaid: lateFeePaid ? parseFloat(lateFeePaid) : 0,
-        notes,
+        transactionId, // Using transactionId instead of checkNumber
+        notes: finalNotes,
         status: "PENDING"
       },
       include: {
@@ -84,7 +114,8 @@ export async function POST(request: Request) {
             property: true,
             tenant: true
           }
-        }
+        },
+        tenant: true
       }
     })
 

@@ -31,11 +31,6 @@ interface PropertyFormProps {
     lotSize?: number | null
     yearBuilt?: number | null
     features?: string | null
-    rentedDate?: Date | null
-    rentEndDate?: Date | null
-    tenantName?: string | null
-    tenantEmail?: string | null
-    tenantPhone?: string | null
     images?: Array<{
       id: string
       url: string
@@ -66,12 +61,7 @@ export function PropertyForm({ property, isEdit = false }: PropertyFormProps) {
     squareFeet: property?.squareFeet || "",
     lotSize: property?.lotSize || "",
     yearBuilt: property?.yearBuilt || "",
-    features: property?.features ? JSON.parse(property.features) : [] as string[],
-    rentedDate: property?.rentedDate ? new Date(property.rentedDate).toISOString().split('T')[0] : "",
-    rentEndDate: property?.rentEndDate ? new Date(property.rentEndDate).toISOString().split('T')[0] : "",
-    tenantName: property?.tenantName || "",
-    tenantEmail: property?.tenantEmail || "",
-    tenantPhone: property?.tenantPhone || ""
+    features: property?.features ? JSON.parse(property.features) : [] as string[]
   })
   const [newFeature, setNewFeature] = useState("")
   const [imageUrls, setImageUrls] = useState<string[]>(
@@ -476,68 +466,12 @@ export function PropertyForm({ property, isEdit = false }: PropertyFormProps) {
                 </div>
               </div>
 
-              {/* Rental Tracking */}
-              {(formData.status === "RENTED" || formData.status === "FOR_RENT") && (
-                <div>
-                  <Label className="text-base font-semibold">Rental Information</Label>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-                    <div>
-                      <Label htmlFor="rentedDate">Rental Start Date</Label>
-                      <Input
-                        id="rentedDate"
-                        type="date"
-                        value={formData.rentedDate}
-                        onChange={(e) => handleChange("rentedDate", e.target.value)}
-                        disabled={isLoading}
-                      />
-                    </div>
-
-                    <div>
-                      <Label htmlFor="rentEndDate">Rental End Date</Label>
-                      <Input
-                        id="rentEndDate"
-                        type="date"
-                        value={formData.rentEndDate}
-                        onChange={(e) => handleChange("rentEndDate", e.target.value)}
-                        disabled={isLoading}
-                      />
-                    </div>
-
-                    <div>
-                      <Label htmlFor="tenantName">Tenant Name</Label>
-                      <Input
-                        id="tenantName"
-                        placeholder="Enter tenant's full name"
-                        value={formData.tenantName}
-                        onChange={(e) => handleChange("tenantName", e.target.value)}
-                        disabled={isLoading}
-                      />
-                    </div>
-
-                    <div>
-                      <Label htmlFor="tenantEmail">Tenant Email</Label>
-                      <Input
-                        id="tenantEmail"
-                        type="email"
-                        placeholder="tenant@example.com"
-                        value={formData.tenantEmail}
-                        onChange={(e) => handleChange("tenantEmail", e.target.value)}
-                        disabled={isLoading}
-                      />
-                    </div>
-
-                    <div>
-                      <Label htmlFor="tenantPhone">Tenant Phone</Label>
-                      <Input
-                        id="tenantPhone"
-                        type="tel"
-                        placeholder="(555) 123-4567"
-                        value={formData.tenantPhone}
-                        onChange={(e) => handleChange("tenantPhone", e.target.value)}
-                        disabled={isLoading}
-                      />
-                    </div>
-                  </div>
+              {/* Rental Information Notice */}
+              {formData.status === "RENTED" && (
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <p className="text-sm text-blue-800">
+                    <strong>Note:</strong> To manage rental information for this property, please use the Rental Management section to create a lease with tenant details.
+                  </p>
                 </div>
               )}
 

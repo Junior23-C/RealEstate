@@ -3,6 +3,27 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/db"
 
+export async function GET() {
+  try {
+    const properties = await prisma.property.findMany({
+      include: {
+        images: true
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    })
+
+    return NextResponse.json(properties)
+  } catch (error) {
+    console.error("Error fetching properties:", error)
+    return NextResponse.json(
+      { error: "Failed to fetch properties" },
+      { status: 500 }
+    )
+  }
+}
+
 export async function POST(request: Request) {
   const session = await getServerSession(authOptions)
   

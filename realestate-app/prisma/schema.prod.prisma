@@ -131,7 +131,7 @@ model Tenant {
   phone             String
   dateOfBirth       DateTime?
   emergencyContact  String?
-  emergencyPhone    String?
+  emergencyContactPhone String?
   employer          String?
   employerPhone     String?
   monthlyIncome     Float?

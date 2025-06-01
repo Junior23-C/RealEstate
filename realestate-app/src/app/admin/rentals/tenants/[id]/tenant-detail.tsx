@@ -36,7 +36,7 @@ interface TenantDetailProps {
     phone: string
     dateOfBirth: Date | null
     emergencyContact: string | null
-    emergencyPhone: string | null
+    emergencyContactPhone: string | null
     employer: string | null
     employerPhone: string | null
     monthlyIncome: number | null
@@ -193,8 +193,8 @@ export function TenantDetail({ tenant }: TenantDetailProps) {
                 <div>
                   <p className="text-sm text-muted-foreground">Emergency Contact</p>
                   <p className="font-medium">{tenant.emergencyContact}</p>
-                  {tenant.emergencyPhone && (
-                    <p className="text-sm text-muted-foreground">{formatPhone(tenant.emergencyPhone)}</p>
+                  {tenant.emergencyContactPhone && (
+                    <p className="text-sm text-muted-foreground">{formatPhone(tenant.emergencyContactPhone)}</p>
                   )}
                 </div>
               )}

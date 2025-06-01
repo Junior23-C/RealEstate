@@ -21,9 +21,11 @@ export async function PATCH(
       status,
       paidDate,
       paymentMethod,
-      checkNumber,
+      transactionId, // Replaces checkNumber
       lateFeePaid,
-      notes
+      notes,
+      amount,
+      type
     } = body
 
     const updateData: Record<string, unknown> = {}
@@ -31,9 +33,18 @@ export async function PATCH(
     if (status) updateData.status = status
     if (paidDate) updateData.paidDate = new Date(paidDate)
     if (paymentMethod) updateData.paymentMethod = paymentMethod
-    if (checkNumber) updateData.checkNumber = checkNumber
-    if (lateFeePaid !== undefined) updateData.lateFeePaid = parseFloat(lateFeePaid)
-    if (notes !== undefined) updateData.notes = notes
+    if (transactionId !== undefined) updateData.transactionId = transactionId
+    if (amount !== undefined) updateData.amount = parseFloat(amount)
+    if (type) updateData.type = type
+    
+    // Handle late fee information in notes
+    let finalNotes = notes
+    if (lateFeePaid !== undefined && parseFloat(lateFeePaid) > 0) {
+      finalNotes = notes 
+        ? `${notes}. Late fee paid: $${lateFeePaid}`
+        : `Late fee paid: $${lateFeePaid}`
+    }
+    if (finalNotes !== undefined) updateData.notes = finalNotes
 
     // If marking as paid and no paidDate provided, use current date
     if (status === 'PAID' && !paidDate) {

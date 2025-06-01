@@ -71,12 +71,13 @@ export async function PUT(
       email,
       phone,
       dateOfBirth,
-      ssn,
       emergencyContact,
       emergencyPhone,
       employer,
+      employerPhone,
       monthlyIncome,
-      notes
+      previousAddress,
+      reasonForLeaving
     } = body
 
     const tenant = await prisma.tenant.update({
@@ -87,12 +88,13 @@ export async function PUT(
         email,
         phone,
         dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : null,
-        ssn,
         emergencyContact,
-        emergencyPhone,
+        emergencyContactPhone: emergencyPhone,
         employer,
+        employerPhone,
         monthlyIncome: monthlyIncome ? parseFloat(monthlyIncome) : null,
-        notes
+        previousAddress,
+        reasonForLeaving
       }
     })
 

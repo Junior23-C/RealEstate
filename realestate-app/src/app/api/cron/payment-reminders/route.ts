@@ -90,7 +90,7 @@ export async function GET(request: Request) {
         where: {
           leaseId: payment.leaseId,
           type: "RENT_DUE",
-          scheduledFor: {
+          createdAt: {
             gte: today,
             lt: new Date(today.getTime() + 24 * 60 * 60 * 1000)
           }
@@ -101,6 +101,7 @@ export async function GET(request: Request) {
         const notification = await prisma.notification.create({
           data: {
             leaseId: payment.leaseId,
+            recipientEmail: payment.lease.tenant.email,
             type: "RENT_DUE",
             title: `Rent Due ${daysUntilDue === 0 ? 'Today' : `in ${daysUntilDue} day${daysUntilDue > 1 ? 's' : ''}`}`,
             message: `Hello ${payment.lease.tenant.firstName},
@@ -116,8 +117,8 @@ Please ensure payment is made on time to avoid late fees.
 
 Best regards,
 Property Management Team`,
-            scheduledFor: today,
-            method: "EMAIL"
+            createdAt: today,
+            status: "PENDING"
           }
         })
         notificationsCreated.push(notification)
@@ -133,7 +134,7 @@ Property Management Team`,
         where: {
           leaseId: payment.leaseId,
           type: "RENT_OVERDUE",
-          scheduledFor: {
+          createdAt: {
             gte: today,
             lt: new Date(today.getTime() + 24 * 60 * 60 * 1000)
           }
@@ -144,6 +145,7 @@ Property Management Team`,
         const notification = await prisma.notification.create({
           data: {
             leaseId: payment.leaseId,
+            recipientEmail: payment.lease.tenant.email,
             type: "RENT_OVERDUE",
             title: `URGENT: Rent Payment Overdue - ${daysOverdue} day${daysOverdue > 1 ? 's' : ''}`,
             message: `Hello ${payment.lease.tenant.firstName},
@@ -163,8 +165,8 @@ Late fees may apply as per your lease agreement.
 Property Management Team
 Phone: [Your Phone Number]
 Email: [Your Email]`,
-            scheduledFor: today,
-            method: "EMAIL"
+            createdAt: today,
+            status: "PENDING"
           }
         })
         notificationsCreated.push(notification)

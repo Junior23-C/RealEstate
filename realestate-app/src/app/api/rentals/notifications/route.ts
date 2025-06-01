@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/db"
+import { NotificationType } from "@prisma/client"
 
 export async function POST() {
   const session = await getServerSession(authOptions)
@@ -74,7 +75,7 @@ export async function POST() {
         where: {
           leaseId: payment.leaseId,
           type: "RENT_DUE",
-          scheduledFor: {
+          createdAt: {
             gte: new Date(),
             lte: threeDaysFromNow
           }
@@ -86,11 +87,10 @@ export async function POST() {
         
         notificationsToCreate.push({
           leaseId: payment.leaseId,
-          type: "RENT_DUE",
+          recipientEmail: payment.lease.tenant.email,
+          type: "RENT_DUE" as NotificationType,
           title: `Rent Due ${daysUntilDue === 0 ? 'Today' : `in ${daysUntilDue} day${daysUntilDue > 1 ? 's' : ''}`}`,
-          message: `Hello ${payment.lease.tenant.firstName},\n\nThis is a friendly reminder that your rent payment of ${new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(payment.amount)} for ${payment.lease.property.title} is due on ${payment.dueDate.toLocaleDateString()}.\n\nPlease contact us if you have any questions.\n\nBest regards,\nProperty Management`,
-          scheduledFor: new Date(),
-          method: "EMAIL"
+          message: `Hello ${payment.lease.tenant.firstName},\n\nThis is a friendly reminder that your rent payment of ${new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(payment.amount)} for ${payment.lease.property.title} is due on ${payment.dueDate.toLocaleDateString()}.\n\nPlease contact us if you have any questions.\n\nBest regards,\nProperty Management`
         })
       }
     }
@@ -101,7 +101,7 @@ export async function POST() {
         where: {
           leaseId: payment.leaseId,
           type: "RENT_OVERDUE",
-          scheduledFor: {
+          createdAt: {
             gte: new Date(new Date().setHours(0, 0, 0, 0))
           }
         }
@@ -112,11 +112,10 @@ export async function POST() {
         
         notificationsToCreate.push({
           leaseId: payment.leaseId,
-          type: "RENT_OVERDUE",
+          recipientEmail: payment.lease.tenant.email,
+          type: "RENT_OVERDUE" as NotificationType,
           title: `Rent Payment Overdue - ${daysOverdue} day${daysOverdue > 1 ? 's' : ''}`,
-          message: `Hello ${payment.lease.tenant.firstName},\n\nYour rent payment of ${new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(payment.amount)} for ${payment.lease.property.title} was due on ${payment.dueDate.toLocaleDateString()} and is now ${daysOverdue} day${daysOverdue > 1 ? 's' : ''} overdue.\n\nPlease contact us immediately to arrange payment.\n\nLate fees may apply.\n\nBest regards,\nProperty Management`,
-          scheduledFor: new Date(),
-          method: "EMAIL"
+          message: `Hello ${payment.lease.tenant.firstName},\n\nYour rent payment of ${new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(payment.amount)} for ${payment.lease.property.title} was due on ${payment.dueDate.toLocaleDateString()} and is now ${daysOverdue} day${daysOverdue > 1 ? 's' : ''} overdue.\n\nPlease contact us immediately to arrange payment.\n\nLate fees may apply.\n\nBest regards,\nProperty Management`
         })
       }
     }
