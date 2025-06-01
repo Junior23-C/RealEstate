@@ -35,12 +35,13 @@ interface TenantDetailProps {
     email: string
     phone: string
     dateOfBirth: Date | null
-    ssn: string | null
     emergencyContact: string | null
     emergencyPhone: string | null
     employer: string | null
+    employerPhone: string | null
     monthlyIncome: number | null
-    notes: string | null
+    previousAddress: string | null
+    reasonForLeaving: string | null
     createdAt: Date
     leases: Array<{
       id: string
@@ -102,7 +103,7 @@ export function TenantDetail({ tenant }: TenantDetailProps) {
         return 'default'
       case 'PENDING':
         return 'secondary'
-      case 'OVERDUE':
+      case 'LATE':
         return 'destructive'
       default:
         return 'outline'
@@ -134,7 +135,7 @@ export function TenantDetail({ tenant }: TenantDetailProps) {
     total: allPayments.length,
     paid: allPayments.filter(p => p.status === 'PAID').length,
     pending: allPayments.filter(p => p.status === 'PENDING').length,
-    overdue: allPayments.filter(p => p.status === 'OVERDUE').length,
+    overdue: allPayments.filter(p => p.status === 'LATE').length,
     totalPaid: allPayments.filter(p => p.status === 'PAID').reduce((sum, p) => sum + p.amount, 0)
   }
 
@@ -223,10 +224,10 @@ export function TenantDetail({ tenant }: TenantDetailProps) {
                   <p className="font-medium">{formatCurrency(tenant.monthlyIncome)}</p>
                 </div>
               )}
-              {tenant.ssn && (
+              {tenant.employerPhone && (
                 <div>
-                  <p className="text-sm text-muted-foreground">SSN (Last 4)</p>
-                  <p className="font-medium">****{tenant.ssn}</p>
+                  <p className="text-sm text-muted-foreground">Employer Phone</p>
+                  <p className="font-medium">{formatPhone(tenant.employerPhone)}</p>
                 </div>
               )}
             </CardContent>
@@ -316,7 +317,7 @@ export function TenantDetail({ tenant }: TenantDetailProps) {
                 <AlertCircle className="h-4 w-4 text-red-600" />
                 <div>
                   <p className="text-2xl font-bold">{paymentStats.overdue}</p>
-                  <p className="text-sm text-muted-foreground">Overdue</p>
+                  <p className="text-sm text-muted-foreground">Late</p>
                 </div>
               </div>
             </CardContent>
@@ -348,13 +349,24 @@ export function TenantDetail({ tenant }: TenantDetailProps) {
         {/* Tab Content */}
         {activeTab === 'overview' && (
           <div className="space-y-6">
-            {tenant.notes && (
+            {(tenant.previousAddress || tenant.reasonForLeaving) && (
               <Card>
                 <CardHeader>
-                  <CardTitle>Notes</CardTitle>
+                  <CardTitle>Previous Residence</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <p className="whitespace-pre-wrap">{tenant.notes}</p>
+                <CardContent className="space-y-3">
+                  {tenant.previousAddress && (
+                    <div>
+                      <p className="text-sm text-muted-foreground">Previous Address</p>
+                      <p className="font-medium">{tenant.previousAddress}</p>
+                    </div>
+                  )}
+                  {tenant.reasonForLeaving && (
+                    <div>
+                      <p className="text-sm text-muted-foreground">Reason for Leaving</p>
+                      <p className="font-medium">{tenant.reasonForLeaving}</p>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             )}

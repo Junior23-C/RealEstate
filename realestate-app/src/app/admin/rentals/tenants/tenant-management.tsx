@@ -101,7 +101,7 @@ export function TenantManagement({ tenants }: TenantManagementProps) {
         return 'default'
       case 'PENDING':
         return 'secondary'
-      case 'OVERDUE':
+      case 'LATE':
         return 'destructive'
       default:
         return 'outline'

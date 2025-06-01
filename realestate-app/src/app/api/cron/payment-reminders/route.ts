@@ -50,10 +50,10 @@ export async function GET(request: Request) {
           }
         },
         data: {
-          status: "OVERDUE"
+          status: "LATE"
         }
       })
-      console.log(`📅 Updated ${overduePayments.length} payments to OVERDUE status`)
+      console.log(`📅 Updated ${overduePayments.length} payments to LATE status`)
     }
 
     // Check for payments due in 3 days

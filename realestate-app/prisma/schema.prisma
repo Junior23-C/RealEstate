@@ -1,19 +1,22 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Property {
-  id            String          @id @default(cuid())
+  id            String    @id @default(cuid())
   title         String
   description   String
   price         Float
-  type          String
-  status        String
+  type          PropertyType
+  status        PropertyStatus
   address       String
   city          String
   state         String
@@ -23,120 +26,174 @@ model Property {
   squareFeet    Int
   lotSize       Float?
   yearBuilt     Int?
-  features      String?
-  rentedDate    DateTime?
-  rentEndDate   DateTime?
-  tenantName    String?
-  tenantEmail   String?
-  tenantPhone   String?
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-  inquiries     Inquiry[]
+  features      String?   // JSON string for features array
   images        PropertyImage[]
+  inquiries     Inquiry[]
   leases        Lease[]
+  maintenanceRequests MaintenanceRequest[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 }
 
 model PropertyImage {
-  id         String   @id @default(cuid())
-  url        String
-  alt        String?
-  isPrimary  Boolean  @default(false)
-  propertyId String
-  createdAt  DateTime @default(now())
-  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  id          String    @id @default(cuid())
+  url         String
+  alt         String?
+  isPrimary   Boolean   @default(false)
+  propertyId  String
+  property    Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
 }
 
 model Inquiry {
-  id         String   @id @default(cuid())
-  name       String
-  email      String
-  phone      String?
-  message    String
-  propertyId String
-  status     String   @default("PENDING")
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  id          String    @id @default(cuid())
+  name        String
+  email       String
+  phone       String?
+  message     String
+  propertyId  String
+  property    Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  status      InquiryStatus @default(PENDING)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  password  String
-  name      String?
-  role      String   @default("USER")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String    @id @default(cuid())
+  email       String    @unique
+  password    String
+  name        String?
+  role        UserRole  @default(USER)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+enum PropertyType {
+  HOUSE
+  APARTMENT
+  CONDO
+  TOWNHOUSE
+  LAND
+  COMMERCIAL
+}
+
+enum PropertyStatus {
+  FOR_RENT
+  FOR_SALE
+  RENTED
+  SOLD
+}
+
+enum InquiryStatus {
+  PENDING
+  CONTACTED
+  CLOSED
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum LeaseStatus {
+  ACTIVE
+  EXPIRED
+  TERMINATED
+  PENDING
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  LATE
+  CANCELLED
 }
 
 model ContactSettings {
-  id            String   @id @default(cuid())
-  companyName   String   @default("Aliaj Real Estate")
-  email         String   @default("info@premiumestate.com")
-  phone         String   @default("(555) 123-4567")
-  address       String   @default("123 Main Street")
-  city          String   @default("City")
-  state         String   @default("State")
-  zipCode       String   @default("12345")
-  businessHours String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id              String    @id @default(cuid())
+  companyName     String    @default("Aliaj Real Estate")
+  email           String    @default("info@premiumestate.com")
+  phone           String    @default("(555) 123-4567")
+  address         String    @default("123 Main Street")
+  city            String    @default("City")
+  state           String    @default("State")
+  zipCode         String    @default("12345")
+  businessHours   String?   // JSON string for business hours
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 }
 
 model Tenant {
-  id               String   @id @default(cuid())
-  firstName        String
-  lastName         String
-  email            String   @unique
-  phone            String
-  dateOfBirth      DateTime?
-  ssn              String?   // Last 4 digits only for security
-  emergencyContact String?
-  emergencyPhone   String?
-  employer         String?
-  monthlyIncome    Float?
-  notes            String?
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-  leases           Lease[]
+  id                String    @id @default(cuid())
+  firstName         String
+  lastName          String
+  email             String    @unique
+  phone             String
+  dateOfBirth       DateTime?
+  emergencyContact  String?
+  emergencyPhone    String?
+  employer          String?
+  employerPhone     String?
+  monthlyIncome     Float?
+  previousAddress   String?
+  reasonForLeaving  String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  
+  leases             Lease[]
+  maintenanceRequests MaintenanceRequest[]
 }
 
 model Lease {
-  id                String     @id @default(cuid())
-  propertyId        String
-  tenantId          String
-  startDate         DateTime
-  endDate           DateTime
-  monthlyRent       Float
-  securityDeposit   Float?
-  petDeposit        Float?
-  lateFee           Float?     @default(50)
-  rentDueDay        Int        @default(1)  // Day of month rent is due
-  leaseDocument     String?    // Path to signed lease document
-  status            String     @default("ACTIVE")  // ACTIVE, TERMINATED, EXPIRED
-  notes             String?
-  createdAt         DateTime   @default(now())
-  updatedAt         DateTime   @updatedAt
-  property          Property   @relation(fields: [propertyId], references: [id], onDelete: Cascade)
-  tenant            Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  payments          Payment[]
-  notifications     Notification[]
+  id              String    @id @default(cuid())
+  propertyId      String
+  tenantId        String
+  startDate       DateTime
+  endDate         DateTime
+  monthlyRent     Float
+  securityDeposit Float
+  status          LeaseStatus @default(PENDING)
+  notes           String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  property        Property  @relation(fields: [propertyId], references: [id])
+  tenant          Tenant    @relation(fields: [tenantId], references: [id])
+  payments        Payment[]
+  notifications   Notification[]
 }
 
 model Payment {
-  id            String   @id @default(cuid())
-  leaseId       String
-  amount        Float
-  dueDate       DateTime
-  paidDate      DateTime?
-  paymentMethod String?  // CASH, CHECK, BANK_TRANSFER, ONLINE
-  checkNumber   String?
-  lateFeePaid   Float?   @default(0)
-  status        String   @default("PENDING")  // PENDING, PAID, OVERDUE, PARTIAL
-  notes         String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  lease         Lease    @relation(fields: [leaseId], references: [id], onDelete: Cascade)
+  id              String    @id @default(cuid())
+  leaseId         String
+  amount          Float
+  dueDate         DateTime
+  paidDate        DateTime?
+  status          PaymentStatus @default(PENDING)
+  paymentMethod   String?
+  transactionId   String?
+  notes           String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  lease           Lease     @relation(fields: [leaseId], references: [id])
+}
+
+model MaintenanceRequest {
+  id              String    @id @default(cuid())
+  propertyId      String
+  tenantId        String
+  title           String
+  description     String
+  priority        String    @default("MEDIUM")  // LOW, MEDIUM, HIGH, URGENT
+  status          String    @default("OPEN")    // OPEN, IN_PROGRESS, RESOLVED, CLOSED
+  resolvedDate    DateTime?
+  notes           String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  property        Property  @relation(fields: [propertyId], references: [id])
+  tenant          Tenant    @relation(fields: [tenantId], references: [id])
 }
 
 model Notification {
@@ -151,5 +208,6 @@ model Notification {
   status      String   @default("PENDING")  // PENDING, SENT, FAILED
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  
   lease       Lease?   @relation(fields: [leaseId], references: [id], onDelete: Cascade)
 }

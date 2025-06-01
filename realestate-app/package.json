@@ -13,7 +13,12 @@
     "db:setup": "prisma migrate deploy && prisma db seed",
     "postinstall": "DATABASE_URL=${DATABASE_URL:-postgresql://build:build@localhost:5432/build} prisma generate",
     "vercel-build": "node scripts/vercel-build.js",
-    "db:init": "node scripts/init-db.js"
+    "db:init": "node scripts/init-db.js",
+    "test:all": "./scripts/test-all.sh",
+    "test:apis": "node scripts/test-apis.js",
+    "test:pages": "node scripts/test-pages.js",
+    "test:prod": "cp prisma/schema.prod.prisma prisma/schema.prisma && prisma generate && npm run build",
+    "precommit": "npm run test:all"
   },
   "prisma": {
     "seed": "node prisma/seed.js"

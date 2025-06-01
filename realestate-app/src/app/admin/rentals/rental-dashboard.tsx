@@ -131,7 +131,7 @@ export function RentalDashboard({
         return 'default'
       case 'PENDING':
         return 'secondary'
-      case 'OVERDUE':
+      case 'LATE':
         return 'destructive'
       default:
         return 'outline'
@@ -502,10 +502,10 @@ export function RentalDashboard({
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold text-red-600">
-                    {formatCurrency(upcomingPayments.filter(p => p.status === 'OVERDUE').reduce((sum, p) => sum + p.amount, 0))}
+                    {formatCurrency(upcomingPayments.filter(p => p.status === 'LATE').reduce((sum, p) => sum + p.amount, 0))}
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    {upcomingPayments.filter(p => p.status === 'OVERDUE').length} overdue payments
+                    {upcomingPayments.filter(p => p.status === 'LATE').length} late payments
                   </p>
                 </CardContent>
               </Card>
@@ -562,7 +562,7 @@ export function RentalDashboard({
                               </Badge>
                             </TableCell>
                             <TableCell>
-                              {payment.status === 'PENDING' || payment.status === 'OVERDUE' ? (
+                              {payment.status === 'PENDING' || payment.status === 'LATE' ? (
                                 <Button 
                                   variant="ghost" 
                                   size="sm"

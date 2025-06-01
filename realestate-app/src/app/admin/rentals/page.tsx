@@ -40,10 +40,10 @@ export default async function AdminRentalsPage() {
       }
     }),
     
-    // Overdue payments count
+    // Overdue payments count (unpaid payments past due date)
     prisma.payment.count({
       where: {
-        status: "OVERDUE",
+        status: "PENDING",
         dueDate: {
           lt: new Date()
         }

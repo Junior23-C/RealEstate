@@ -38,7 +38,7 @@ export async function POST() {
           }
         },
         data: {
-          status: "OVERDUE"
+          status: "LATE"
         }
       })
     }

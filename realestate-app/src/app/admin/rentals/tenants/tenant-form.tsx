@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
 import { ArrowLeft, Loader2, Users } from "lucide-react"
 
 interface TenantFormProps {
@@ -18,12 +17,13 @@ interface TenantFormProps {
     email: string
     phone: string
     dateOfBirth: Date | null
-    ssn: string | null
     emergencyContact: string | null
     emergencyPhone: string | null
     employer: string | null
+    employerPhone: string | null
     monthlyIncome: number | null
-    notes: string | null
+    previousAddress: string | null
+    reasonForLeaving: string | null
   }
   isEdit?: boolean
 }
@@ -37,12 +37,13 @@ export function TenantForm({ tenant, isEdit = false }: TenantFormProps) {
     email: tenant?.email || "",
     phone: tenant?.phone || "",
     dateOfBirth: tenant?.dateOfBirth ? new Date(tenant.dateOfBirth).toISOString().split('T')[0] : "",
-    ssn: tenant?.ssn || "",
     emergencyContact: tenant?.emergencyContact || "",
     emergencyPhone: tenant?.emergencyPhone || "",
     employer: tenant?.employer || "",
+    employerPhone: tenant?.employerPhone || "",
     monthlyIncome: tenant?.monthlyIncome || "",
-    notes: tenant?.notes || ""
+    previousAddress: tenant?.previousAddress || "",
+    reasonForLeaving: tenant?.reasonForLeaving || ""
   })
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -172,18 +173,6 @@ export function TenantForm({ tenant, isEdit = false }: TenantFormProps) {
                       disabled={isLoading}
                     />
                   </div>
-
-                  <div>
-                    <Label htmlFor="ssn">SSN (Last 4 digits)</Label>
-                    <Input
-                      id="ssn"
-                      value={formData.ssn}
-                      onChange={(e) => handleChange("ssn", e.target.value)}
-                      placeholder="****"
-                      maxLength={4}
-                      disabled={isLoading}
-                    />
-                  </div>
                 </div>
               </div>
 
@@ -217,13 +206,24 @@ export function TenantForm({ tenant, isEdit = false }: TenantFormProps) {
               {/* Employment Information */}
               <div>
                 <h3 className="text-lg font-semibold mb-4">Employment Information</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
                     <Label htmlFor="employer">Employer</Label>
                     <Input
                       id="employer"
                       value={formData.employer}
                       onChange={(e) => handleChange("employer", e.target.value)}
+                      disabled={isLoading}
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="employerPhone">Employer Phone</Label>
+                    <Input
+                      id="employerPhone"
+                      type="tel"
+                      value={formData.employerPhone}
+                      onChange={(e) => handleChange("employerPhone", e.target.value)}
                       disabled={isLoading}
                     />
                   </div>
@@ -243,17 +243,29 @@ export function TenantForm({ tenant, isEdit = false }: TenantFormProps) {
                 </div>
               </div>
 
-              {/* Notes */}
+              {/* Additional Information */}
               <div>
-                <Label htmlFor="notes">Notes</Label>
-                <Textarea
-                  id="notes"
-                  rows={4}
-                  value={formData.notes}
-                  onChange={(e) => handleChange("notes", e.target.value)}
-                  placeholder="Additional notes about the tenant..."
-                  disabled={isLoading}
-                />
+                <h3 className="text-lg font-semibold mb-4">Previous Residence</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="previousAddress">Previous Address</Label>
+                    <Input
+                      id="previousAddress"
+                      value={formData.previousAddress}
+                      onChange={(e) => handleChange("previousAddress", e.target.value)}
+                      disabled={isLoading}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="reasonForLeaving">Reason for Leaving</Label>
+                    <Input
+                      id="reasonForLeaving"
+                      value={formData.reasonForLeaving}
+                      onChange={(e) => handleChange("reasonForLeaving", e.target.value)}
+                      disabled={isLoading}
+                    />
+                  </div>
+                </div>
               </div>
 
               {/* Submit */}
