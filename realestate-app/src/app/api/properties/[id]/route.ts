@@ -17,7 +17,26 @@ export async function PUT(
 
   try {
     const body = await request.json()
-    const { imageUrls, primaryImageIndex, ...propertyData } = body
+    const { imageUrls, primaryImageIndex, ...rawData } = body
+
+    // Filter to only include valid Property model fields
+    const propertyData = {
+      title: rawData.title,
+      description: rawData.description,
+      price: parseFloat(rawData.price),
+      type: rawData.type,
+      status: rawData.status,
+      address: rawData.address,
+      city: rawData.city,
+      state: rawData.state,
+      zipCode: rawData.zipCode,
+      bedrooms: parseInt(rawData.bedrooms),
+      bathrooms: parseFloat(rawData.bathrooms),
+      squareFeet: parseInt(rawData.squareFeet),
+      lotSize: rawData.lotSize ? parseFloat(rawData.lotSize) : null,
+      yearBuilt: rawData.yearBuilt ? parseInt(rawData.yearBuilt) : null,
+      features: rawData.features || null
+    }
 
     // Update property and replace images
     const property = await prisma.property.update({

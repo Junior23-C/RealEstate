@@ -84,19 +84,21 @@ export function PropertyForm({ property, isEdit = false }: PropertyFormProps) {
       ]
       
       const requestData = {
-        ...formData,
+        title: formData.title,
+        description: formData.description,
         price: parseFloat(formData.price as string),
+        type: formData.type,
+        status: formData.status,
+        address: formData.address,
+        city: formData.city,
+        state: formData.state,
+        zipCode: formData.zipCode,
         bedrooms: parseInt(formData.bedrooms as string),
         bathrooms: parseFloat(formData.bathrooms as string),
         squareFeet: parseInt(formData.squareFeet as string),
         lotSize: formData.lotSize ? parseFloat(formData.lotSize as string) : null,
         yearBuilt: formData.yearBuilt ? parseInt(formData.yearBuilt as string) : null,
         features: JSON.stringify(formData.features),
-        rentedDate: formData.rentedDate ? new Date(formData.rentedDate as string).toISOString() : null,
-        rentEndDate: formData.rentEndDate ? new Date(formData.rentEndDate as string).toISOString() : null,
-        tenantName: formData.tenantName || null,
-        tenantEmail: formData.tenantEmail || null,
-        tenantPhone: formData.tenantPhone || null,
         imageUrls: allImageUrls,
         primaryImageIndex: uploadedImages.findIndex(img => img.isPrimary)
       }
