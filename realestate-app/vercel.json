@@ -1,0 +1,8 @@
+{
+  "buildCommand": "cp prisma/schema.prod.prisma prisma/schema.prisma && npm run vercel-build",
+  "installCommand": "npm install",
+  "framework": "nextjs",
+  "env": {
+    "PRISMA_SCHEMA_PATH": "prisma/schema.prod.prisma"
+  }
+}
