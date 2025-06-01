@@ -70,6 +70,12 @@ export async function POST() {
     const notificationsToCreate = []
 
     for (const payment of upcomingPayments) {
+      // Skip if lease or tenant data is missing
+      if (!payment.lease || !payment.lease.tenant || !payment.lease.property) {
+        console.warn(`Skipping payment ${payment.id}: missing lease/tenant/property data`)
+        continue
+      }
+      
       // Check if notification already exists
       const existingNotification = await prisma.notification.findFirst({
         where: {
@@ -97,6 +103,12 @@ export async function POST() {
 
     // Create overdue notifications
     for (const payment of overduePayments) {
+      // Skip if lease or tenant data is missing
+      if (!payment.lease || !payment.lease.tenant || !payment.lease.property) {
+        console.warn(`Skipping overdue payment ${payment.id}: missing lease/tenant/property data`)
+        continue
+      }
+      
       const existingOverdueNotification = await prisma.notification.findFirst({
         where: {
           leaseId: payment.leaseId,

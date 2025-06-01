@@ -83,6 +83,12 @@ export async function GET(request: Request) {
     const notificationsCreated = []
 
     for (const payment of upcomingPayments) {
+      // Skip if lease or tenant data is missing
+      if (!payment.lease || !payment.lease.tenant || !payment.lease.property) {
+        console.warn(`Skipping payment ${payment.id}: missing lease/tenant/property data`)
+        continue
+      }
+      
       const daysUntilDue = Math.ceil((payment.dueDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
       
       // Check if notification already exists for today
@@ -127,6 +133,12 @@ Property Management Team`,
 
     // Create notifications for overdue payments
     for (const payment of overduePayments) {
+      // Skip if lease or tenant data is missing
+      if (!payment.lease || !payment.lease.tenant || !payment.lease.property) {
+        console.warn(`Skipping overdue payment ${payment.id}: missing lease/tenant/property data`)
+        continue
+      }
+      
       const daysOverdue = Math.ceil((today.getTime() - payment.dueDate.getTime()) / (1000 * 60 * 60 * 24))
       
       // Check if notification already exists for today

@@ -285,10 +285,10 @@ export function RentalDashboard({
                     <div key={payment.id} className="flex items-center justify-between">
                       <div>
                         <p className="font-medium">
-                          {payment.lease.tenant.firstName} {payment.lease.tenant.lastName}
+                          {payment.lease?.tenant?.firstName || 'Unknown'} {payment.lease?.tenant?.lastName || 'Tenant'}
                         </p>
                         <p className="text-sm text-muted-foreground">
-                          {payment.lease.property.title}
+                          {payment.lease?.property?.title || 'Unknown Property'}
                         </p>
                       </div>
                       <div className="text-right">
@@ -322,10 +322,10 @@ export function RentalDashboard({
                       <div key={payment.id} className="flex items-center justify-between">
                         <div>
                           <p className="font-medium">
-                            {payment.lease.tenant.firstName} {payment.lease.tenant.lastName}
+                            {payment.lease?.tenant?.firstName || 'Unknown'} {payment.lease?.tenant?.lastName || 'Tenant'}
                           </p>
                           <p className="text-sm text-muted-foreground">
-                            {payment.lease.property.title}
+                            {payment.lease?.property?.title || 'Unknown Property'}
                           </p>
                         </div>
                         <div className="text-right">
@@ -536,9 +536,9 @@ export function RentalDashboard({
                         return (
                           <TableRow key={payment.id}>
                             <TableCell>
-                              {payment.lease.tenant.firstName} {payment.lease.tenant.lastName}
+                              {payment.lease?.tenant?.firstName || 'Unknown'} {payment.lease?.tenant?.lastName || 'Tenant'}
                             </TableCell>
-                            <TableCell>{payment.lease.property.title}</TableCell>
+                            <TableCell>{payment.lease?.property?.title || 'Unknown Property'}</TableCell>
                             <TableCell className="font-medium">
                               {formatCurrency(payment.amount)}
                             </TableCell>
