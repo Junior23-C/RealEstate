@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Premium Real Estate - Find Your Dream Home",
+  title: "Aliaj Real Estate",
   description: "Discover exceptional properties for rent and sale. Your trusted partner in real estate.",
 };
 
