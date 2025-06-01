@@ -102,6 +102,10 @@ export function TenantManagement({ tenants }: TenantManagementProps) {
         return 'secondary'
       case 'LATE':
         return 'destructive'
+      case 'PARTIAL':
+        return 'secondary'
+      case 'CANCELLED':
+        return 'outline'
       default:
         return 'outline'
     }
@@ -127,8 +131,8 @@ export function TenantManagement({ tenants }: TenantManagementProps) {
     ),
     totalMonthlyRent: tenants.reduce((total, tenant) =>
       total + tenant.leases
-        .filter(lease => lease.status === 'ACTIVE')
-        .reduce((sum, lease) => sum + lease.monthlyRent, 0), 0
+        .filter(lease => lease.status === 'ACTIVE' && lease.monthlyRent != null)
+        .reduce((sum, lease) => sum + (lease.monthlyRent || 0), 0), 0
     )
   }
 
@@ -223,7 +227,7 @@ export function TenantManagement({ tenants }: TenantManagementProps) {
                 <TableBody>
                   {filteredTenants.map((tenant) => {
                     const activeLease = tenant.leases.find(lease => lease.status === 'ACTIVE')
-                    const currentPayment = activeLease?.payments[0]
+                    const currentPayment = activeLease?.payments?.[0]
                     
                     return (
                       <TableRow key={tenant.id}>
@@ -254,7 +258,7 @@ export function TenantManagement({ tenants }: TenantManagementProps) {
                         </TableCell>
                         
                         <TableCell>
-                          {activeLease ? (
+                          {activeLease && activeLease.property ? (
                             <div>
                               <p className="font-medium">{activeLease.property.title}</p>
                               <p className="text-sm text-muted-foreground">

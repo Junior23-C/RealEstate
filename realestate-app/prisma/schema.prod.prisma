@@ -106,6 +106,7 @@ enum PaymentStatus {
   PENDING
   PAID
   LATE
+  PARTIAL
   CANCELLED
 }
 
@@ -239,12 +240,4 @@ enum PaymentType {
   LATE_FEE
   MAINTENANCE
   OTHER
-}
-
-enum PaymentStatus {
-  PENDING
-  PAID
-  LATE
-  PARTIAL
-  CANCELLED
 }

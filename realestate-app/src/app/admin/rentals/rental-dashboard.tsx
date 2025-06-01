@@ -133,6 +133,10 @@ export function RentalDashboard({
         return 'secondary'
       case 'LATE':
         return 'destructive'
+      case 'PARTIAL':
+        return 'secondary'
+      case 'CANCELLED':
+        return 'outline'
       default:
         return 'outline'
     }
@@ -281,25 +285,29 @@ export function RentalDashboard({
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {recentPayments.slice(0, 5).map((payment) => (
-                    <div key={payment.id} className="flex items-center justify-between">
-                      <div>
-                        <p className="font-medium">
-                          {payment.lease?.tenant?.firstName || 'Unknown'} {payment.lease?.tenant?.lastName || 'Tenant'}
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                          {payment.lease?.property?.title || 'Unknown Property'}
-                        </p>
+                  {recentPayments.slice(0, 5).map((payment) => {
+                    if (!payment.lease) return null
+                    
+                    return (
+                      <div key={payment.id} className="flex items-center justify-between">
+                        <div>
+                          <p className="font-medium">
+                            {payment.lease.tenant?.firstName || 'Unknown'} {payment.lease.tenant?.lastName || 'Tenant'}
+                          </p>
+                          <p className="text-sm text-muted-foreground">
+                            {payment.lease.property?.title || 'Unknown Property'}
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-medium">{formatCurrency(payment.amount)}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {payment.paidDate && formatDate(payment.paidDate)}
+                          </p>
+                        </div>
                       </div>
-                      <div className="text-right">
-                        <p className="font-medium">{formatCurrency(payment.amount)}</p>
-                        <p className="text-sm text-muted-foreground">
-                          {payment.paidDate && formatDate(payment.paidDate)}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                  {recentPayments.length === 0 && (
+                    )
+                  }).filter(Boolean)}
+                  {recentPayments.filter(p => p.lease != null).length === 0 && (
                     <p className="text-muted-foreground">No recent payments</p>
                   )}
                 </div>
@@ -317,15 +325,17 @@ export function RentalDashboard({
               <CardContent>
                 <div className="space-y-4">
                   {upcomingPayments.slice(0, 5).map((payment) => {
+                    if (!payment.lease) return null
+                    
                     const daysUntil = getDaysUntilDue(payment.dueDate)
                     return (
                       <div key={payment.id} className="flex items-center justify-between">
                         <div>
                           <p className="font-medium">
-                            {payment.lease?.tenant?.firstName || 'Unknown'} {payment.lease?.tenant?.lastName || 'Tenant'}
+                            {payment.lease.tenant?.firstName || 'Unknown'} {payment.lease.tenant?.lastName || 'Tenant'}
                           </p>
                           <p className="text-sm text-muted-foreground">
-                            {payment.lease?.property?.title || 'Unknown Property'}
+                            {payment.lease.property?.title || 'Unknown Property'}
                           </p>
                         </div>
                         <div className="text-right">
@@ -342,8 +352,8 @@ export function RentalDashboard({
                         </div>
                       </div>
                     )
-                  })}
-                  {upcomingPayments.length === 0 && (
+                  }).filter(Boolean)}
+                  {upcomingPayments.filter(p => p.lease != null).length === 0 && (
                     <p className="text-muted-foreground">No upcoming payments</p>
                   )}
                 </div>
@@ -378,8 +388,10 @@ export function RentalDashboard({
                   </TableHeader>
                   <TableBody>
                     {activeLeases.map((lease) => {
-                      const primaryImage = lease.property.images[0]
-                      const currentPayment = lease.payments[0]
+                      if (!lease.property || !lease.tenant) return null
+                      
+                      const primaryImage = lease.property.images?.[0]
+                      const currentPayment = lease.payments?.[0]
                       
                       return (
                         <TableRow key={lease.id}>
@@ -389,7 +401,7 @@ export function RentalDashboard({
                                 <div className="relative h-12 w-16 rounded overflow-hidden">
                                   <Image
                                     src={primaryImage.url}
-                                    alt={lease.property.title}
+                                    alt={lease.property.title || 'Property'}
                                     fill
                                     className="object-cover"
                                   />
@@ -400,9 +412,9 @@ export function RentalDashboard({
                                 </div>
                               )}
                               <div>
-                                <p className="font-medium">{lease.property.title}</p>
+                                <p className="font-medium">{lease.property.title || 'Unknown Property'}</p>
                                 <p className="text-sm text-muted-foreground">
-                                  {lease.property.city}, {lease.property.state}
+                                  {lease.property.city || 'Unknown'}, {lease.property.state || 'Unknown'}
                                 </p>
                               </div>
                             </div>
@@ -410,15 +422,15 @@ export function RentalDashboard({
                           <TableCell>
                             <div>
                               <p className="font-medium">
-                                {lease.tenant.firstName} {lease.tenant.lastName}
+                                {lease.tenant.firstName || 'Unknown'} {lease.tenant.lastName || 'Tenant'}
                               </p>
                               <p className="text-sm text-muted-foreground">
-                                {lease.tenant.email}
+                                {lease.tenant.email || 'No email'}
                               </p>
                             </div>
                           </TableCell>
                           <TableCell>
-                            <p className="font-medium">{formatCurrency(lease.monthlyRent)}</p>
+                            <p className="font-medium">{formatCurrency(lease.monthlyRent || 0)}</p>
                             <p className="text-sm text-muted-foreground">per month</p>
                           </TableCell>
                           <TableCell>
@@ -451,7 +463,7 @@ export function RentalDashboard({
                           </TableCell>
                         </TableRow>
                       )
-                    })}
+                    }).filter(Boolean)}
                   </TableBody>
                 </Table>
                 {activeLeases.length === 0 && (
@@ -531,14 +543,16 @@ export function RentalDashboard({
                     </TableHeader>
                     <TableBody>
                       {upcomingPayments.map((payment) => {
+                        if (!payment.lease) return null
+                        
                         const daysUntil = getDaysUntilDue(payment.dueDate)
                         
                         return (
                           <TableRow key={payment.id}>
                             <TableCell>
-                              {payment.lease?.tenant?.firstName || 'Unknown'} {payment.lease?.tenant?.lastName || 'Tenant'}
+                              {payment.lease.tenant?.firstName || 'Unknown'} {payment.lease.tenant?.lastName || 'Tenant'}
                             </TableCell>
-                            <TableCell>{payment.lease?.property?.title || 'Unknown Property'}</TableCell>
+                            <TableCell>{payment.lease.property?.title || 'Unknown Property'}</TableCell>
                             <TableCell className="font-medium">
                               {formatCurrency(payment.amount)}
                             </TableCell>
@@ -577,7 +591,7 @@ export function RentalDashboard({
                             </TableCell>
                           </TableRow>
                         )
-                      })}
+                      }).filter(Boolean)}
                     </TableBody>
                   </Table>
                   {upcomingPayments.length === 0 && (

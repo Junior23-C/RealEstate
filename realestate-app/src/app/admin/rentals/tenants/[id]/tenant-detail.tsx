@@ -105,6 +105,10 @@ export function TenantDetail({ tenant }: TenantDetailProps) {
         return 'secondary'
       case 'LATE':
         return 'destructive'
+      case 'PARTIAL':
+        return 'secondary'
+      case 'CANCELLED':
+        return 'outline'
       default:
         return 'outline'
     }
@@ -129,7 +133,8 @@ export function TenantDetail({ tenant }: TenantDetailProps) {
       ...payment,
       lease
     }))
-  ).sort((a, b) => new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime())
+  ).filter(payment => payment.lease != null)
+    .sort((a, b) => new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime())
 
   const paymentStats = {
     total: allPayments.length,
@@ -489,26 +494,30 @@ export function TenantDetail({ tenant }: TenantDetailProps) {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {allPayments.map((payment) => (
-                      <TableRow key={payment.id}>
-                        <TableCell>{formatDate(payment.dueDate)}</TableCell>
-                        <TableCell>{payment.lease.property.title}</TableCell>
-                        <TableCell className="font-medium">
-                          {formatCurrency(payment.amount)}
-                        </TableCell>
-                        <TableCell>
-                          {payment.paidDate ? formatDate(payment.paidDate) : '-'}
-                        </TableCell>
-                        <TableCell>
-                          {payment.paymentMethod || '-'}
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant={getPaymentStatusColor(payment.status)}>
-                            {payment.status}
-                          </Badge>
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                    {allPayments.map((payment) => {
+                      if (!payment.lease) return null
+                      
+                      return (
+                        <TableRow key={payment.id}>
+                          <TableCell>{formatDate(payment.dueDate)}</TableCell>
+                          <TableCell>{payment.lease.property?.title || 'Unknown Property'}</TableCell>
+                          <TableCell className="font-medium">
+                            {formatCurrency(payment.amount)}
+                          </TableCell>
+                          <TableCell>
+                            {payment.paidDate ? formatDate(payment.paidDate) : '-'}
+                          </TableCell>
+                          <TableCell>
+                            {payment.paymentMethod || '-'}
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant={getPaymentStatusColor(payment.status)}>
+                              {payment.status}
+                            </Badge>
+                          </TableCell>
+                        </TableRow>
+                      )
+                    }).filter(Boolean)}
                   </TableBody>
                 </Table>
                 {allPayments.length === 0 && (
