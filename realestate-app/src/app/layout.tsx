@@ -18,11 +18,11 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Aliaj Real Estate - Premium Properties for Rent & Sale",
-    template: "%s | Aliaj Real Estate"
+    default: "Aliaj Real Estate Albania - Premium Properties for Rent & Sale in Tirana",
+    template: "%s | Aliaj Real Estate Albania"
   },
-  description: "Discover exceptional properties for rent and sale. Your trusted partner in real estate with premium listings, professional service, and expert guidance.",
-  keywords: ["real estate", "properties for rent", "properties for sale", "houses", "apartments", "condos", "aliaj real estate"],
+  description: "Discover exceptional properties for rent and sale in Albania. Your trusted real estate partner in Tirana, Durrës, and throughout Albania. Premium listings, professional service.",
+  keywords: ["real estate albania", "properties for rent tirana", "properties for sale albania", "houses albania", "apartments tirana", "condos albania", "aliaj real estate", "agjenci imobiliare", "shtepi me qera", "shtepi per shitje", "apartamente tirane", "prona ne shqiperi"],
   authors: [{ name: "Aliaj Real Estate" }],
   creator: "Aliaj Real Estate",
   publisher: "Aliaj Real Estate",
@@ -34,18 +34,22 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://aliaj-re.com"),
   alternates: {
     canonical: "/",
+    languages: {
+      'en': '/en',
+      'sq': '/sq',
+    },
   },
   openGraph: {
-    title: "Aliaj Real Estate - Premium Properties for Rent & Sale",
-    description: "Discover exceptional properties for rent and sale. Your trusted partner in real estate.",
+    title: "Aliaj Real Estate Albania - Premium Properties for Rent & Sale",
+    description: "Discover exceptional properties for rent and sale in Albania. Your trusted real estate partner in Tirana and throughout Albania.",
     url: "https://aliaj-re.com",
-    siteName: "Aliaj Real Estate",
+    siteName: "Aliaj Real Estate Albania",
     images: [
       {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "Aliaj Real Estate - Premium Properties",
+        alt: "Aliaj Real Estate - Premium Properties in Albania",
       },
     ],
     locale: "en_US",
@@ -53,8 +57,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Aliaj Real Estate - Premium Properties for Rent & Sale",
-    description: "Discover exceptional properties for rent and sale. Your trusted partner in real estate.",
+    title: "Aliaj Real Estate Albania - Premium Properties for Rent & Sale",
+    description: "Discover exceptional properties for rent and sale in Albania. Your trusted real estate partner.",
     images: ["/og-image.jpg"],
   },
   robots: {

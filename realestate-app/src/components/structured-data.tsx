@@ -11,19 +11,36 @@ export function OrganizationStructuredData({
 }: OrganizationStructuredDataProps) {
   const structuredData = {
     "@context": "https://schema.org",
-    "@type": "Organization",
+    "@type": "RealEstateAgent",
     "name": name,
     "url": url,
     "logo": logo,
-    "description": "Premium real estate agency specializing in properties for rent and sale",
+    "description": "Premium real estate agency in Albania specializing in properties for rent and sale in Tirana, Durrës, and throughout Albania",
     "address": {
       "@type": "PostalAddress",
-      "addressCountry": "US"
+      "addressLocality": "Tirana",
+      "addressRegion": "Tirana",
+      "addressCountry": "AL"
     },
+    "areaServed": [
+      {
+        "@type": "City",
+        "name": "Tirana"
+      },
+      {
+        "@type": "City",
+        "name": "Durrës"
+      },
+      {
+        "@type": "Country",
+        "name": "Albania"
+      }
+    ],
     "contactPoint": {
       "@type": "ContactPoint",
-      "telephone": "+1-555-123-4567",
-      "contactType": "customer service"
+      "telephone": "+355-69-123-4567",
+      "contactType": "customer service",
+      "availableLanguage": ["en", "sq"]
     },
     "sameAs": [
       "https://facebook.com/aliajrealestate",
@@ -68,7 +85,7 @@ export function PropertyStructuredData({ property }: PropertyStructuredDataProps
     "offers": {
       "@type": "Offer",
       "price": property.price,
-      "priceCurrency": "USD"
+      "priceCurrency": "EUR"
     },
     "address": {
       "@type": "PostalAddress",
@@ -76,7 +93,7 @@ export function PropertyStructuredData({ property }: PropertyStructuredDataProps
       "addressLocality": property.city,
       "addressRegion": property.state,
       "postalCode": property.zipCode,
-      "addressCountry": "US"
+      "addressCountry": "AL"
     },
     "floorSize": {
       "@type": "QuantitativeValue",

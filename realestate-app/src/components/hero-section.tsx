@@ -38,10 +38,10 @@ export function HeroSection() {
           className="max-w-2xl"
         >
           <h1 className="text-5xl md:text-6xl font-bold mb-6">
-            Find Your Dream Home
+            Find Your Dream Home in Albania
           </h1>
           <p className="text-xl mb-8 text-muted-foreground">
-            Discover exceptional properties for rent and sale. Your trusted partner in premium real estate.
+            Discover exceptional properties for rent and sale in Tirana, Durrës, and throughout Albania. Your trusted real estate partner.
           </p>
           <div className="flex gap-4">
             <Button size="lg" asChild>
