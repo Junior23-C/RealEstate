@@ -1,9 +1,5 @@
 import { withAuth } from "next-auth/middleware"
 import { NextResponse } from "next/server"
-import type { NextRequest } from "next/server"
-
-// Optimize by running at Edge Runtime
-export const runtime = 'edge'
 
 // Cache subdomain check result
 const isAdminSubdomain = (hostname: string) => {
@@ -11,7 +7,7 @@ const isAdminSubdomain = (hostname: string) => {
 }
 
 export default withAuth(
-  function middleware(req: NextRequest) {
+  function middleware(req) {
     const hostname = req.headers.get("host") || ""
     const pathname = req.nextUrl.pathname
     
