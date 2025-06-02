@@ -86,17 +86,17 @@ export function SettingsForm({ user, contactSettings }: SettingsFormProps) {
       })
 
       if (response.ok) {
-        setMessage("Profile updated successfully!")
+        setMessage("Profili u përditësua me sukses!")
         // Update the session with new data
         await update()
         router.refresh()
       } else {
         const error = await response.text()
-        setMessage(`Failed to update profile: ${error}`)
+        setMessage(`Dështoi përditësimi i profilit: ${error}`)
       }
     } catch (error) {
       console.error("Error updating profile:", error)
-      setMessage("Failed to update profile")
+      setMessage("Dështoi përditësimi i profilit")
     } finally {
       setIsLoading(false)
     }
@@ -106,12 +106,12 @@ export function SettingsForm({ user, contactSettings }: SettingsFormProps) {
     e.preventDefault()
     
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      setMessage("New passwords do not match")
+      setMessage("Fjalëkalimet e reja nuk përputhen")
       return
     }
 
     if (passwordData.newPassword.length < 6) {
-      setMessage("Password must be at least 6 characters")
+      setMessage("Fjalëkalimi duhet të ketë të paktën 6 karaktere")
       return
     }
 
@@ -131,7 +131,7 @@ export function SettingsForm({ user, contactSettings }: SettingsFormProps) {
       })
 
       if (response.ok) {
-        setMessage("Password updated successfully!")
+        setMessage("Fjalëkalimi u përditësua me sukses!")
         setPasswordData({
           currentPassword: "",
           newPassword: "",
@@ -139,11 +139,11 @@ export function SettingsForm({ user, contactSettings }: SettingsFormProps) {
         })
       } else {
         const error = await response.text()
-        setMessage(`Failed to update password: ${error}`)
+        setMessage(`Dështoi përditësimi i fjalëkalimit: ${error}`)
       }
     } catch (error) {
       console.error("Error updating password:", error)
-      setMessage("Failed to update password")
+      setMessage("Dështoi përditësimi i fjalëkalimit")
     } finally {
       setIsLoading(false)
     }
@@ -175,20 +175,20 @@ export function SettingsForm({ user, contactSettings }: SettingsFormProps) {
       })
 
       if (response.ok) {
-        setMessage("Contact settings updated successfully!")
+        setMessage("Cilësimet e kontaktit u përditësuan me sukses!")
         router.refresh()
       } else {
         try {
           const errorData = await response.json()
-          setMessage(`Failed to update contact settings: ${errorData.details || errorData.error}`)
+          setMessage(`Dështoi përditësimi i cilësimeve të kontaktit: ${errorData.details || errorData.error}`)
         } catch {
           const error = await response.text()
-          setMessage(`Failed to update contact settings: ${error}`)
+          setMessage(`Dështoi përditësimi i cilësimeve të kontaktit: ${error}`)
         }
       }
     } catch (error) {
       console.error("Error updating contact settings:", error)
-      setMessage("Failed to update contact settings")
+      setMessage("Dështoi përditësimi i cilësimeve të kontaktit")
     } finally {
       setIsLoading(false)
     }
@@ -201,22 +201,22 @@ export function SettingsForm({ user, contactSettings }: SettingsFormProps) {
         <div className="container flex h-16 items-center">
           <Link href="/admin" className="flex items-center space-x-2 mr-6">
             <ArrowLeft className="h-4 w-4" />
-            <span>Back to Dashboard</span>
+            <span>Kthehu në Panel</span>
           </Link>
           <div className="flex items-center space-x-2">
             <Settings className="h-6 w-6" />
-            <span className="font-bold">Settings</span>
+            <span className="font-bold">Cilësimet</span>
           </div>
         </div>
       </header>
 
       <div className="container py-8">
         <div className="max-w-2xl mx-auto">
-          <h1 className="text-3xl font-bold mb-8">Account Settings</h1>
+          <h1 className="text-3xl font-bold mb-8">Cilësimet e Llogarisë</h1>
 
           {message && (
             <div className={`mb-6 p-4 rounded-lg flex items-center gap-2 ${
-              message.includes("successfully") 
+              message.includes("sukses") 
                 ? "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400" 
                 : "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400"
             }`}>
@@ -229,35 +229,35 @@ export function SettingsForm({ user, contactSettings }: SettingsFormProps) {
             <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="profile">
                 <User className="h-4 w-4 mr-2" />
-                Profile
+                Profili
               </TabsTrigger>
               <TabsTrigger value="password">
                 <Lock className="h-4 w-4 mr-2" />
-                Password
+                Fjalëkalimi
               </TabsTrigger>
               <TabsTrigger value="contact">
                 <Building2 className="h-4 w-4 mr-2" />
-                Contact
+                Kontakti
               </TabsTrigger>
             </TabsList>
 
             <TabsContent value="profile">
               <Card>
                 <CardHeader>
-                  <CardTitle>Profile Information</CardTitle>
+                  <CardTitle>Informacioni i Profilit</CardTitle>
                   <CardDescription>
-                    Update your account profile information
+                    Përditësoni informacionin e profilit tuaj
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <form onSubmit={handleProfileSubmit} className="space-y-4">
                     <div>
-                      <Label htmlFor="name">Name</Label>
+                      <Label htmlFor="name">Emri</Label>
                       <Input
                         id="name"
                         value={profileData.name}
                         onChange={(e) => setProfileData(prev => ({ ...prev, name: e.target.value }))}
-                        placeholder="Your name"
+                        placeholder="Emri juaj"
                         disabled={isLoading}
                       />
                     </div>
@@ -279,10 +279,10 @@ export function SettingsForm({ user, contactSettings }: SettingsFormProps) {
                         {isLoading ? (
                           <>
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Updating...
+                            Duke përditësuar...
                           </>
                         ) : (
-                          "Update Profile"
+                          "Përditëso Profilin"
                         )}
                       </Button>
                     </div>
@@ -294,15 +294,15 @@ export function SettingsForm({ user, contactSettings }: SettingsFormProps) {
             <TabsContent value="password">
               <Card>
                 <CardHeader>
-                  <CardTitle>Change Password</CardTitle>
+                  <CardTitle>Ndrysho Fjalëkalimin</CardTitle>
                   <CardDescription>
-                    Update your account password
+                    Përditësoni fjalëkalimin e llogarisë suaj
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <form onSubmit={handlePasswordSubmit} className="space-y-4">
                     <div>
-                      <Label htmlFor="currentPassword">Current Password</Label>
+                      <Label htmlFor="currentPassword">Fjalëkalimi Aktual</Label>
                       <Input
                         id="currentPassword"
                         type="password"
@@ -314,7 +314,7 @@ export function SettingsForm({ user, contactSettings }: SettingsFormProps) {
                     </div>
                     
                     <div>
-                      <Label htmlFor="newPassword">New Password</Label>
+                      <Label htmlFor="newPassword">Fjalëkalimi i Ri</Label>
                       <Input
                         id="newPassword"
                         type="password"
@@ -326,7 +326,7 @@ export function SettingsForm({ user, contactSettings }: SettingsFormProps) {
                     </div>
                     
                     <div>
-                      <Label htmlFor="confirmPassword">Confirm New Password</Label>
+                      <Label htmlFor="confirmPassword">Konfirmo Fjalëkalimin e Ri</Label>
                       <Input
                         id="confirmPassword"
                         type="password"
@@ -342,10 +342,10 @@ export function SettingsForm({ user, contactSettings }: SettingsFormProps) {
                         {isLoading ? (
                           <>
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Updating...
+                            Duke përditësuar...
                           </>
                         ) : (
-                          "Update Password"
+                          "Përditëso Fjalëkalimin"
                         )}
                       </Button>
                     </div>
@@ -357,15 +357,15 @@ export function SettingsForm({ user, contactSettings }: SettingsFormProps) {
             <TabsContent value="contact">
               <Card>
                 <CardHeader>
-                  <CardTitle>Contact Information</CardTitle>
+                  <CardTitle>Informacioni i Kontaktit</CardTitle>
                   <CardDescription>
-                    Update your company contact details that appear on the website
+                    Përditësoni detajet e kontaktit të kompaniseë që shfaqen në faqe
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <form onSubmit={handleContactSubmit} className="space-y-4">
                     <div>
-                      <Label htmlFor="companyName">Company Name</Label>
+                      <Label htmlFor="companyName">Emri i Kompaniseë</Label>
                       <Input
                         id="companyName"
                         value={contactData.companyName}
@@ -377,7 +377,7 @@ export function SettingsForm({ user, contactSettings }: SettingsFormProps) {
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <Label htmlFor="contactEmail">Contact Email</Label>
+                        <Label htmlFor="contactEmail">Email i Kontaktit</Label>
                         <Input
                           id="contactEmail"
                           type="email"
@@ -389,7 +389,7 @@ export function SettingsForm({ user, contactSettings }: SettingsFormProps) {
                       </div>
                       
                       <div>
-                        <Label htmlFor="phone">Phone Number</Label>
+                        <Label htmlFor="phone">Numri i Telefonit</Label>
                         <Input
                           id="phone"
                           value={contactData.phone}
@@ -401,7 +401,7 @@ export function SettingsForm({ user, contactSettings }: SettingsFormProps) {
                     </div>
 
                     <div>
-                      <Label htmlFor="address">Street Address</Label>
+                      <Label htmlFor="address">Adresa e Rrugës</Label>
                       <Input
                         id="address"
                         value={contactData.address}
@@ -413,7 +413,7 @@ export function SettingsForm({ user, contactSettings }: SettingsFormProps) {
                     
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div>
-                        <Label htmlFor="city">City</Label>
+                        <Label htmlFor="city">Qyteti</Label>
                         <Input
                           id="city"
                           value={contactData.city}
@@ -424,7 +424,7 @@ export function SettingsForm({ user, contactSettings }: SettingsFormProps) {
                       </div>
                       
                       <div>
-                        <Label htmlFor="state">State</Label>
+                        <Label htmlFor="state">Shteti/Rajoni</Label>
                         <Input
                           id="state"
                           value={contactData.state}
@@ -435,7 +435,7 @@ export function SettingsForm({ user, contactSettings }: SettingsFormProps) {
                       </div>
                       
                       <div>
-                        <Label htmlFor="zipCode">ZIP Code</Label>
+                        <Label htmlFor="zipCode">Kodi Postar</Label>
                         <Input
                           id="zipCode"
                           value={contactData.zipCode}
@@ -447,7 +447,7 @@ export function SettingsForm({ user, contactSettings }: SettingsFormProps) {
                     </div>
 
                     <div className="space-y-2">
-                      <Label>Business Hours</Label>
+                      <Label>Orët e Punës</Label>
                       {Object.entries(contactData.businessHours).map(([day, hours]) => (
                         <div key={day} className="flex items-center gap-2">
                           <Label className="w-24 capitalize">{day}:</Label>
@@ -460,7 +460,7 @@ export function SettingsForm({ user, contactSettings }: SettingsFormProps) {
                                 [day]: e.target.value
                               }
                             }))}
-                            placeholder="e.g., 9:00 AM - 6:00 PM or Closed"
+                            placeholder="p.sh., 9:00 AM - 6:00 PM ose Mbyllur"
                             disabled={isLoading}
                           />
                         </div>
@@ -472,10 +472,10 @@ export function SettingsForm({ user, contactSettings }: SettingsFormProps) {
                         {isLoading ? (
                           <>
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Updating...
+                            Duke përditësuar...
                           </>
                         ) : (
-                          "Update Contact Information"
+                          "Përditëso Informacionin e Kontaktit"
                         )}
                       </Button>
                     </div>
@@ -487,16 +487,16 @@ export function SettingsForm({ user, contactSettings }: SettingsFormProps) {
 
           <Card className="mt-6">
             <CardHeader>
-              <CardTitle>Account Information</CardTitle>
+              <CardTitle>Informacioni i Llogarisë</CardTitle>
             </CardHeader>
             <CardContent>
               <dl className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <dt className="text-muted-foreground">Account Type</dt>
+                  <dt className="text-muted-foreground">Tipi i Llogarisë</dt>
                   <dd className="font-medium">Administrator</dd>
                 </div>
                 <div className="flex justify-between">
-                  <dt className="text-muted-foreground">Member Since</dt>
+                  <dt className="text-muted-foreground">Anëtarë Prej</dt>
                   <dd className="font-medium">{new Date(user.createdAt).toLocaleDateString()}</dd>
                 </div>
                 <div className="flex justify-between">

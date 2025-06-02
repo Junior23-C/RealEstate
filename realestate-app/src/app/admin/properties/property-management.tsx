@@ -76,11 +76,11 @@ export function PropertyManagement({ properties }: PropertyManagementProps) {
       if (response.ok) {
         router.refresh()
       } else {
-        alert("Failed to delete property")
+        alert("Dështoi fshirja e pronës")
       }
     } catch (error) {
       console.error("Error deleting property:", error)
-      alert("Failed to delete property")
+      alert("Dështoi fshirja e pronës")
     } finally {
       setDeletingId(null)
     }
@@ -117,15 +117,15 @@ export function PropertyManagement({ properties }: PropertyManagementProps) {
         <div className="container flex h-16 items-center">
           <Link href="/admin" className="flex items-center space-x-2 mr-6 hover:opacity-70 transition-opacity">
             <ArrowLeft className="h-4 w-4" />
-            <span>Back to Dashboard</span>
+            <span>Kthehu në Panel</span>
           </Link>
           <div className="flex items-center space-x-2">
             <div className="p-2 bg-primary rounded-lg">
               <Building2 className="h-5 w-5 text-primary-foreground" />
             </div>
             <div>
-              <span className="font-bold text-lg">Property Management</span>
-              <p className="text-xs text-muted-foreground">View and manage listings</p>
+              <span className="font-bold text-lg">Menaxhimi i Pronave</span>
+              <p className="text-xs text-muted-foreground">Shikoni dhe menaxhoni listimet</p>
             </div>
           </div>
         </div>
@@ -135,23 +135,23 @@ export function PropertyManagement({ properties }: PropertyManagementProps) {
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
           <div>
             <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-300 bg-clip-text text-transparent">
-              All Properties ({properties.length})
+              Të Gjitha Pronat ({properties.length})
             </h1>
             <p className="text-muted-foreground mt-1">
-              Manage your property listings and view details
+              Menaxhoni listimet tuaja të pronave dhe shikoni detajet
             </p>
           </div>
           <div className="flex gap-2">
             <Button variant="outline" asChild>
               <Link href="https://aliaj-re.com/properties" target="_blank">
                 <Eye className="h-4 w-4 mr-2" />
-                View on Site
+                Shiko në Faqe
               </Link>
             </Button>
             <Button asChild className="shadow-lg">
               <Link href="/admin/properties/new">
                 <Plus className="h-4 w-4 mr-2" />
-                Add New Property
+                Shto Pronë të Re
               </Link>
             </Button>
           </div>
@@ -163,15 +163,15 @@ export function PropertyManagement({ properties }: PropertyManagementProps) {
               <Table>
                 <TableHeader>
                   <TableRow className="bg-muted/50">
-                    <TableHead className="font-semibold">Image</TableHead>
-                    <TableHead className="font-semibold">Title</TableHead>
-                    <TableHead className="font-semibold">Location</TableHead>
-                    <TableHead className="font-semibold">Type</TableHead>
-                    <TableHead className="font-semibold">Status</TableHead>
-                    <TableHead className="font-semibold">Price</TableHead>
-                    <TableHead className="font-semibold">Rental Info</TableHead>
-                    <TableHead className="font-semibold">Inquiries</TableHead>
-                    <TableHead className="font-semibold text-center">Actions</TableHead>
+                    <TableHead className="font-semibold">Foto</TableHead>
+                    <TableHead className="font-semibold">Titulli</TableHead>
+                    <TableHead className="font-semibold">Vendndodhja</TableHead>
+                    <TableHead className="font-semibold">Tipi</TableHead>
+                    <TableHead className="font-semibold">Statusi</TableHead>
+                    <TableHead className="font-semibold">Çmimi</TableHead>
+                    <TableHead className="font-semibold">Info Qiraje</TableHead>
+                    <TableHead className="font-semibold">Pyetje</TableHead>
+                    <TableHead className="font-semibold text-center">Veprime</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -214,19 +214,19 @@ export function PropertyManagement({ properties }: PropertyManagementProps) {
                           {property.status === "RENTED" && property.rentedDate && (
                             <div className="text-sm">
                               <div className="text-green-600 font-medium">
-                                Rented
+                                E dhënë me qira
                               </div>
                               <div className="text-muted-foreground">
-                                Since: {new Date(property.rentedDate).toLocaleDateString()}
+                                Prej: {new Date(property.rentedDate).toLocaleDateString()}
                               </div>
                               {property.rentEndDate && (
                                 <div className="text-muted-foreground">
-                                  Until: {new Date(property.rentEndDate).toLocaleDateString()}
+                                  Deri: {new Date(property.rentEndDate).toLocaleDateString()}
                                 </div>
                               )}
                               {property.tenantName && (
                                 <div className="text-muted-foreground truncate">
-                                  Tenant: {property.tenantName}
+                                  Qiramarrësi: {property.tenantName}
                                 </div>
                               )}
                             </div>
@@ -238,7 +238,7 @@ export function PropertyManagement({ properties }: PropertyManagementProps) {
                           )}
                           {property.status === "FOR_RENT" && (
                             <div className="text-sm text-muted-foreground">
-                              Available
+                              E disponueshme
                             </div>
                           )}
                         </TableCell>
@@ -256,7 +256,7 @@ export function PropertyManagement({ properties }: PropertyManagementProps) {
                               asChild
                               className="h-8 w-8 hover:bg-blue-100 hover:text-blue-600 dark:hover:bg-blue-900 dark:hover:text-blue-400"
                             >
-                              <Link href={`https://aliaj-re.com/properties/${property.id}`} target="_blank" title="View Property">
+                              <Link href={`https://aliaj-re.com/properties/${property.id}`} target="_blank" title="Shiko Pronën">
                                 <Eye className="h-4 w-4" />
                               </Link>
                             </Button>
@@ -266,7 +266,7 @@ export function PropertyManagement({ properties }: PropertyManagementProps) {
                               asChild
                               className="h-8 w-8 hover:bg-green-100 hover:text-green-600 dark:hover:bg-green-900 dark:hover:text-green-400"
                             >
-                              <Link href={`/admin/properties/${property.id}/edit`} title="Edit Property">
+                              <Link href={`/admin/properties/${property.id}/edit`} title="Edito Pronën">
                                 <Edit className="h-4 w-4" />
                               </Link>
                             </Button>
@@ -275,7 +275,7 @@ export function PropertyManagement({ properties }: PropertyManagementProps) {
                               size="sm"
                               onClick={() => setDeletingId(property.id)}
                               className="h-8 w-8 hover:bg-red-100 hover:text-red-600 dark:hover:bg-red-900 dark:hover:text-red-400"
-                              title="Delete Property"
+                              title="Fshi Pronën"
                             >
                               <Trash2 className="h-4 w-4" />
                             </Button>
@@ -294,16 +294,16 @@ export function PropertyManagement({ properties }: PropertyManagementProps) {
       <AlertDialog open={!!deletingId} onOpenChange={() => setDeletingId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle>Jeni të sigurt?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the property
-              and all associated data including images and inquiries.
+              Ky veprim nuk mund të zhbëhet. Kjo do të fshijë përgjithmonë pronën
+              dhe të gjitha të dhënat e lidhura duke përfshirë fotot dhe pyetjet.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>Anullo</AlertDialogCancel>
             <AlertDialogAction onClick={() => deletingId && handleDelete(deletingId)}>
-              Delete
+              Fshi
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

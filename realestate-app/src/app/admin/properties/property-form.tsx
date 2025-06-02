@@ -220,10 +220,10 @@ export function PropertyForm({ property, isEdit = false }: PropertyFormProps) {
         <div className="container flex h-16 items-center">
           <Link href="/admin/properties" className="flex items-center space-x-2 mr-6">
             <ArrowLeft className="h-4 w-4" />
-            <span>Back to Properties</span>
+            <span>Kthehu te Pronat</span>
           </Link>
           <span className="font-bold">
-            {isEdit ? `Edit ${property?.title}` : "Add New Property"}
+            {isEdit ? `Edito ${property?.title}` : "Shto Pronë të Re"}
           </span>
         </div>
       </header>
@@ -232,7 +232,7 @@ export function PropertyForm({ property, isEdit = false }: PropertyFormProps) {
         <Card className="max-w-4xl mx-auto">
           <CardHeader>
             <CardTitle>
-              {isEdit ? "Edit Property" : "Add New Property"}
+              {isEdit ? "Edito Pronën" : "Shto Pronë të Re"}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -240,7 +240,7 @@ export function PropertyForm({ property, isEdit = false }: PropertyFormProps) {
               {/* Basic Information */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="md:col-span-2">
-                  <Label htmlFor="title">Property Title *</Label>
+                  <Label htmlFor="title">Titulli i Pronës *</Label>
                   <Input
                     id="title"
                     value={formData.title}
@@ -251,7 +251,7 @@ export function PropertyForm({ property, isEdit = false }: PropertyFormProps) {
                 </div>
 
                 <div className="md:col-span-2">
-                  <Label htmlFor="description">Description *</Label>
+                  <Label htmlFor="description">Përshkrimi *</Label>
                   <Textarea
                     id="description"
                     rows={4}
@@ -263,7 +263,7 @@ export function PropertyForm({ property, isEdit = false }: PropertyFormProps) {
                 </div>
 
                 <div>
-                  <Label htmlFor="price">Price *</Label>
+                  <Label htmlFor="price">Çmimi *</Label>
                   <Input
                     id="price"
                     type="number"
@@ -276,7 +276,7 @@ export function PropertyForm({ property, isEdit = false }: PropertyFormProps) {
                 </div>
 
                 <div>
-                  <Label htmlFor="type">Property Type *</Label>
+                  <Label htmlFor="type">Tipi i Pronës *</Label>
                   <Select
                     value={formData.type}
                     onValueChange={(value) => handleChange("type", value)}
@@ -286,18 +286,18 @@ export function PropertyForm({ property, isEdit = false }: PropertyFormProps) {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value={PropertyType.HOUSE}>House</SelectItem>
-                      <SelectItem value={PropertyType.APARTMENT}>Apartment</SelectItem>
-                      <SelectItem value={PropertyType.CONDO}>Condo</SelectItem>
+                      <SelectItem value={PropertyType.HOUSE}>Shtëpi</SelectItem>
+                      <SelectItem value={PropertyType.APARTMENT}>Apartament</SelectItem>
+                      <SelectItem value={PropertyType.CONDO}>Kondo</SelectItem>
                       <SelectItem value={PropertyType.TOWNHOUSE}>Townhouse</SelectItem>
-                      <SelectItem value={PropertyType.LAND}>Land</SelectItem>
-                      <SelectItem value={PropertyType.COMMERCIAL}>Commercial</SelectItem>
+                      <SelectItem value={PropertyType.LAND}>Tokë</SelectItem>
+                      <SelectItem value={PropertyType.COMMERCIAL}>Komerciale</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div>
-                  <Label htmlFor="status">Status *</Label>
+                  <Label htmlFor="status">Statusi *</Label>
                   <Select
                     value={formData.status}
                     onValueChange={(value) => handleChange("status", value)}
@@ -307,10 +307,10 @@ export function PropertyForm({ property, isEdit = false }: PropertyFormProps) {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value={PropertyStatus.FOR_RENT}>For Rent</SelectItem>
-                      <SelectItem value={PropertyStatus.FOR_SALE}>For Sale</SelectItem>
-                      <SelectItem value={PropertyStatus.RENTED}>Rented</SelectItem>
-                      <SelectItem value={PropertyStatus.SOLD}>Sold</SelectItem>
+                      <SelectItem value={PropertyStatus.FOR_RENT}>Për Qira</SelectItem>
+                      <SelectItem value={PropertyStatus.FOR_SALE}>Për Shitje</SelectItem>
+                      <SelectItem value={PropertyStatus.RENTED}>E Dhënë me Qira</SelectItem>
+                      <SelectItem value={PropertyStatus.SOLD}>E Shitur</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -319,7 +319,7 @@ export function PropertyForm({ property, isEdit = false }: PropertyFormProps) {
               {/* Location */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="md:col-span-2">
-                  <Label htmlFor="address">Address *</Label>
+                  <Label htmlFor="address">Adresa *</Label>
                   <Input
                     id="address"
                     value={formData.address}
@@ -330,7 +330,7 @@ export function PropertyForm({ property, isEdit = false }: PropertyFormProps) {
                 </div>
 
                 <div>
-                  <Label htmlFor="city">City *</Label>
+                  <Label htmlFor="city">Qyteti *</Label>
                   <Input
                     id="city"
                     value={formData.city}
@@ -341,7 +341,7 @@ export function PropertyForm({ property, isEdit = false }: PropertyFormProps) {
                 </div>
 
                 <div>
-                  <Label htmlFor="state">State *</Label>
+                  <Label htmlFor="state">Shteti/Rajoni *</Label>
                   <Input
                     id="state"
                     value={formData.state}
@@ -352,7 +352,7 @@ export function PropertyForm({ property, isEdit = false }: PropertyFormProps) {
                 </div>
 
                 <div>
-                  <Label htmlFor="zipCode">ZIP Code *</Label>
+                  <Label htmlFor="zipCode">Kodi Postar *</Label>
                   <Input
                     id="zipCode"
                     value={formData.zipCode}
@@ -366,7 +366,7 @@ export function PropertyForm({ property, isEdit = false }: PropertyFormProps) {
               {/* Property Details */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <Label htmlFor="bedrooms">Bedrooms *</Label>
+                  <Label htmlFor="bedrooms">Dhoma Gjumi *</Label>
                   <Input
                     id="bedrooms"
                     type="number"
@@ -379,7 +379,7 @@ export function PropertyForm({ property, isEdit = false }: PropertyFormProps) {
                 </div>
 
                 <div>
-                  <Label htmlFor="bathrooms">Bathrooms *</Label>
+                  <Label htmlFor="bathrooms">Banjo *</Label>
                   <Input
                     id="bathrooms"
                     type="number"
@@ -393,7 +393,7 @@ export function PropertyForm({ property, isEdit = false }: PropertyFormProps) {
                 </div>
 
                 <div>
-                  <Label htmlFor="squareFeet">Square Feet *</Label>
+                  <Label htmlFor="squareFeet">Metra Katrore *</Label>
                   <Input
                     id="squareFeet"
                     type="number"
@@ -406,7 +406,7 @@ export function PropertyForm({ property, isEdit = false }: PropertyFormProps) {
                 </div>
 
                 <div>
-                  <Label htmlFor="lotSize">Lot Size (acres)</Label>
+                  <Label htmlFor="lotSize">Madhësia e Parcelës (hektarë)</Label>
                   <Input
                     id="lotSize"
                     type="number"
@@ -419,7 +419,7 @@ export function PropertyForm({ property, isEdit = false }: PropertyFormProps) {
                 </div>
 
                 <div>
-                  <Label htmlFor="yearBuilt">Year Built</Label>
+                  <Label htmlFor="yearBuilt">Viti i Ndërtimit</Label>
                   <Input
                     id="yearBuilt"
                     type="number"
@@ -434,11 +434,11 @@ export function PropertyForm({ property, isEdit = false }: PropertyFormProps) {
 
               {/* Features */}
               <div>
-                <Label>Features & Amenities</Label>
+                <Label>Karakteristikat & Komoditetet</Label>
                 <div className="space-y-2">
                   <div className="flex gap-2">
                     <Input
-                      placeholder="Add a feature"
+                      placeholder="Shto një karakteristikë"
                       value={newFeature}
                       onChange={(e) => setNewFeature(e.target.value)}
                       onKeyPress={(e) => e.key === "Enter" && (e.preventDefault(), addFeature())}
@@ -472,14 +472,14 @@ export function PropertyForm({ property, isEdit = false }: PropertyFormProps) {
               {formData.status === "RENTED" && (
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                   <p className="text-sm text-blue-800">
-                    <strong>Note:</strong> To manage rental information for this property, please use the Rental Management section to create a lease with tenant details.
+                    <strong>Shënim:</strong> Për të menaxhuar informacionin e qirasë për këtë pronë, ju lutem përdorni seksionin e Menaxhimit të Qirave për të krijuar një kontratë me detajet e qiramarrësit.
                   </p>
                 </div>
               )}
 
               {/* Images */}
               <div>
-                <Label>Property Images</Label>
+                <Label>Fotot e Pronës</Label>
                 <div className="space-y-4">
                   {/* Upload Section */}
                   <div className="border-2 border-dashed rounded-lg p-6">
@@ -499,13 +499,13 @@ export function PropertyForm({ property, isEdit = false }: PropertyFormProps) {
                       {uploadingImages ? (
                         <>
                           <Loader2 className="h-10 w-10 text-muted-foreground mb-2 animate-spin" />
-                          <span className="text-sm text-muted-foreground">Uploading...</span>
+                          <span className="text-sm text-muted-foreground">Duke ngarkuar...</span>
                         </>
                       ) : (
                         <>
                           <Upload className="h-10 w-10 text-muted-foreground mb-2" />
-                          <span className="text-sm text-muted-foreground">Click to upload images</span>
-                          <span className="text-xs text-muted-foreground mt-1">JPEG, PNG, WebP (max 5MB each)</span>
+                          <span className="text-sm text-muted-foreground">Kliko për të ngarkuar fotot</span>
+                          <span className="text-xs text-muted-foreground mt-1">JPEG, PNG, WebP (maks 5MB secila)</span>
                         </>
                       )}
                     </label>
@@ -541,7 +541,7 @@ export function PropertyForm({ property, isEdit = false }: PropertyFormProps) {
                             className="absolute bottom-2 left-2 text-xs"
                             onClick={() => setPrimaryImage(index)}
                           >
-                            {img.isPrimary ? "Primary" : "Set Primary"}
+                            {img.isPrimary ? "Kryesore" : "Bëje Kryesore"}
                           </Button>
                         </div>
                       ))}
@@ -550,11 +550,11 @@ export function PropertyForm({ property, isEdit = false }: PropertyFormProps) {
 
                   {/* URL Input Section */}
                   <div className="space-y-2">
-                    <p className="text-sm text-muted-foreground">Or add images by URL:</p>
+                    <p className="text-sm text-muted-foreground">Ose shto foto me URL:</p>
                     {imageUrls.map((url, index) => (
                       <div key={index} className="flex gap-2">
                         <Input
-                          placeholder="Image URL"
+                          placeholder="URL e fotos"
                           value={url}
                           onChange={(e) => updateImageUrl(index, e.target.value)}
                           disabled={isLoading}
@@ -571,7 +571,7 @@ export function PropertyForm({ property, isEdit = false }: PropertyFormProps) {
                     ))}
                     <Button type="button" onClick={addImageUrl} variant="outline" disabled={isLoading}>
                       <Plus className="h-4 w-4 mr-2" />
-                      Add Image URL
+                      Shto URL të Fotos
                     </Button>
                   </div>
                 </div>
@@ -583,14 +583,14 @@ export function PropertyForm({ property, isEdit = false }: PropertyFormProps) {
                   {isLoading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      {isEdit ? "Updating..." : "Creating..."}
+                      {isEdit ? "Duke përditësuar..." : "Duke krijuar..."}
                     </>
                   ) : (
-                    isEdit ? "Update Property" : "Create Property"
+                    isEdit ? "Përditëso Pronën" : "Krijo Pronën"
                   )}
                 </Button>
                 <Button type="button" variant="outline" asChild>
-                  <Link href="/admin/properties">Cancel</Link>
+                  <Link href="/admin/properties">Anullo</Link>
                 </Button>
               </div>
             </form>

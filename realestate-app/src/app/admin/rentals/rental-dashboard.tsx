@@ -168,11 +168,11 @@ export function RentalDashboard({
       if (response.ok) {
         router.refresh()
       } else {
-        alert("Failed to mark payment as paid")
+        alert("Dështoi shënimi i pagesës si e paguar")
       }
     } catch (error) {
       console.error("Error marking payment as paid:", error)
-      alert("Failed to mark payment as paid")
+      alert("Dështoi shënimi i pagesës si e paguar")
     } finally {
       setMarkingPayment(null)
     }
@@ -185,11 +185,11 @@ export function RentalDashboard({
         <div className="container flex h-16 items-center">
           <Link href="/admin" className="flex items-center space-x-2 mr-6">
             <ArrowLeft className="h-4 w-4" />
-            <span>Back to Dashboard</span>
+            <span>Kthehu në Panel</span>
           </Link>
           <div className="flex items-center space-x-2">
             <Home className="h-6 w-6" />
-            <span className="font-bold">Rental Management</span>
+            <span className="font-bold">Menaxhimi i Qirave</span>
           </div>
         </div>
       </header>
@@ -199,52 +199,52 @@ export function RentalDashboard({
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Active Leases</CardTitle>
+              <CardTitle className="text-sm font-medium">Kontratat Aktive</CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stats.activeLeases}</div>
               <p className="text-xs text-muted-foreground">
-                {stats.totalLeases} total leases
+                {stats.totalLeases} kontrata gjithsej
               </p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Monthly Revenue</CardTitle>
+              <CardTitle className="text-sm font-medium">Të Ardhurat Mujore</CardTitle>
               <DollarSign className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{formatCurrency(stats.totalMonthlyRent)}</div>
               <p className="text-xs text-muted-foreground">
-                From {stats.rentedProperties} rented properties
+                Nga {stats.rentedProperties} prona të dhëna me qira
               </p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Expiring Soon</CardTitle>
+              <CardTitle className="text-sm font-medium">Skadojnë Së Shpejti</CardTitle>
               <Calendar className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-orange-600">{stats.expiringSoon}</div>
               <p className="text-xs text-muted-foreground">
-                Leases ending in 30 days
+                Kontrata që përfundojnë brenda 30 ditëve
               </p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Overdue Payments</CardTitle>
+              <CardTitle className="text-sm font-medium">Pagesa të Vonuara</CardTitle>
               <AlertTriangle className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-red-600">{stats.overduePayments}</div>
               <p className="text-xs text-muted-foreground">
-                Requires immediate attention
+                Kërkon vëmendje të menjehershme
               </p>
             </CardContent>
           </Card>
@@ -256,19 +256,19 @@ export function RentalDashboard({
             variant={activeTab === 'overview' ? 'default' : 'ghost'}
             onClick={() => setActiveTab('overview')}
           >
-            Overview
+            Përmbledhje
           </Button>
           <Button
             variant={activeTab === 'leases' ? 'default' : 'ghost'}
             onClick={() => setActiveTab('leases')}
           >
-            Active Leases ({stats.activeLeases})
+            Kontratat Aktive ({stats.activeLeases})
           </Button>
           <Button
             variant={activeTab === 'payments' ? 'default' : 'ghost'}
             onClick={() => setActiveTab('payments')}
           >
-            Payments
+            Pagesat
           </Button>
         </div>
 
@@ -280,7 +280,7 @@ export function RentalDashboard({
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <CheckCircle className="h-5 w-5 text-green-600" />
-                  Recent Payments
+                  Pagesat e Fundit
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -308,7 +308,7 @@ export function RentalDashboard({
                     )
                   }).filter(Boolean)}
                   {recentPayments.filter(p => p.lease != null).length === 0 && (
-                    <p className="text-muted-foreground">No recent payments</p>
+                    <p className="text-muted-foreground">Asnjë pagesë e fundit</p>
                   )}
                 </div>
               </CardContent>
@@ -319,7 +319,7 @@ export function RentalDashboard({
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Clock className="h-5 w-5 text-orange-600" />
-                  Upcoming Payments
+                  Pagesat e Ardhshme
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -344,17 +344,17 @@ export function RentalDashboard({
                             daysUntil <= 3 ? 'text-red-600' : 
                             daysUntil <= 7 ? 'text-orange-600' : 'text-muted-foreground'
                           }`}>
-                            {daysUntil === 0 ? 'Due today' : 
-                             daysUntil === 1 ? 'Due tomorrow' :
-                             daysUntil > 0 ? `Due in ${daysUntil} days` :
-                             `${Math.abs(daysUntil)} days overdue`}
+                            {daysUntil === 0 ? 'Skadon sot' : 
+                             daysUntil === 1 ? 'Skadon nesër' :
+                             daysUntil > 0 ? `Skadon pas ${daysUntil} ditëve` :
+                             `${Math.abs(daysUntil)} ditë vonuar`}
                           </p>
                         </div>
                       </div>
                     )
                   }).filter(Boolean)}
                   {upcomingPayments.filter(p => p.lease != null).length === 0 && (
-                    <p className="text-muted-foreground">No upcoming payments</p>
+                    <p className="text-muted-foreground">Asnjë pagesë e ardhshme</p>
                   )}
                 </div>
               </CardContent>
@@ -365,11 +365,11 @@ export function RentalDashboard({
         {activeTab === 'leases' && (
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle>Active Leases</CardTitle>
+              <CardTitle>Kontratat Aktive</CardTitle>
               <Button asChild>
                 <Link href="/admin/rentals/leases/new">
                   <Plus className="h-4 w-4 mr-2" />
-                  New Lease
+                  Kontratë e Re
                 </Link>
               </Button>
             </CardHeader>
@@ -378,12 +378,12 @@ export function RentalDashboard({
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Property</TableHead>
-                      <TableHead>Tenant</TableHead>
-                      <TableHead>Rent</TableHead>
-                      <TableHead>Lease Period</TableHead>
-                      <TableHead>Payment Status</TableHead>
-                      <TableHead>Actions</TableHead>
+                      <TableHead>Prona</TableHead>
+                      <TableHead>Qiramarrësi</TableHead>
+                      <TableHead>Qiraja</TableHead>
+                      <TableHead>Periudha e Kontratës</TableHead>
+                      <TableHead>Statusi i Pagesës</TableHead>
+                      <TableHead>Veprime</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -449,7 +449,7 @@ export function RentalDashboard({
                                 {currentPayment.status}
                               </Badge>
                             ) : (
-                              <Badge variant="outline">No payment due</Badge>
+                              <Badge variant="outline">Asnjë pagesë për sot</Badge>
                             )}
                           </TableCell>
                           <TableCell>
@@ -468,7 +468,7 @@ export function RentalDashboard({
                 </Table>
                 {activeLeases.length === 0 && (
                   <div className="p-8 text-center text-muted-foreground">
-                    No active leases found
+                    Asnjë kontratë aktive nuk u gjet
                   </div>
                 )}
               </div>
@@ -482,42 +482,42 @@ export function RentalDashboard({
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-sm">This Month</CardTitle>
+                  <CardTitle className="text-sm">Këtë Muaj</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold text-green-600">
                     {formatCurrency(recentPayments.reduce((sum, p) => sum + p.amount, 0))}
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    {recentPayments.length} payments received
+                    {recentPayments.length} pagesa të marra
                   </p>
                 </CardContent>
               </Card>
               
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-sm">Pending</CardTitle>
+                  <CardTitle className="text-sm">Në Pritje</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold text-orange-600">
                     {formatCurrency(upcomingPayments.filter(p => p.status === 'PENDING').reduce((sum, p) => sum + p.amount, 0))}
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    {upcomingPayments.filter(p => p.status === 'PENDING').length} pending payments
+                    {upcomingPayments.filter(p => p.status === 'PENDING').length} pagesa në pritje
                   </p>
                 </CardContent>
               </Card>
               
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-sm">Overdue</CardTitle>
+                  <CardTitle className="text-sm">Të Vonuara</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold text-red-600">
                     {formatCurrency(upcomingPayments.filter(p => p.status === 'LATE').reduce((sum, p) => sum + p.amount, 0))}
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    {upcomingPayments.filter(p => p.status === 'LATE').length} late payments
+                    {upcomingPayments.filter(p => p.status === 'LATE').length} pagesa të vonuara
                   </p>
                 </CardContent>
               </Card>
@@ -526,19 +526,19 @@ export function RentalDashboard({
             {/* Upcoming Payments Table */}
             <Card>
               <CardHeader>
-                <CardTitle>Upcoming Payments</CardTitle>
+                <CardTitle>Pagesat e Ardhshme</CardTitle>
               </CardHeader>
               <CardContent className="p-0">
                 <div className="overflow-x-auto">
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Tenant</TableHead>
-                        <TableHead>Property</TableHead>
-                        <TableHead>Amount</TableHead>
-                        <TableHead>Due Date</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Actions</TableHead>
+                        <TableHead>Qiramarrësi</TableHead>
+                        <TableHead>Prona</TableHead>
+                        <TableHead>Shuma</TableHead>
+                        <TableHead>Data e Skadimit</TableHead>
+                        <TableHead>Statusi</TableHead>
+                        <TableHead>Veprime</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -563,10 +563,10 @@ export function RentalDashboard({
                                   daysUntil <= 3 ? 'text-red-600' : 
                                   daysUntil <= 7 ? 'text-orange-600' : 'text-muted-foreground'
                                 }`}>
-                                  {daysUntil === 0 ? 'Due today' : 
-                                   daysUntil === 1 ? 'Due tomorrow' :
-                                   daysUntil > 0 ? `${daysUntil} days` :
-                                   `${Math.abs(daysUntil)} days overdue`}
+                                  {daysUntil === 0 ? 'Skadon sot' : 
+                                   daysUntil === 1 ? 'Skadon nesër' :
+                                   daysUntil > 0 ? `${daysUntil} ditë` :
+                                   `${Math.abs(daysUntil)} ditë vonuar`}
                                 </p>
                               </div>
                             </TableCell>
@@ -583,10 +583,10 @@ export function RentalDashboard({
                                   onClick={() => markPaymentAsPaid(payment.id)}
                                   disabled={markingPayment === payment.id}
                                 >
-                                  {markingPayment === payment.id ? "Marking..." : "Mark Paid"}
+                                  {markingPayment === payment.id ? "Duke shënuar..." : "Shëno si Paguar"}
                                 </Button>
                               ) : (
-                                <span className="text-sm text-muted-foreground">Paid</span>
+                                <span className="text-sm text-muted-foreground">Paguar</span>
                               )}
                             </TableCell>
                           </TableRow>
@@ -596,7 +596,7 @@ export function RentalDashboard({
                   </Table>
                   {upcomingPayments.length === 0 && (
                     <div className="p-8 text-center text-muted-foreground">
-                      No upcoming payments
+                      Asnjë pagesë e ardhshme
                     </div>
                   )}
                 </div>

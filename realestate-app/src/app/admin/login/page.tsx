@@ -30,12 +30,12 @@ export default function AdminLogin() {
       })
 
       if (result?.error) {
-        setError("Invalid email or password")
+        setError("Email ose fjalëkalim i pasaktë")
       } else {
         router.push("/admin")
       }
     } catch {
-      setError("Something went wrong. Please try again.")
+      setError("Diçka shkoi keq. Ju lutem provoni përsëri.")
     } finally {
       setIsLoading(false)
     }
@@ -48,9 +48,9 @@ export default function AdminLogin() {
           <Link href="/" className="inline-flex justify-center mb-4">
             <Building2 className="h-10 w-10 text-primary" />
           </Link>
-          <CardTitle>Admin Login</CardTitle>
+          <CardTitle>Hyrja e Administratorit</CardTitle>
           <CardDescription>
-            Enter your credentials to access the admin dashboard
+            Vendosni kredencialet tuaja për të hyrë në panelin e administratorit
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -69,7 +69,7 @@ export default function AdminLogin() {
             </div>
             
             <div>
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">Fjalëkalimi</Label>
               <Input
                 id="password"
                 type="password"
@@ -91,17 +91,17 @@ export default function AdminLogin() {
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Signing in...
+                  Duke hyrë...
                 </>
               ) : (
-                "Sign In"
+                "Hyr"
               )}
             </Button>
           </form>
 
           <div className="mt-6 text-center text-sm text-muted-foreground">
             <Link href="/" className="hover:text-primary">
-              ← Back to website
+              ← Kthehu në faqe
             </Link>
           </div>
         </CardContent>

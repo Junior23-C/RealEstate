@@ -6,8 +6,8 @@ import { PropertyManagement } from "./property-management"
 
 // Add metadata for better SEO
 export const metadata = {
-  title: "Property Management - Admin Dashboard",
-  description: "Manage all real estate property listings",
+  title: "Menaxhimi i Pronave - Paneli Administrativ",
+  description: "Menaxhoni të gjitha listimet e pronave të paluajtshme",
 }
 
 // Cache for 5 minutes

@@ -143,11 +143,11 @@ export function TenantManagement({ tenants }: TenantManagementProps) {
         <div className="container flex h-16 items-center">
           <Link href="/admin/rentals" className="flex items-center space-x-2 mr-6">
             <ArrowLeft className="h-4 w-4" />
-            <span>Back to Rental Dashboard</span>
+            <span>Kthehu në Panelin e Qirave</span>
           </Link>
           <div className="flex items-center space-x-2">
             <Users className="h-6 w-6" />
-            <span className="font-bold">Tenant Management</span>
+            <span className="font-bold">Menaxhimi i Qiramarrësve</span>
           </div>
         </div>
       </header>
@@ -157,7 +157,7 @@ export function TenantManagement({ tenants }: TenantManagementProps) {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Tenants</CardTitle>
+              <CardTitle className="text-sm font-medium">Qiramarrësit Gjithsej</CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -167,7 +167,7 @@ export function TenantManagement({ tenants }: TenantManagementProps) {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Active Leases</CardTitle>
+              <CardTitle className="text-sm font-medium">Kontratat Aktive</CardTitle>
               <Home className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -177,7 +177,7 @@ export function TenantManagement({ tenants }: TenantManagementProps) {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Monthly Revenue</CardTitle>
+              <CardTitle className="text-sm font-medium">Të Ardhurat Mujore</CardTitle>
               <DollarSign className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -191,7 +191,7 @@ export function TenantManagement({ tenants }: TenantManagementProps) {
           <div className="relative max-w-sm">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
             <Input
-              placeholder="Search tenants..."
+              placeholder="Kërko qiramarrësit..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -200,7 +200,7 @@ export function TenantManagement({ tenants }: TenantManagementProps) {
           <Button asChild>
             <Link href="/admin/rentals/tenants/new">
               <Plus className="h-4 w-4 mr-2" />
-              Add Tenant
+              Shto Qiramarrës
             </Link>
           </Button>
         </div>
@@ -208,20 +208,20 @@ export function TenantManagement({ tenants }: TenantManagementProps) {
         {/* Tenants Table */}
         <Card>
           <CardHeader>
-            <CardTitle>All Tenants ({filteredTenants.length})</CardTitle>
+            <CardTitle>Të Gjithë Qiramarrësit ({filteredTenants.length})</CardTitle>
           </CardHeader>
           <CardContent className="p-0">
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Tenant</TableHead>
-                    <TableHead>Contact</TableHead>
-                    <TableHead>Current Property</TableHead>
-                    <TableHead>Lease Status</TableHead>
-                    <TableHead>Monthly Rent</TableHead>
-                    <TableHead>Payment Status</TableHead>
-                    <TableHead>Actions</TableHead>
+                    <TableHead>Qiramarrësi</TableHead>
+                    <TableHead>Kontakti</TableHead>
+                    <TableHead>Prona Aktuale</TableHead>
+                    <TableHead>Statusi i Kontratës</TableHead>
+                    <TableHead>Qiraja Mujore</TableHead>
+                    <TableHead>Statusi i Pagesës</TableHead>
+                    <TableHead>Veprime</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -266,7 +266,7 @@ export function TenantManagement({ tenants }: TenantManagementProps) {
                               </p>
                             </div>
                           ) : (
-                            <span className="text-muted-foreground">No active lease</span>
+                            <span className="text-muted-foreground">Asnjë kontratë aktive</span>
                           )}
                         </TableCell>
                         
@@ -277,11 +277,11 @@ export function TenantManagement({ tenants }: TenantManagementProps) {
                                 {activeLease.status}
                               </Badge>
                               <p className="text-sm text-muted-foreground mt-1">
-                                Until {formatDate(activeLease.endDate)}
+                                Deri {formatDate(activeLease.endDate)}
                               </p>
                             </div>
                           ) : (
-                            <Badge variant="outline">No lease</Badge>
+                            <Badge variant="outline">Pa kontratë</Badge>
                           )}
                         </TableCell>
                         
@@ -300,11 +300,11 @@ export function TenantManagement({ tenants }: TenantManagementProps) {
                                 {currentPayment.status}
                               </Badge>
                               <p className="text-sm text-muted-foreground mt-1">
-                                Due: {formatDate(currentPayment.dueDate)}
+                                Skadon: {formatDate(currentPayment.dueDate)}
                               </p>
                             </div>
                           ) : activeLease ? (
-                            <Badge variant="outline">No payment due</Badge>
+                            <Badge variant="outline">Asnjë pagesë për sot</Badge>
                           ) : (
                             <span className="text-muted-foreground">-</span>
                           )}
@@ -326,7 +326,7 @@ export function TenantManagement({ tenants }: TenantManagementProps) {
               </Table>
               {filteredTenants.length === 0 && (
                 <div className="p-8 text-center text-muted-foreground">
-                  {searchTerm ? "No tenants found matching your search" : "No tenants found"}
+                  {searchTerm ? "Asnjë qiramarrës nuk u gjet sipas kërkimit tuaj" : "Asnjë qiramarrës nuk u gjet"}
                 </div>
               )}
             </div>

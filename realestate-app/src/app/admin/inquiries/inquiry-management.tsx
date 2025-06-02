@@ -64,11 +64,11 @@ export function InquiryManagement({ inquiries }: InquiryManagementProps) {
       if (response.ok) {
         router.refresh()
       } else {
-        alert("Failed to delete inquiry")
+        alert("Dështoi fshirja e pyetjes")
       }
     } catch (error) {
       console.error("Error deleting inquiry:", error)
-      alert("Failed to delete inquiry")
+      alert("Dështoi fshirja e pyetjes")
     } finally {
       setDeletingId(null)
     }
@@ -87,11 +87,11 @@ export function InquiryManagement({ inquiries }: InquiryManagementProps) {
       if (response.ok) {
         router.refresh()
       } else {
-        alert("Failed to update inquiry status")
+        alert("Dështoi përditësimi i statusit të pyetjes")
       }
     } catch (error) {
       console.error("Error updating inquiry:", error)
-      alert("Failed to update inquiry status")
+      alert("Dështoi përditësimi i statusit të pyetjes")
     }
   }
 
@@ -115,18 +115,18 @@ export function InquiryManagement({ inquiries }: InquiryManagementProps) {
         <div className="container flex h-16 items-center">
           <Link href="/admin" className="flex items-center space-x-2 mr-6">
             <ArrowLeft className="h-4 w-4" />
-            <span>Back to Dashboard</span>
+            <span>Kthehu në Panel</span>
           </Link>
           <div className="flex items-center space-x-2">
             <Mail className="h-6 w-6" />
-            <span className="font-bold">Inquiry Management</span>
+            <span className="font-bold">Menaxhimi i Pyetjeve</span>
           </div>
         </div>
       </header>
 
       <div className="container py-8">
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold">All Inquiries ({inquiries.length})</h1>
+          <h1 className="text-3xl font-bold">Të Gjitha Pyetjet ({inquiries.length})</h1>
         </div>
 
         <Card>
@@ -135,13 +135,13 @@ export function InquiryManagement({ inquiries }: InquiryManagementProps) {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Contact</TableHead>
-                    <TableHead>Property</TableHead>
-                    <TableHead>Message</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Actions</TableHead>
+                    <TableHead>Emri</TableHead>
+                    <TableHead>Kontakti</TableHead>
+                    <TableHead>Prona</TableHead>
+                    <TableHead>Mesazhi</TableHead>
+                    <TableHead>Statusi</TableHead>
+                    <TableHead>Data</TableHead>
+                    <TableHead>Veprime</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -186,7 +186,7 @@ export function InquiryManagement({ inquiries }: InquiryManagementProps) {
                           onClick={() => setSelectedInquiry(inquiry)}
                           className="h-auto p-0 text-primary"
                         >
-                          Read more
+                          Lexo më shumë
                         </Button>
                       </TableCell>
                       <TableCell>
@@ -195,9 +195,9 @@ export function InquiryManagement({ inquiries }: InquiryManagementProps) {
                           onChange={(e) => updateStatus(inquiry.id, e.target.value)}
                           className="rounded border bg-background px-2 py-1 text-sm"
                         >
-                          <option value="PENDING">Pending</option>
-                          <option value="CONTACTED">Contacted</option>
-                          <option value="CLOSED">Closed</option>
+                          <option value="PENDING">Në Pritje</option>
+                          <option value="CONTACTED">Kontaktuar</option>
+                          <option value="CLOSED">Mbyllur</option>
                         </select>
                       </TableCell>
                       <TableCell>
@@ -234,13 +234,13 @@ export function InquiryManagement({ inquiries }: InquiryManagementProps) {
       <Dialog open={!!selectedInquiry} onOpenChange={() => setSelectedInquiry(null)}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>Inquiry Details</DialogTitle>
+            <DialogTitle>Detajet e Pyetjes</DialogTitle>
           </DialogHeader>
           {selectedInquiry && (
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <h4 className="font-medium">Contact Information</h4>
+                  <h4 className="font-medium">Informacioni i Kontaktit</h4>
                   <p>{selectedInquiry.name}</p>
                   <p className="text-sm text-muted-foreground">{selectedInquiry.email}</p>
                   {selectedInquiry.phone && (
@@ -248,7 +248,7 @@ export function InquiryManagement({ inquiries }: InquiryManagementProps) {
                   )}
                 </div>
                 <div>
-                  <h4 className="font-medium">Property</h4>
+                  <h4 className="font-medium">Prona</h4>
                   <Link 
                     href={`https://aliaj-re.com/properties/${selectedInquiry.property.id}`}
                     target="_blank"
@@ -262,11 +262,11 @@ export function InquiryManagement({ inquiries }: InquiryManagementProps) {
                 </div>
               </div>
               <div>
-                <h4 className="font-medium">Message</h4>
+                <h4 className="font-medium">Mesazhi</h4>
                 <p className="text-sm whitespace-pre-wrap">{selectedInquiry.message}</p>
               </div>
               <div>
-                <h4 className="font-medium">Status & Date</h4>
+                <h4 className="font-medium">Statusi & Data</h4>
                 <div className="flex items-center gap-2">
                   <Badge variant={getStatusColor(selectedInquiry.status)}>
                     {selectedInquiry.status}
@@ -284,15 +284,15 @@ export function InquiryManagement({ inquiries }: InquiryManagementProps) {
       <AlertDialog open={!!deletingId} onOpenChange={() => setDeletingId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle>Jeni të sigurt?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the inquiry.
+              Ky veprim nuk mund të zhbëhet. Kjo do të fshijë përgjithmonë pyetjen.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>Anullo</AlertDialogCancel>
             <AlertDialogAction onClick={() => deletingId && handleDelete(deletingId)}>
-              Delete
+              Fshi
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
