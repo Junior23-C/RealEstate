@@ -5,10 +5,9 @@ interface TelegramConfig {
 }
 
 class TelegramService {
-  private config: TelegramConfig
-
-  constructor() {
-    this.config = {
+  private getConfig(): TelegramConfig {
+    // Get config at runtime to ensure environment variables are loaded
+    return {
       botToken: process.env.TELEGRAM_BOT_TOKEN || '',
       chatId: process.env.TELEGRAM_CHAT_ID || ''
     }
@@ -16,36 +15,44 @@ class TelegramService {
 
   // Check if service is configured
   isConfigured(): boolean {
-    return !!(this.config.botToken && this.config.chatId)
+    const config = this.getConfig()
+    return !!(config.botToken && config.chatId)
   }
 
   // Send a text message
   async sendMessage(message: string, parseMode: 'HTML' | 'Markdown' = 'HTML'): Promise<boolean> {
     try {
+      const config = this.getConfig()
+      console.log('📤 Attempting to send Telegram message...')
+      console.log('Chat ID:', config.chatId ? 'Set' : 'Not set')
+      console.log('Bot Token:', config.botToken ? 'Set' : 'Not set')
+      
       const response = await fetch(
-        `https://api.telegram.org/bot${this.config.botToken}/sendMessage`,
+        `https://api.telegram.org/bot${config.botToken}/sendMessage`,
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            chat_id: this.config.chatId,
+            chat_id: config.chatId,
             text: message,
             parse_mode: parseMode
           })
         }
       )
 
+      const responseData = await response.json()
+      
       if (!response.ok) {
-        console.error('Telegram API error:', await response.text())
+        console.error('❌ Telegram API error:', responseData)
         return false
       }
 
-      console.log('Telegram message sent successfully')
+      console.log('✅ Telegram message sent successfully')
       return true
     } catch (error) {
-      console.error('Error sending Telegram message:', error)
+      console.error('❌ Error sending Telegram message:', error)
       return false
     }
   }
@@ -79,15 +86,19 @@ ${inquiry.phone ? `📱 <b>Telefoni:</b> ${inquiry.phone}` : ''}
   // Send photo with caption
   async sendPhoto(photoUrl: string, caption: string): Promise<boolean> {
     try {
+      const config = this.getConfig()
+      console.log('📸 Attempting to send Telegram photo...')
+      console.log('Photo URL:', photoUrl)
+      
       const response = await fetch(
-        `https://api.telegram.org/bot${this.config.botToken}/sendPhoto`,
+        `https://api.telegram.org/bot${config.botToken}/sendPhoto`,
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            chat_id: this.config.chatId,
+            chat_id: config.chatId,
             photo: photoUrl,
             caption: caption,
             parse_mode: 'HTML'
@@ -95,14 +106,17 @@ ${inquiry.phone ? `📱 <b>Telefoni:</b> ${inquiry.phone}` : ''}
         }
       )
 
+      const responseData = await response.json()
+      
       if (!response.ok) {
-        console.error('Telegram photo error:', await response.text())
+        console.error('❌ Telegram photo error:', responseData)
         return false
       }
 
+      console.log('✅ Telegram photo sent successfully')
       return true
     } catch (error) {
-      console.error('Error sending Telegram photo:', error)
+      console.error('❌ Error sending Telegram photo:', error)
       return false
     }
   }
@@ -117,6 +131,17 @@ ${inquiry.phone ? `📱 <b>Telefoni:</b> ${inquiry.phone}` : ''}
     propertyId: string
     propertyImageUrl?: string
   }): Promise<boolean> {
+    // Check if service is configured
+    if (!this.isConfigured()) {
+      const config = this.getConfig()
+      console.error('❌ Telegram service not configured properly!')
+      console.error('Bot Token exists:', !!config.botToken)
+      console.error('Chat ID exists:', !!config.chatId)
+      console.error('Bot Token length:', config.botToken?.length || 0)
+      console.error('Chat ID length:', config.chatId?.length || 0)
+      return false
+    }
+
     const caption = `🏠 <b>Pyetje për:</b> ${inquiry.propertyTitle}
 
 👤 <b>Klienti:</b> ${inquiry.name}

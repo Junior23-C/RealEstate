@@ -62,6 +62,14 @@ export async function POST(request: Request) {
       console.log('🔔 Attempting to send notifications for inquiry:', inquiry.id)
       const primaryImage = inquiry.property.images[0]
       
+      // Ensure image URL is absolute
+      let imageUrl = primaryImage?.url
+      if (imageUrl && !imageUrl.startsWith('http')) {
+        // Convert relative URL to absolute
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://aliaj-re.com'
+        imageUrl = `${baseUrl}${imageUrl.startsWith('/') ? '' : '/'}${imageUrl}`
+      }
+      
       const notificationData = {
         name: inquiry.name,
         email: inquiry.email,
@@ -69,7 +77,7 @@ export async function POST(request: Request) {
         message: inquiry.message,
         propertyTitle: inquiry.property.title,
         propertyId: inquiry.property.id,
-        propertyImageUrl: primaryImage?.url
+        propertyImageUrl: imageUrl
       }
       
       console.log('📋 Notification data:', notificationData)
