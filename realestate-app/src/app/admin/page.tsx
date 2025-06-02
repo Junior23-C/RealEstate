@@ -1,8 +1,17 @@
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { redirect } from "next/navigation"
-import { AdminDashboard } from "./admin-dashboard"
-import { prisma } from "@/lib/db"
+import { AdminDashboardServer } from "./admin-dashboard-server"
+import { getDashboardStats, getRecentInquiries } from "@/lib/queries/admin-queries"
+
+// Add metadata for better SEO and performance
+export const metadata = {
+  title: "Admin Dashboard - Real Estate Management",
+  description: "Manage properties, tenants, and inquiries",
+}
+
+// Optimize cache settings
+export const revalidate = 300 // 5 minutes
 
 export default async function AdminPage() {
   const session = await getServerSession(authOptions)
@@ -11,27 +20,17 @@ export default async function AdminPage() {
     redirect("/admin/login")
   }
 
-  // Get statistics
-  const [totalProperties, totalInquiries, recentInquiries, propertyStats] = await Promise.all([
-    prisma.property.count(),
-    prisma.inquiry.count(),
-    prisma.inquiry.findMany({
-      take: 5,
-      orderBy: { createdAt: "desc" },
-      include: { property: true }
-    }),
-    prisma.property.groupBy({
-      by: ["status"],
-      _count: true
-    })
+  // Use optimized cached queries
+  const [stats, recentInquiries] = await Promise.all([
+    getDashboardStats(),
+    getRecentInquiries(5)
   ])
 
-  const stats = {
-    totalProperties,
-    totalInquiries,
-    forRent: propertyStats.find(s => s.status === "FOR_RENT")?._count || 0,
-    forSale: propertyStats.find(s => s.status === "FOR_SALE")?._count || 0,
-  }
-
-  return <AdminDashboard stats={stats} recentInquiries={recentInquiries} />
+  return (
+    <AdminDashboardServer 
+      stats={stats} 
+      recentInquiries={recentInquiries} 
+      user={session.user}
+    />
+  )
 }
