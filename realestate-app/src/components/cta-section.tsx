@@ -17,7 +17,7 @@ export function CTASection() {
         >
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Jeni Gati për Shtëpinë Tuaj të Re?</h2>
           <p className="text-lg mb-8 opacity-90">
-            Le t'ju ndihmojmë të gjeni pronën perfekte për nevojat tuaja.
+            Le t&apos;ju ndihmojmë të gjeni pronën perfekte për nevojat tuaja.
           </p>
           <div className="flex gap-4 justify-center">
             <Button size="lg" variant="secondary" asChild>
