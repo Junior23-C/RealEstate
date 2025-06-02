@@ -3,6 +3,7 @@ import { authOptions } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/db"
 import { PropertyManagement } from "./property-management"
+import AdminLayout from "@/components/admin/admin-layout"
 
 // Add metadata for better SEO
 export const metadata = {
@@ -53,5 +54,9 @@ export default async function AdminPropertiesPage() {
     }
   })
 
-  return <PropertyManagement properties={properties} />
+  return (
+    <AdminLayout user={session.user}>
+      <PropertyManagement properties={properties} />
+    </AdminLayout>
+  )
 }

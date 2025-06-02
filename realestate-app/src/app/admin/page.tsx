@@ -2,6 +2,7 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import { AdminDashboard } from "./admin-dashboard"
+import AdminLayout from "@/components/admin/admin-layout"
 import { prisma } from "@/lib/db"
 
 // Add metadata for better SEO and performance
@@ -54,10 +55,12 @@ export default async function AdminPage() {
     }
 
     return (
-      <AdminDashboard 
-        stats={stats}
-        recentInquiries={recentInquiries}
-      />
+      <AdminLayout user={session.user}>
+        <AdminDashboard 
+          stats={stats}
+          recentInquiries={recentInquiries}
+        />
+      </AdminLayout>
     )
   } catch (error) {
     console.error("Error loading admin dashboard:", error)
@@ -71,10 +74,12 @@ export default async function AdminPage() {
     }
 
     return (
-      <AdminDashboard 
-        stats={fallbackStats}
-        recentInquiries={[]}
-      />
+      <AdminLayout user={session?.user}>
+        <AdminDashboard 
+          stats={fallbackStats}
+          recentInquiries={[]}
+        />
+      </AdminLayout>
     )
   }
 }
