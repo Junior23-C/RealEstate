@@ -30,6 +30,11 @@ class DiscordService {
     }
   }
 
+  // Check if service is configured
+  isConfigured(): boolean {
+    return !!this.config.webhookUrl
+  }
+
   // Send a message to Discord
   async sendMessage(content: string): Promise<boolean> {
     try {

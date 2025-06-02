@@ -54,6 +54,11 @@ class WhatsAppService {
     }
   }
 
+  // Check if service is configured
+  isConfigured(): boolean {
+    return !!(this.config.phoneNumberId && this.config.accessToken && this.config.businessPhoneNumber)
+  }
+
   // Send a simple text message
   async sendTextMessage(to: string, message: string): Promise<boolean> {
     try {

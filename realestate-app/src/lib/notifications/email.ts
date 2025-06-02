@@ -16,6 +16,11 @@ class EmailService {
     }
   }
 
+  // Check if service is configured
+  isConfigured(): boolean {
+    return !!(this.config.apiKey && this.config.adminEmail)
+  }
+
   // Send inquiry notification email
   async sendInquiryNotification(inquiry: {
     name: string

@@ -14,6 +14,11 @@ class TelegramService {
     }
   }
 
+  // Check if service is configured
+  isConfigured(): boolean {
+    return !!(this.config.botToken && this.config.chatId)
+  }
+
   // Send a text message
   async sendMessage(message: string, parseMode: 'HTML' | 'Markdown' = 'HTML'): Promise<boolean> {
     try {

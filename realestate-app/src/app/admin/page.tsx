@@ -3,7 +3,6 @@ import { authOptions } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import { AdminDashboard } from "./admin-dashboard"
 import { prisma } from "@/lib/db"
-import { getCachedAdminStats } from "@/lib/cache"
 
 // Add metadata for better SEO and performance
 export const metadata = {
@@ -11,9 +10,6 @@ export const metadata = {
   description: "Paneli i administrimit për menaxhimin e pronave dhe pyetjeve",
   robots: "noindex, nofollow" // Admin pages shouldn't be indexed
 }
-
-// Enable static rendering with revalidation for better performance
-export const revalidate = 300 // 5 minutes
 
 export default async function AdminPage() {
   // Optimize authentication check
@@ -24,24 +20,49 @@ export default async function AdminPage() {
   }
 
   try {
-    // Use cached data instead of direct database queries
-    const adminData = await getCachedAdminStats(prisma)
+    // Get admin stats directly from database
+    const [totalProperties, totalInquiries, recentInquiries, propertyStats] = await Promise.all([
+      prisma.property.count(),
+      prisma.inquiry.count(),
+      prisma.inquiry.findMany({
+        take: 5,
+        orderBy: { createdAt: "desc" },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          createdAt: true,
+          property: {
+            select: {
+              id: true,
+              title: true
+            }
+          }
+        }
+      }),
+      prisma.property.groupBy({
+        by: ["status"],
+        _count: true
+      })
+    ])
+
+    const stats = {
+      totalProperties,
+      totalInquiries,
+      forRent: propertyStats.find(s => s.status === "FOR_RENT")?._count || 0,
+      forSale: propertyStats.find(s => s.status === "FOR_SALE")?._count || 0,
+    }
 
     return (
       <AdminDashboard 
-        stats={{
-          totalProperties: adminData.totalProperties,
-          totalInquiries: adminData.totalInquiries,
-          forRent: adminData.stats.forRent,
-          forSale: adminData.stats.forSale
-        }}
-        recentInquiries={adminData.recentInquiries}
+        stats={stats}
+        recentInquiries={recentInquiries}
       />
     )
   } catch (error) {
     console.error("Error loading admin dashboard:", error)
     
-    // Fallback to basic stats if cache fails
+    // Fallback to basic stats if database fails
     const fallbackStats = {
       totalProperties: 0,
       totalInquiries: 0,

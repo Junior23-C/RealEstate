@@ -59,9 +59,10 @@ export async function POST(request: Request) {
 
     // Send notifications to all configured channels
     try {
+      console.log('🔔 Attempting to send notifications for inquiry:', inquiry.id)
       const primaryImage = inquiry.property.images[0]
       
-      await notificationService.sendInquiryNotifications({
+      const notificationData = {
         name: inquiry.name,
         email: inquiry.email,
         phone: inquiry.phone || undefined,
@@ -69,9 +70,14 @@ export async function POST(request: Request) {
         propertyTitle: inquiry.property.title,
         propertyId: inquiry.property.id,
         propertyImageUrl: primaryImage?.url
-      })
+      }
+      
+      console.log('📋 Notification data:', notificationData)
+      
+      const results = await notificationService.sendInquiryNotifications(notificationData)
       
       console.log('✅ Notifications sent successfully for inquiry:', inquiry.id)
+      console.log('📊 Notification results:', results)
     } catch (notificationError) {
       console.error('⚠️ Notification sending failed:', notificationError)
       // Don't fail the inquiry creation if notifications fail
