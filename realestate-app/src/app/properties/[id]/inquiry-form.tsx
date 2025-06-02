@@ -19,7 +19,7 @@ export function InquiryForm({ propertyId, propertyTitle, onClose }: InquiryFormP
     name: "",
     email: "",
     phone: "",
-    message: `I'm interested in learning more about "${propertyTitle}".`
+    message: `Jam i/e interesuar të mësoj më shumë rreth "${propertyTitle}".`
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -40,14 +40,14 @@ export function InquiryForm({ propertyId, propertyTitle, onClose }: InquiryFormP
       })
 
       if (response.ok) {
-        alert('Thank you for your inquiry! We will get back to you soon.')
+        alert('Faleminderit për pyetjen tuaj! Do t\'ju kontaktojmë së shpejti.')
         onClose()
       } else {
-        alert('Something went wrong. Please try again.')
+        alert('Diqka shkoi keq. Ju lutem provoni përsëri.')
       }
     } catch (error) {
       console.error('Error submitting inquiry:', error)
-      alert('Something went wrong. Please try again.')
+      alert('Diqka shkoi keq. Ju lutem provoni përsëri.')
     } finally {
       setIsSubmitting(false)
     }
@@ -72,7 +72,7 @@ export function InquiryForm({ propertyId, propertyTitle, onClose }: InquiryFormP
         >
           <div className="p-6">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-2xl font-bold">Send Inquiry</h2>
+              <h2 className="text-2xl font-bold">Dërgo Pyetje</h2>
               <button
                 onClick={onClose}
                 className="p-1 rounded-md hover:bg-muted transition-colors"
@@ -83,7 +83,7 @@ export function InquiryForm({ propertyId, propertyTitle, onClose }: InquiryFormP
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <Label htmlFor="name">Name *</Label>
+                <Label htmlFor="name">Emri *</Label>
                 <Input
                   id="name"
                   name="name"
@@ -108,7 +108,7 @@ export function InquiryForm({ propertyId, propertyTitle, onClose }: InquiryFormP
               </div>
 
               <div>
-                <Label htmlFor="phone">Phone</Label>
+                <Label htmlFor="phone">Telefoni</Label>
                 <Input
                   id="phone"
                   name="phone"
@@ -120,7 +120,7 @@ export function InquiryForm({ propertyId, propertyTitle, onClose }: InquiryFormP
               </div>
 
               <div>
-                <Label htmlFor="message">Message *</Label>
+                <Label htmlFor="message">Mesazhi *</Label>
                 <Textarea
                   id="message"
                   name="message"
@@ -138,7 +138,7 @@ export function InquiryForm({ propertyId, propertyTitle, onClose }: InquiryFormP
                   className="flex-1"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? 'Sending...' : 'Send Inquiry'}
+                  {isSubmitting ? 'Duke dërguar...' : 'Dërgo Pyetje'}
                 </Button>
                 <Button
                   type="button"
@@ -146,7 +146,7 @@ export function InquiryForm({ propertyId, propertyTitle, onClose }: InquiryFormP
                   onClick={onClose}
                   disabled={isSubmitting}
                 >
-                  Cancel
+                  Anullo
                 </Button>
               </div>
             </form>

@@ -29,9 +29,9 @@ export function PropertyCard({ property, index = 0 }: PropertyCardProps) {
   const primaryImage = property.images.find(img => img.isPrimary) || property.images[0]
   
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('sq-AL', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'EUR',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(price)
@@ -40,13 +40,13 @@ export function PropertyCard({ property, index = 0 }: PropertyCardProps) {
   const getStatusLabel = (status: string) => {
     switch (status) {
       case "FOR_RENT":
-        return "For Rent"
+        return "Me Qira"
       case "FOR_SALE":
-        return "For Sale"
+        return "Për Shitje"
       case "RENTED":
-        return "Rented"
+        return "E Dhënë me Qira"
       case "SOLD":
-        return "Sold"
+        return "E Shitur"
       default:
         return status.replace("_", " ")
     }
@@ -55,17 +55,17 @@ export function PropertyCard({ property, index = 0 }: PropertyCardProps) {
   const getTypeLabel = (type: string) => {
     switch (type) {
       case "HOUSE":
-        return "House"
+        return "Shtëpi"
       case "APARTMENT":
-        return "Apartment"
+        return "Apartament"
       case "CONDO":
-        return "Condo"
+        return "Kondominium"
       case "TOWNHOUSE":
-        return "Townhouse"
+        return "Vilë"
       case "LAND":
-        return "Land"
+        return "Tokë"
       case "COMMERCIAL":
-        return "Commercial"
+        return "Komerciale"
       default:
         return type.replace("_", " ")
     }
@@ -110,7 +110,7 @@ export function PropertyCard({ property, index = 0 }: PropertyCardProps) {
         <CardContent className="p-6">
           <h3 className="text-2xl font-bold mb-2">
             {formatPrice(property.price)}
-            {property.status === "FOR_RENT" && <span className="text-base font-normal">/month</span>}
+            {property.status === "FOR_RENT" && <span className="text-base font-normal">/muaj</span>}
           </h3>
           
           <h4 className="font-semibold text-lg mb-2 line-clamp-1">{property.title}</h4>
@@ -123,22 +123,22 @@ export function PropertyCard({ property, index = 0 }: PropertyCardProps) {
           <div className="flex items-center gap-4 text-sm">
             <div className="flex items-center gap-1">
               <Bed className="h-4 w-4 text-muted-foreground" />
-              <span>{property.bedrooms} beds</span>
+              <span>{property.bedrooms} dhoma</span>
             </div>
             <div className="flex items-center gap-1">
               <Bath className="h-4 w-4 text-muted-foreground" />
-              <span>{property.bathrooms} baths</span>
+              <span>{property.bathrooms} banjo</span>
             </div>
             <div className="flex items-center gap-1">
               <Square className="h-4 w-4 text-muted-foreground" />
-              <span>{property.squareFeet.toLocaleString()} sqft</span>
+              <span>{property.squareFeet.toLocaleString()} m²</span>
             </div>
           </div>
         </CardContent>
         
         <CardFooter className="p-6 pt-0">
           <Button asChild className="w-full">
-            <Link href={`/properties/${property.id}`}>View Details</Link>
+            <Link href={`/properties/${property.id}`}>Shiko Detajet</Link>
           </Button>
         </CardFooter>
       </Card>

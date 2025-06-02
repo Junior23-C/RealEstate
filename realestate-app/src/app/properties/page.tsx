@@ -20,7 +20,7 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
       <NavbarWrapper />
       
       <div className="container py-8">
-        <h1 className="text-4xl font-bold mb-8">Browse Properties</h1>
+        <h1 className="text-4xl font-bold mb-8">Shfletoni Pronat</h1>
         
         <div className="grid lg:grid-cols-4 gap-8">
           <div className="lg:col-span-1">
@@ -28,7 +28,7 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
           </div>
           
           <div className="lg:col-span-3">
-            <Suspense fallback={<div>Loading properties...</div>}>
+            <Suspense fallback={<div>Duke ngarkuar pronat...</div>}>
               <PropertyList searchParams={params} />
             </Suspense>
           </div>

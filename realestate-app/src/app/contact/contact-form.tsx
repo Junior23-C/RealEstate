@@ -19,7 +19,7 @@ export function ContactForm() {
     e.preventDefault()
     // TODO: Implement form submission
     console.log("Form submitted:", formData)
-    alert("Thank you for your message! We'll get back to you soon.")
+    alert("Faleminderit për mesazhin tuaj! Do t'ju kontaktojmë së shpejti.")
     setFormData({ name: "", email: "", phone: "", message: "" })
   }
 
@@ -33,15 +33,15 @@ export function ContactForm() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Send us a Message</CardTitle>
+        <CardTitle>Na Dërgoni një Mesazh</CardTitle>
         <CardDescription>
-          Fill out the form and we&apos;ll get back to you within 24 hours.
+          Plotësoni formularin dhe do t&apos;ju kontaktojmë brenda 24 orëve.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <Label htmlFor="name">Name</Label>
+            <Label htmlFor="name">Emri</Label>
             <Input
               id="name"
               name="name"
@@ -64,7 +64,7 @@ export function ContactForm() {
           </div>
           
           <div>
-            <Label htmlFor="phone">Phone (Optional)</Label>
+            <Label htmlFor="phone">Telefoni (Opsional)</Label>
             <Input
               id="phone"
               name="phone"
@@ -75,7 +75,7 @@ export function ContactForm() {
           </div>
           
           <div>
-            <Label htmlFor="message">Message</Label>
+            <Label htmlFor="message">Mesazhi</Label>
             <Textarea
               id="message"
               name="message"
@@ -87,7 +87,7 @@ export function ContactForm() {
           </div>
           
           <Button type="submit" className="w-full">
-            Send Message
+            Dërgo Mesazhin
           </Button>
         </form>
       </CardContent>

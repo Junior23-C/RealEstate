@@ -44,62 +44,62 @@ export function PropertyFilters() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Filters</CardTitle>
+        <CardTitle>Filtrat</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
         <div>
-          <Label className="mb-2 block">Property Status</Label>
+          <Label className="mb-2 block">Statusi i Pronës</Label>
           <RadioGroup
             defaultValue={searchParams.get("status") || "all"}
             onValueChange={(value) => updateFilter("status", value)}
           >
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="all" id="all" />
-              <Label htmlFor="all">All</Label>
+              <Label htmlFor="all">Të Gjitha</Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value={PropertyStatus.FOR_RENT} id="for-rent" />
-              <Label htmlFor="for-rent">For Rent</Label>
+              <Label htmlFor="for-rent">Me Qira</Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value={PropertyStatus.FOR_SALE} id="for-sale" />
-              <Label htmlFor="for-sale">For Sale</Label>
+              <Label htmlFor="for-sale">Për Shitje</Label>
             </div>
           </RadioGroup>
         </div>
 
         <div>
-          <Label htmlFor="type" className="mb-2 block">Property Type</Label>
+          <Label htmlFor="type" className="mb-2 block">Lloji i Pronës</Label>
           <Select
             value={searchParams.get("type") || "all"}
             onValueChange={(value) => updateFilter("type", value)}
           >
             <SelectTrigger id="type">
-              <SelectValue placeholder="Select type" />
+              <SelectValue placeholder="Zgjidh llojin" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Types</SelectItem>
-              <SelectItem value={PropertyType.HOUSE}>House</SelectItem>
-              <SelectItem value={PropertyType.APARTMENT}>Apartment</SelectItem>
-              <SelectItem value={PropertyType.CONDO}>Condo</SelectItem>
-              <SelectItem value={PropertyType.TOWNHOUSE}>Townhouse</SelectItem>
-              <SelectItem value={PropertyType.LAND}>Land</SelectItem>
-              <SelectItem value={PropertyType.COMMERCIAL}>Commercial</SelectItem>
+              <SelectItem value="all">Të Gjitha Llojet</SelectItem>
+              <SelectItem value={PropertyType.HOUSE}>Shtëpi</SelectItem>
+              <SelectItem value={PropertyType.APARTMENT}>Apartament</SelectItem>
+              <SelectItem value={PropertyType.CONDO}>Kondominium</SelectItem>
+              <SelectItem value={PropertyType.TOWNHOUSE}>Vilë</SelectItem>
+              <SelectItem value={PropertyType.LAND}>Tokë</SelectItem>
+              <SelectItem value={PropertyType.COMMERCIAL}>Komerciale</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
         <div>
-          <Label htmlFor="bedrooms" className="mb-2 block">Bedrooms</Label>
+          <Label htmlFor="bedrooms" className="mb-2 block">Dhoma Gjumi</Label>
           <Select
             value={searchParams.get("bedrooms") || "all"}
             onValueChange={(value) => updateFilter("bedrooms", value)}
           >
             <SelectTrigger id="bedrooms">
-              <SelectValue placeholder="Any" />
+              <SelectValue placeholder="Cilado" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Any</SelectItem>
+              <SelectItem value="all">Cilado</SelectItem>
               <SelectItem value="1">1+</SelectItem>
               <SelectItem value="2">2+</SelectItem>
               <SelectItem value="3">3+</SelectItem>
@@ -110,16 +110,16 @@ export function PropertyFilters() {
         </div>
 
         <div>
-          <Label htmlFor="bathrooms" className="mb-2 block">Bathrooms</Label>
+          <Label htmlFor="bathrooms" className="mb-2 block">Banjo</Label>
           <Select
             value={searchParams.get("bathrooms") || "all"}
             onValueChange={(value) => updateFilter("bathrooms", value)}
           >
             <SelectTrigger id="bathrooms">
-              <SelectValue placeholder="Any" />
+              <SelectValue placeholder="Cilado" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Any</SelectItem>
+              <SelectItem value="all">Cilado</SelectItem>
               <SelectItem value="1">1+</SelectItem>
               <SelectItem value="2">2+</SelectItem>
               <SelectItem value="3">3+</SelectItem>
@@ -129,7 +129,7 @@ export function PropertyFilters() {
         </div>
 
         <Button onClick={clearFilters} variant="outline" className="w-full">
-          Clear Filters
+          Pastro Filtrat
         </Button>
       </CardContent>
     </Card>

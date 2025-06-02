@@ -38,20 +38,20 @@ export function HeroSection() {
           className="max-w-2xl"
         >
           <h1 className="text-5xl md:text-6xl font-bold mb-6">
-            Find Your Dream Home in Albania
+            Gjeni Shtëpinë e Ëndrrave në Shqipëri
           </h1>
           <p className="text-xl mb-8 text-muted-foreground">
-            Discover exceptional properties for rent and sale in Tirana, Durrës, and throughout Albania. Your trusted real estate partner.
+            Zbuloni prona të jashtëzakonshme me qira dhe për shitje në Tiranë, Durrës dhe në të gjithë Shqipërinë. Partneri juaj i besuar në pasuritë e paluajtshme.
           </p>
           <div className="flex gap-4">
             <Button size="lg" asChild>
               <Link href="/properties">
-                Browse Properties
+                Shiko Pronat
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
             <Button size="lg" variant="outline" asChild>
-              <Link href="/contact">Contact Us</Link>
+              <Link href="/contact">Na Kontaktoni</Link>
             </Button>
           </div>
         </motion.div>

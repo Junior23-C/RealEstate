@@ -20,9 +20,9 @@ export default function Home() {
       <section className="py-20">
         <div className="container">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Featured Properties</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Prona të Zgjedhura</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Explore our handpicked selection of premium properties
+              Eksploroni përzgjedhjen tonë të kujdesshme të pronave premium
             </p>
           </div>
           
@@ -31,7 +31,7 @@ export default function Home() {
           <div className="text-center mt-12">
             <Button size="lg" variant="outline" asChild>
               <Link href="/properties">
-                View All Properties
+                Shiko të Gjitha Pronat
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>

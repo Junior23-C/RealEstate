@@ -43,7 +43,7 @@ export async function PropertyList({ searchParams }: PropertyListProps = {}) {
   if (properties.length === 0) {
     return (
       <div className="text-center py-12">
-        <p className="text-lg text-muted-foreground">No properties found matching your criteria.</p>
+        <p className="text-lg text-muted-foreground">Nuk u gjetën prona që përputhen me kriteret tuaja.</p>
       </div>
     )
   }

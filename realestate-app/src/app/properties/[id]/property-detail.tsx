@@ -52,9 +52,9 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
   const features = property.features ? JSON.parse(property.features) : []
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('sq-AL', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'EUR',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(price)
@@ -63,13 +63,13 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
   const getStatusLabel = (status: string) => {
     switch (status) {
       case "FOR_RENT":
-        return "For Rent"
+        return "Me Qira"
       case "FOR_SALE":
-        return "For Sale"
+        return "Për Shitje"
       case "RENTED":
-        return "Rented"
+        return "E Dhënë me Qira"
       case "SOLD":
-        return "Sold"
+        return "E Shitur"
       default:
         return status.replace("_", " ")
     }
@@ -78,17 +78,17 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
   const getTypeLabel = (type: string) => {
     switch (type) {
       case "HOUSE":
-        return "House"
+        return "Shtëpi"
       case "APARTMENT":
-        return "Apartment"
+        return "Apartament"
       case "CONDO":
-        return "Condo"
+        return "Kondominium"
       case "TOWNHOUSE":
-        return "Townhouse"
+        return "Vilë"
       case "LAND":
-        return "Land"
+        return "Tokë"
       case "COMMERCIAL":
-        return "Commercial"
+        return "Komerciale"
       default:
         return type.replace("_", " ")
     }
@@ -204,28 +204,28 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
               {/* Property Details */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Property Details</CardTitle>
+                  <CardTitle>Detajet e Pronës</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div className="flex items-center gap-2">
                       <Bed className="h-5 w-5 text-muted-foreground" />
                       <div>
-                        <p className="text-sm text-muted-foreground">Bedrooms</p>
+                        <p className="text-sm text-muted-foreground">Dhoma Gjumi</p>
                         <p className="font-semibold">{property.bedrooms}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
                       <Bath className="h-5 w-5 text-muted-foreground" />
                       <div>
-                        <p className="text-sm text-muted-foreground">Bathrooms</p>
+                        <p className="text-sm text-muted-foreground">Banjo</p>
                         <p className="font-semibold">{property.bathrooms}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
                       <Square className="h-5 w-5 text-muted-foreground" />
                       <div>
-                        <p className="text-sm text-muted-foreground">Square Feet</p>
+                        <p className="text-sm text-muted-foreground">Metra Katrorë</p>
                         <p className="font-semibold">{property.squareFeet.toLocaleString()}</p>
                       </div>
                     </div>
@@ -233,7 +233,7 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
                       <div className="flex items-center gap-2">
                         <Calendar className="h-5 w-5 text-muted-foreground" />
                         <div>
-                          <p className="text-sm text-muted-foreground">Year Built</p>
+                          <p className="text-sm text-muted-foreground">Viti i Ndërtimit</p>
                           <p className="font-semibold">{property.yearBuilt}</p>
                         </div>
                       </div>
@@ -242,8 +242,8 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
                   
                   {property.lotSize && (
                     <div className="mt-4 pt-4 border-t">
-                      <p className="text-sm text-muted-foreground">Lot Size</p>
-                      <p className="font-semibold">{property.lotSize} acres</p>
+                      <p className="text-sm text-muted-foreground">Madhësia e Parçelës</p>
+                      <p className="font-semibold">{property.lotSize} hektarë</p>
                     </div>
                   )}
                 </CardContent>
@@ -252,7 +252,7 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
               {/* Description */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Description</CardTitle>
+                  <CardTitle>Përshkrimi</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground whitespace-pre-wrap">{property.description}</p>
@@ -263,7 +263,7 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
               {features.length > 0 && (
                 <Card>
                   <CardHeader>
-                    <CardTitle>Features & Amenities</CardTitle>
+                    <CardTitle>Karakteristikat & Komoditetet</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -283,18 +283,18 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
             <div className="space-y-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Interested in this property?</CardTitle>
+                  <CardTitle>Të interesuar për këtë pronë?</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <p className="text-sm text-muted-foreground">
-                    Contact us today to schedule a viewing or get more information about this property.
+                    Na kontaktoni sot për të planifikuar një vizitë ose për të marrë më shumë informacion rreth kësaj prone.
                   </p>
                   <Button 
                     className="w-full" 
                     size="lg"
                     onClick={() => setShowInquiryForm(true)}
                   >
-                    Send Inquiry
+                    Dërgo Pyetje
                   </Button>
                   <div className="text-center text-sm text-muted-foreground">
                     or call us at

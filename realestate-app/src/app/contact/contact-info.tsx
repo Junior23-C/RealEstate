@@ -23,13 +23,13 @@ export function ContactInfo({ contactSettings }: ContactInfoProps) {
     <>
       <Card>
         <CardHeader>
-          <CardTitle>Contact Information</CardTitle>
+          <CardTitle>Informacioni i Kontaktit</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-start gap-3">
             <MapPin className="h-5 w-5 text-primary mt-1" />
             <div>
-              <p className="font-medium">Office Address</p>
+              <p className="font-medium">Adresa e Zyrës</p>
               <p className="text-sm text-muted-foreground">
                 {contactSettings.address}<br />
                 {contactSettings.city}, {contactSettings.state} {contactSettings.zipCode}
@@ -40,7 +40,7 @@ export function ContactInfo({ contactSettings }: ContactInfoProps) {
           <div className="flex items-start gap-3">
             <Phone className="h-5 w-5 text-primary mt-1" />
             <div>
-              <p className="font-medium">Phone</p>
+              <p className="font-medium">Telefoni</p>
               <p className="text-sm text-muted-foreground">{contactSettings.phone}</p>
             </div>
           </div>
@@ -56,7 +56,7 @@ export function ContactInfo({ contactSettings }: ContactInfoProps) {
           <div className="flex items-start gap-3">
             <Clock className="h-5 w-5 text-primary mt-1" />
             <div>
-              <p className="font-medium">Business Hours</p>
+              <p className="font-medium">Orari i Punës</p>
               <div className="text-sm text-muted-foreground space-y-1">
                 {Object.entries(contactSettings.businessHours).map(([day, hours]) => (
                   <div key={day}>
@@ -71,25 +71,25 @@ export function ContactInfo({ contactSettings }: ContactInfoProps) {
 
       <Card>
         <CardHeader>
-          <CardTitle>Why Choose Us?</CardTitle>
+          <CardTitle>Pse të Na Zgjidhni Ne?</CardTitle>
         </CardHeader>
         <CardContent>
           <ul className="space-y-2 text-sm">
             <li className="flex items-center gap-2">
               <span className="text-primary">✓</span>
-              Expert knowledge of local real estate market
+              Njohuri eksperte të tregut lokal të pasurive të paluajtshme
             </li>
             <li className="flex items-center gap-2">
               <span className="text-primary">✓</span>
-              Personalized service tailored to your needs
+              Shërbim i personalizuar sipas nevojave tuaja
             </li>
             <li className="flex items-center gap-2">
               <span className="text-primary">✓</span>
-              Transparent and honest communication
+              Komunikim transparent dhe i sinqertë
             </li>
             <li className="flex items-center gap-2">
               <span className="text-primary">✓</span>
-              Proven track record of successful transactions
+              Histori e vërtetuar e transaksioneve të suksesshme
             </li>
           </ul>
         </CardContent>

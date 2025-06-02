@@ -26,7 +26,7 @@ export async function FeaturedProperties() {
   if (properties.length === 0) {
     return (
       <div className="text-center py-12">
-        <p className="text-muted-foreground">No properties available at the moment.</p>
+        <p className="text-muted-foreground">Nuk ka prona të disponueshme për momentin.</p>
       </div>
     )
   }

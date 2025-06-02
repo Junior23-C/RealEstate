@@ -7,18 +7,18 @@ export function FeaturesSection() {
   const features = [
     {
       icon: HomeIcon,
-      title: "Premium Properties",
-      description: "Carefully selected homes that meet the highest standards of quality and comfort"
+      title: "Prona Premium",
+      description: "Shtëpi të përzgjedhura me kujdes që plotësojnë standardet më të larta të cilësisë dhe komoditetit"
     },
     {
       icon: Users,
-      title: "Expert Guidance",
-      description: "Professional agents dedicated to making your real estate journey smooth and successful"
+      title: "Udhëzim Ekspert",
+      description: "Agjentë profesionistë të përkushtuar për ta bërë udhëtimin tuaj në pasuritë e paluajtshme të qetë dhe të suksesshëm"
     },
     {
       icon: Shield,
-      title: "Trusted Service",
-      description: "Years of experience and hundreds of satisfied clients speak to our commitment"
+      title: "Shërbim i Besuar",
+      description: "Vite përvoje dhe qindra klientë të kënaqur dëshmojnë për përkushtimin tonë"
     }
   ]
 
@@ -32,9 +32,9 @@ export function FeaturesSection() {
           viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Why Choose Us</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Pse të Na Zgjidhni Ne</h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            We provide exceptional service and expertise to help you find the perfect property
+            Ne ofrojmë shërbim dhe ekspertizë të jashtëzakonshme për t'ju ndihmuar të gjeni pronën perfekte
           </p>
         </motion.div>
         

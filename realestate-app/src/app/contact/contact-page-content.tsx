@@ -29,9 +29,9 @@ export function ContactPageContent({ contactSettings }: ContactPageContentProps)
         className="max-w-6xl mx-auto"
       >
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4">Get in Touch</h1>
+          <h1 className="text-4xl font-bold mb-4">Na Kontaktoni</h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Have questions about our properties? We&apos;re here to help you find your perfect home.
+            Keni pyetje rreth pronave tona? Jemi këtu për t&apos;ju ndihmuar të gjeni shtëpinë tuaj perfekte.
           </p>
         </div>
 

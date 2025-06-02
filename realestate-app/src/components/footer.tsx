@@ -12,83 +12,83 @@ export function Footer() {
               <span className="font-bold">Aliaj Real Estate</span>
             </div>
             <p className="text-sm text-muted-foreground">
-              Your trusted partner in finding the perfect property. Quality homes, exceptional service.
+              Partneri juaj i besuar për gjetjen e pronës perfekte. Shtëpi cilësore, shërbim i jashtëzakonshëm.
             </p>
           </div>
           
           <div>
-            <h3 className="mb-4 text-sm font-semibold">Quick Links</h3>
+            <h3 className="mb-4 text-sm font-semibold">Lidhje të Shpejta</h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link href="/properties" className="text-muted-foreground hover:text-foreground">
-                  Browse Properties
+                  Shiko Pronat
                 </Link>
               </li>
               <li>
                 <Link href="/properties?status=FOR_RENT" className="text-muted-foreground hover:text-foreground">
-                  For Rent
+                  Me Qira
                 </Link>
               </li>
               <li>
                 <Link href="/properties?status=FOR_SALE" className="text-muted-foreground hover:text-foreground">
-                  For Sale
+                  Për Shitje
                 </Link>
               </li>
               <li>
                 <Link href="/contact" className="text-muted-foreground hover:text-foreground">
-                  Contact Us
+                  Na Kontaktoni
                 </Link>
               </li>
             </ul>
           </div>
           
           <div>
-            <h3 className="mb-4 text-sm font-semibold">Property Types</h3>
+            <h3 className="mb-4 text-sm font-semibold">Llojet e Pronave</h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link href="/properties?type=HOUSE" className="text-muted-foreground hover:text-foreground">
-                  Houses
+                  Shtëpi
                 </Link>
               </li>
               <li>
                 <Link href="/properties?type=APARTMENT" className="text-muted-foreground hover:text-foreground">
-                  Apartments
+                  Apartamente
                 </Link>
               </li>
               <li>
                 <Link href="/properties?type=CONDO" className="text-muted-foreground hover:text-foreground">
-                  Condos
+                  Kondominiume
                 </Link>
               </li>
               <li>
                 <Link href="/properties?type=COMMERCIAL" className="text-muted-foreground hover:text-foreground">
-                  Commercial
+                  Komerciale
                 </Link>
               </li>
             </ul>
           </div>
           
           <div>
-            <h3 className="mb-4 text-sm font-semibold">Contact Info</h3>
+            <h3 className="mb-4 text-sm font-semibold">Informacioni i Kontaktit</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li className="flex items-center space-x-2">
                 <MapPin className="h-4 w-4" />
-                <span>123 Main Street, City, State 12345</span>
+                <span>Rruga Ismail Qemali, Tiranë, Shqipëri</span>
               </li>
               <li className="flex items-center space-x-2">
                 <Phone className="h-4 w-4" />
-                <span>(555) 123-4567</span>
+                <span>+355 69 123 4567</span>
               </li>
               <li className="flex items-center space-x-2">
                 <Mail className="h-4 w-4" />
-                <span>info@premiumestate.com</span>
+                <span>info@aliaj-re.com</span>
               </li>
             </ul>
           </div>
         </div>
         
         <div className="mt-8 border-t pt-8 text-center text-sm text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} Aliaj Real Estate. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Aliaj Real Estate. Të gjitha të drejtat e rezervuara.</p>
         </div>
       </div>
     </footer>

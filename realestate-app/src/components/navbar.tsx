@@ -25,9 +25,9 @@ export function Navbar({ companyName = "Aliaj Real Estate" }: NavbarProps) {
   }, [])
 
   const navItems = [
-    { href: "/", label: "Home", icon: Home },
-    { href: "/properties", label: "Properties", icon: Building2 },
-    { href: "/contact", label: "Contact", icon: Phone },
+    { href: "/", label: "Kryefaqja", icon: Home },
+    { href: "/properties", label: "Pronat", icon: Building2 },
+    { href: "/contact", label: "Kontakt", icon: Phone },
   ]
 
   return (
