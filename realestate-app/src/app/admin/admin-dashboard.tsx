@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Building2, Home, LogOut, Plus, Eye, Mail, DollarSign, User } from "lucide-react"
 import { motion } from "framer-motion"
+import { TestTelegram } from "./test-telegram"
 
 interface AdminDashboardProps {
   stats: {
@@ -164,7 +165,7 @@ export function AdminDashboard({ stats, recentInquiries }: AdminDashboardProps) 
           </div>
 
           {/* Quick Actions */}
-          <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mb-8">
+          <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-4 mb-8">
             <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 bg-white dark:bg-slate-800">
               <CardHeader className="pb-4">
                 <div className="flex items-center gap-3">
@@ -259,6 +260,8 @@ export function AdminDashboard({ stats, recentInquiries }: AdminDashboardProps) 
                 )}
               </CardContent>
             </Card>
+
+            <TestTelegram />
           </div>
 
           {/* Navigation Links */}
