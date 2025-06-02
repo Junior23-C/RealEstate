@@ -3,6 +3,7 @@ import { authOptions } from "@/lib/auth"
 import { redirect, notFound } from "next/navigation"
 import { prisma } from "@/lib/db"
 import { PropertyForm } from "../../property-form"
+import AdminLayout from "@/components/admin/admin-layout"
 
 interface EditPropertyPageProps {
   params: Promise<{
@@ -30,5 +31,9 @@ export default async function EditPropertyPage({ params }: EditPropertyPageProps
     notFound()
   }
 
-  return <PropertyForm property={property} isEdit={true} />
+  return (
+    <AdminLayout user={session.user}>
+      <PropertyForm property={property} isEdit={true} />
+    </AdminLayout>
+  )
 }

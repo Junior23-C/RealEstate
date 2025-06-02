@@ -3,6 +3,7 @@ import { authOptions } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/db"
 import { InquiryManagement } from "./inquiry-management"
+import AdminLayout from "@/components/admin/admin-layout"
 
 export default async function AdminInquiriesPage() {
   const session = await getServerSession(authOptions)
@@ -27,5 +28,9 @@ export default async function AdminInquiriesPage() {
     }
   })
 
-  return <InquiryManagement inquiries={inquiries} />
+  return (
+    <AdminLayout user={session.user}>
+      <InquiryManagement inquiries={inquiries} />
+    </AdminLayout>
+  )
 }

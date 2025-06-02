@@ -3,6 +3,7 @@ import { authOptions } from "@/lib/auth"
 import { redirect, notFound } from "next/navigation"
 import { prisma } from "@/lib/db"
 import { TenantDetail } from "./tenant-detail"
+import AdminLayout from "@/components/admin/admin-layout"
 
 interface TenantDetailPageProps {
   params: Promise<{
@@ -44,5 +45,9 @@ export default async function TenantDetailPage({ params }: TenantDetailPageProps
     notFound()
   }
 
-  return <TenantDetail tenant={tenant} />
+  return (
+    <AdminLayout user={session.user}>
+      <TenantDetail tenant={tenant} />
+    </AdminLayout>
+  )
 }

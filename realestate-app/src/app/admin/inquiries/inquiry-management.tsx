@@ -14,7 +14,7 @@ import {
   TableRow 
 } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
-import { ArrowLeft, Mail, Phone, Eye, Trash2 } from "lucide-react"
+import { Mail, Phone, Eye, Trash2 } from "lucide-react"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -109,22 +109,7 @@ export function InquiryManagement({ inquiries }: InquiryManagementProps) {
   }
 
   return (
-    <div className="min-h-screen bg-muted/50">
-      {/* Header */}
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur">
-        <div className="container flex h-16 items-center">
-          <Link href="/admin" className="flex items-center space-x-2 mr-6">
-            <ArrowLeft className="h-4 w-4" />
-            <span>Kthehu në Panel</span>
-          </Link>
-          <div className="flex items-center space-x-2">
-            <Mail className="h-6 w-6" />
-            <span className="font-bold">Menaxhimi i Pyetjeve</span>
-          </div>
-        </div>
-      </header>
-
-      <div className="container py-8">
+    <div>
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold">Të Gjitha Pyetjet ({inquiries.length})</h1>
         </div>
@@ -228,7 +213,6 @@ export function InquiryManagement({ inquiries }: InquiryManagementProps) {
             </div>
           </CardContent>
         </Card>
-      </div>
 
       {/* Inquiry Detail Dialog */}
       <Dialog open={!!selectedInquiry} onOpenChange={() => setSelectedInquiry(null)}>

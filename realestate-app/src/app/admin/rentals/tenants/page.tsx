@@ -3,6 +3,7 @@ import { authOptions } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/db"
 import { TenantManagement } from "./tenant-management"
+import AdminLayout from "@/components/admin/admin-layout"
 
 export default async function TenantsPage() {
   const session = await getServerSession(authOptions)
@@ -32,5 +33,9 @@ export default async function TenantsPage() {
     orderBy: { lastName: "asc" }
   })
 
-  return <TenantManagement tenants={tenants} />
+  return (
+    <AdminLayout user={session.user}>
+      <TenantManagement tenants={tenants} />
+    </AdminLayout>
+  )
 }

@@ -3,6 +3,7 @@ import { authOptions } from "@/lib/auth"
 import { redirect, notFound } from "next/navigation"
 import { prisma } from "@/lib/db"
 import { TenantForm } from "../../tenant-form"
+import AdminLayout from "@/components/admin/admin-layout"
 
 interface EditTenantPageProps {
   params: Promise<{
@@ -27,5 +28,9 @@ export default async function EditTenantPage({ params }: EditTenantPageProps) {
     notFound()
   }
 
-  return <TenantForm tenant={tenant} isEdit={true} />
+  return (
+    <AdminLayout user={session.user}>
+      <TenantForm tenant={tenant} isEdit={true} />
+    </AdminLayout>
+  )
 }

@@ -16,7 +16,6 @@ import {
   TableRow 
 } from "@/components/ui/table"
 import { 
-  ArrowLeft, 
   Home,
   DollarSign,
   Calendar,
@@ -179,22 +178,7 @@ export function RentalDashboard({
   }
 
   return (
-    <div className="min-h-screen bg-muted/50">
-      {/* Header */}
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur">
-        <div className="container flex h-16 items-center">
-          <Link href="/admin" className="flex items-center space-x-2 mr-6">
-            <ArrowLeft className="h-4 w-4" />
-            <span>Kthehu në Panel</span>
-          </Link>
-          <div className="flex items-center space-x-2">
-            <Home className="h-6 w-6" />
-            <span className="font-bold">Menaxhimi i Qirave</span>
-          </div>
-        </div>
-      </header>
-
-      <div className="container py-8">
+    <div>
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <Card>
@@ -604,7 +588,6 @@ export function RentalDashboard({
             </Card>
           </div>
         )}
-      </div>
     </div>
   )
 }

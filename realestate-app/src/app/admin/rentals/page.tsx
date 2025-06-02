@@ -3,6 +3,7 @@ import { authOptions } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/db"
 import { RentalDashboard } from "./rental-dashboard"
+import AdminLayout from "@/components/admin/admin-layout"
 
 export default async function AdminRentalsPage() {
   const session = await getServerSession(authOptions)
@@ -134,11 +135,13 @@ export default async function AdminRentalsPage() {
   }
 
   return (
-    <RentalDashboard 
-      stats={stats}
-      activeLeases={activeLeaseDetails}
-      recentPayments={recentPayments}
-      upcomingPayments={upcomingPayments}
-    />
+    <AdminLayout user={session.user}>
+      <RentalDashboard 
+        stats={stats}
+        activeLeases={activeLeaseDetails}
+        recentPayments={recentPayments}
+        upcomingPayments={upcomingPayments}
+      />
+    </AdminLayout>
   )
 }

@@ -3,6 +3,7 @@ import { authOptions } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/db"
 import { LeaseForm } from "../lease-form"
+import AdminLayout from "@/components/admin/admin-layout"
 
 export default async function NewLeasePage() {
   const session = await getServerSession(authOptions)
@@ -40,5 +41,9 @@ export default async function NewLeasePage() {
     orderBy: { lastName: "asc" }
   })
 
-  return <LeaseForm availableProperties={availableProperties} tenants={tenants} />
+  return (
+    <AdminLayout user={session.user}>
+      <LeaseForm availableProperties={availableProperties} tenants={tenants} />
+    </AdminLayout>
+  )
 }

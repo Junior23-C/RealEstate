@@ -3,6 +3,7 @@ import { redirect } from "next/navigation"
 import { authOptions } from "@/lib/auth"
 import { SettingsForm } from "./settings-form"
 import { prisma } from "@/lib/db"
+import AdminLayout from "@/components/admin/admin-layout"
 
 export default async function SettingsPage() {
   const session = await getServerSession(authOptions)
@@ -72,5 +73,9 @@ export default async function SettingsPage() {
     }
   }
 
-  return <SettingsForm user={user} contactSettings={contactSettings} />
+  return (
+    <AdminLayout user={session.user}>
+      <SettingsForm user={user} contactSettings={contactSettings} />
+    </AdminLayout>
+  )
 }
