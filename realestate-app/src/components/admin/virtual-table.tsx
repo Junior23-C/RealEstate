@@ -2,30 +2,25 @@
 
 import { useMemo, useState, useCallback } from "react"
 import { FixedSizeList as List } from "react-window"
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
-} from "@/components/ui/table"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Search } from "lucide-react"
+import Image from "next/image"
+
+interface VirtualTableColumn<T> {
+  key: string
+  title: string
+  width: number
+  render: (item: T) => React.ReactNode
+}
 
 interface VirtualTableProps<T> {
   data: T[]
-  columns: Array<{
-    key: string
-    header: string
-    render: (item: T) => React.ReactNode
-    width?: number
-  }>
-  rowHeight?: number
+  columns: VirtualTableColumn<T>[]
   height?: number
-  searchFields?: string[]
-  itemKey: (item: T) => string
+  itemHeight?: number
+  searchable?: boolean
+  searchFields?: (keyof T)[]
 }
 
 interface RowProps<T> {
@@ -33,25 +28,21 @@ interface RowProps<T> {
   style: React.CSSProperties
   data: {
     items: T[]
-    columns: Array<{
-      key: string
-      header: string
-      render: (item: T) => React.ReactNode
-      width?: number
-    }>
+    columns: VirtualTableColumn<T>[]
   }
 }
 
+// Row component for virtual scrolling
 function Row<T>({ index, style, data }: RowProps<T>) {
   const item = data.items[index]
   
   return (
-    <div style={style} className="flex border-b">
+    <div style={style} className="flex border-b hover:bg-muted/50">
       {data.columns.map((column) => (
         <div
           key={column.key}
-          className="flex-1 px-4 py-2 flex items-center"
-          style={{ width: column.width || 'auto', minWidth: column.width || 150 }}
+          className="px-4 py-3 flex items-center"
+          style={{ width: column.width }}
         >
           {column.render(item)}
         </div>
@@ -60,256 +51,169 @@ function Row<T>({ index, style, data }: RowProps<T>) {
   )
 }
 
-export function VirtualTable<T>({
+export function VirtualTable<T extends Record<string, unknown>>({
   data,
   columns,
-  rowHeight = 60,
   height = 600,
-  searchFields = [],
-  itemKey
+  itemHeight = 60,
+  searchable = false,
+  searchFields = []
 }: VirtualTableProps<T>) {
-  const [searchTerm, setSearchTerm] = useState("")
+  const [search, setSearch] = useState("")
 
-  // Memoized filtered data
+  // Filter data based on search
   const filteredData = useMemo(() => {
-    if (!searchTerm.trim()) return data
-    
-    const searchLower = searchTerm.toLowerCase()
-    return data.filter((item) => {
-      return searchFields.some((field) => {
-        const value = (item as any)[field]
-        return value && value.toString().toLowerCase().includes(searchLower)
+    if (!search || !searchable) return data
+
+    return data.filter((item) =>
+      searchFields.some((field) => {
+        const value = item[field]
+        return value && String(value).toLowerCase().includes(search.toLowerCase())
       })
-    })
-  }, [data, searchTerm, searchFields])
+    )
+  }, [data, search, searchable, searchFields])
 
-  // Memoized row data
-  const rowData = useMemo(() => ({
-    items: filteredData,
-    columns
-  }), [filteredData, columns])
-
-  const handleSearch = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value)
+  const handleSearch = useCallback((value: string) => {
+    setSearch(value)
   }, [])
 
   return (
-    <div className="space-y-4">
-      {/* Search */}
-      {searchFields.length > 0 && (
-        <div className="relative max-w-sm">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-          <Input
-            placeholder="Search..."
-            value={searchTerm}
-            onChange={handleSearch}
-            className="pl-10"
-          />
-        </div>
-      )}
-
-      <Card className="border-0 shadow-lg bg-white dark:bg-slate-800">
-        <CardContent className="p-0">
-          {/* Table Header */}
-          <div className="border-b bg-muted/50">
-            <div className="flex">
-              {columns.map((column) => (
-                <div
-                  key={column.key}
-                  className="flex-1 px-4 py-3 font-semibold text-left"
-                  style={{ width: column.width || 'auto', minWidth: column.width || 150 }}
-                >
-                  {column.header}
-                </div>
-              ))}
+    <Card>
+      <CardContent className="p-0">
+        {/* Search Bar */}
+        {searchable && (
+          <div className="p-4 border-b">
+            <div className="relative">
+              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Kërkoni..."
+                value={search}
+                onChange={(e) => handleSearch(e.target.value)}
+                className="pl-8"
+              />
             </div>
           </div>
+        )}
 
-          {/* Virtual Table Body */}
-          {filteredData.length > 0 ? (
-            <List
-              height={height}
-              itemCount={filteredData.length}
-              itemSize={rowHeight}
-              itemData={rowData}
-              itemKey={(index) => itemKey(filteredData[index])}
+        {/* Header */}
+        <div className="flex border-b bg-muted/50">
+          {columns.map((column) => (
+            <div
+              key={column.key}
+              className="px-4 py-3 font-medium"
+              style={{ width: column.width }}
             >
-              {Row}
-            </List>
-          ) : (
-            <div className="p-8 text-center text-muted-foreground">
-              {searchTerm ? "No items found matching your search" : "No data available"}
+              {column.title}
             </div>
-          )}
+          ))}
+        </div>
 
-          {/* Footer with count */}
-          {filteredData.length > 0 && (
-            <div className="border-t px-4 py-2 text-sm text-muted-foreground">
-              Showing {filteredData.length} of {data.length} items
-            </div>
-          )}
-        </CardContent>
-      </Card>
-    </div>
+        {/* Virtual List */}
+        {filteredData.length === 0 ? (
+          <div className="p-8 text-center text-muted-foreground">
+            Nuk u gjetën të dhëna.
+          </div>
+        ) : (
+          <List
+            height={height}
+            width="100%"
+            itemCount={filteredData.length}
+            itemSize={itemHeight}
+            itemData={{
+              items: filteredData,
+              columns: columns
+            }}
+          >
+            {Row as React.ComponentType<RowProps<T>>}
+          </List>
+        )}
+      </CardContent>
+    </Card>
   )
 }
 
-// Specialized virtual table for properties
-export function VirtualPropertyTable({ properties }: { properties: any[] }) {
-  const columns = useMemo(() => [
+// Pre-configured virtual table for properties
+interface Property extends Record<string, unknown> {
+  id: string
+  title: string
+  price: number
+  status: string
+  type: string
+  city: string
+  images: Array<{ url: string; alt: string | null }>
+}
+
+export function VirtualPropertyTable({ properties }: { properties: Property[] }) {
+  const columns: VirtualTableColumn<Property>[] = [
     {
-      key: 'title',
-      header: 'Property',
-      width: 250,
-      render: (property: any) => (
-        <div className="flex items-center gap-3">
-          {property.images?.[0] ? (
-            <div className="relative h-12 w-16 rounded overflow-hidden flex-shrink-0">
-              <img
-                src={property.images[0].url}
-                alt={property.title}
-                className="object-cover w-full h-full"
-                loading="lazy"
-              />
-            </div>
-          ) : (
-            <div className="h-12 w-16 bg-muted rounded flex items-center justify-center flex-shrink-0">
-              <div className="h-4 w-4 bg-muted-foreground/30 rounded" />
-            </div>
-          )}
-          <div className="min-w-0 flex-1">
-            <p className="font-medium truncate">{property.title}</p>
-            <p className="text-sm text-muted-foreground truncate">
-              {property.city}, {property.state}
-            </p>
-          </div>
-        </div>
+      key: 'image',
+      title: 'Foto',
+      width: 80,
+      render: (property) => (
+        property.images[0] ? (
+          <Image
+            src={property.images[0].url}
+            alt={property.images[0].alt || property.title}
+            width={40}
+            height={40}
+            className="rounded object-cover"
+          />
+        ) : null
       )
     },
     {
-      key: 'type',
-      header: 'Type',
-      width: 120,
-      render: (property: any) => property.type
-    },
-    {
-      key: 'status',
-      header: 'Status',
-      width: 120,
-      render: (property: any) => (
-        <span className={`px-2 py-1 rounded text-xs font-medium ${
-          property.status === 'FOR_RENT' ? 'bg-blue-100 text-blue-800' :
-          property.status === 'FOR_SALE' ? 'bg-green-100 text-green-800' :
-          property.status === 'RENTED' ? 'bg-orange-100 text-orange-800' :
-          'bg-gray-100 text-gray-800'
-        }`}>
-          {property.status.replace('_', ' ')}
-        </span>
+      key: 'title',
+      title: 'Prona',
+      width: 300,
+      render: (property) => (
+        <div>
+          <div className="font-medium">{property.title}</div>
+          <div className="text-sm text-muted-foreground">{property.city}</div>
+        </div>
       )
     },
     {
       key: 'price',
-      header: 'Price',
-      width: 120,
-      render: (property: any) => (
-        <div>
-          <p className="font-medium">
-            ${property.price.toLocaleString()}
-          </p>
-          {property.status === 'FOR_RENT' && (
-            <p className="text-xs text-muted-foreground">/month</p>
-          )}
+      title: 'Çmimi',
+      width: 150,
+      render: (property) => (
+        <div className="font-medium">
+          {new Intl.NumberFormat('sq-AL', {
+            style: 'currency',
+            currency: 'EUR',
+            minimumFractionDigits: 0,
+          }).format(property.price)}
         </div>
       )
     },
     {
-      key: 'inquiries',
-      header: 'Inquiries',
-      width: 100,
-      render: (property: any) => property._count?.inquiries || 0
+      key: 'status',
+      title: 'Statusi',
+      width: 120,
+      render: (property) => {
+        const statusLabels = {
+          "FOR_RENT": "Me Qira",
+          "FOR_SALE": "Për Shitje",
+          "RENTED": "E Dhënë",
+          "SOLD": "E Shitur"
+        }
+        return (
+          <span className="px-2 py-1 text-xs rounded-full bg-muted">
+            {statusLabels[property.status as keyof typeof statusLabels] || property.status}
+          </span>
+        )
+      }
     }
-  ], [])
+  ]
 
   return (
     <VirtualTable
       data={properties}
       columns={columns}
-      searchFields={['title', 'city', 'state', 'type']}
-      itemKey={(property) => property.id}
       height={500}
-    />
-  )
-}
-
-// Specialized virtual table for tenants
-export function VirtualTenantTable({ tenants }: { tenants: any[] }) {
-  const columns = useMemo(() => [
-    {
-      key: 'name',
-      header: 'Tenant',
-      width: 200,
-      render: (tenant: any) => (
-        <div>
-          <p className="font-medium">
-            {tenant.firstName} {tenant.lastName}
-          </p>
-          {tenant.employer && (
-            <p className="text-sm text-muted-foreground">{tenant.employer}</p>
-          )}
-        </div>
-      )
-    },
-    {
-      key: 'contact',
-      header: 'Contact',
-      width: 200,
-      render: (tenant: any) => (
-        <div className="space-y-1">
-          <p className="text-sm">{tenant.email}</p>
-          <p className="text-sm text-muted-foreground">{tenant.phone}</p>
-        </div>
-      )
-    },
-    {
-      key: 'property',
-      header: 'Current Property',
-      width: 200,
-      render: (tenant: any) => {
-        const activeLease = tenant.leases?.find((lease: any) => lease.status === 'ACTIVE')
-        return activeLease?.property ? (
-          <div>
-            <p className="font-medium">{activeLease.property.title}</p>
-            <p className="text-sm text-muted-foreground">
-              {activeLease.property.city}, {activeLease.property.state}
-            </p>
-          </div>
-        ) : (
-          <span className="text-muted-foreground">No active lease</span>
-        )
-      }
-    },
-    {
-      key: 'rent',
-      header: 'Monthly Rent',
-      width: 120,
-      render: (tenant: any) => {
-        const activeLease = tenant.leases?.find((lease: any) => lease.status === 'ACTIVE')
-        return activeLease?.monthlyRent ? (
-          <p className="font-medium">${activeLease.monthlyRent.toLocaleString()}</p>
-        ) : (
-          <span className="text-muted-foreground">-</span>
-        )
-      }
-    }
-  ], [])
-
-  return (
-    <VirtualTable
-      data={tenants}
-      columns={columns}
-      searchFields={['firstName', 'lastName', 'email', 'phone']}
-      itemKey={(tenant) => tenant.id}
-      height={500}
+      itemHeight={60}
+      searchable
+      searchFields={['title', 'city']}
     />
   )
 }

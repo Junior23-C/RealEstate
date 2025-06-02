@@ -1,5 +1,6 @@
 // Admin Dashboard Caching Utilities
 import { unstable_cache } from 'next/cache'
+import { PrismaClient } from '@prisma/client'
 
 // Cache configuration for different data types
 export const CACHE_TAGS = {
@@ -21,7 +22,7 @@ export const CACHE_DURATION = {
 
 // Cached admin stats query
 export const getCachedAdminStats = unstable_cache(
-  async (prisma: any) => {
+  async (prisma: PrismaClient) => {
     const [totalProperties, totalInquiries, recentInquiries, propertyStats] = await Promise.all([
       prisma.property.count(),
       prisma.inquiry.count(),
@@ -66,7 +67,7 @@ export const getCachedAdminStats = unstable_cache(
 
 // Cached properties query with pagination
 export const getCachedProperties = unstable_cache(
-  async (prisma: any, page: number = 1, limit: number = 10, search?: string) => {
+  async (prisma: PrismaClient, page: number = 1, limit: number = 10, search?: string) => {
     const offset = (page - 1) * limit
     
     const where = search ? {
@@ -121,7 +122,7 @@ export const getCachedProperties = unstable_cache(
 
 // Cached inquiries query
 export const getCachedInquiries = unstable_cache(
-  async (prisma: any, page: number = 1, limit: number = 10) => {
+  async (prisma: PrismaClient, page: number = 1, limit: number = 10) => {
     const offset = (page - 1) * limit
 
     const [inquiries, total] = await Promise.all([

@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Search, ChevronLeft, ChevronRight } from "lucide-react"
 import Link from "next/link"
+import Image from "next/image"
 import { useDebounce } from "@/hooks/use-debounce"
 
 interface Property {
@@ -134,11 +135,13 @@ export function PropertyTableLazy({
           <td className="px-4 py-3">
             <div className="flex items-center space-x-3">
               {primaryImage && (
-                <img
+                <Image
                   src={primaryImage.url}
                   alt={primaryImage.alt || property.title}
+                  width={48}
+                  height={48}
                   className="h-12 w-12 rounded object-cover"
-                  loading="lazy" // Lazy load images
+                  sizes="48px"
                 />
               )}
               <div>

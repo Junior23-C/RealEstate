@@ -2,7 +2,7 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/db"
-import { PropertyManagementOptimized } from "./property-management-optimized"
+import { PropertyManagement } from "./property-management"
 
 // Add metadata for better SEO
 export const metadata = {
@@ -30,11 +30,10 @@ export default async function AdminPropertiesPage() {
       type: true,
       status: true,
       price: true,
-      rentedDate: true,
-      rentEndDate: true,
-      tenantName: true,
-      tenantEmail: true,
-      tenantPhone: true,
+      bedrooms: true,
+      bathrooms: true,
+      squareFeet: true,
+      createdAt: true,
       images: {
         select: {
           id: true,
@@ -54,5 +53,5 @@ export default async function AdminPropertiesPage() {
     }
   })
 
-  return <PropertyManagementOptimized properties={properties} />
+  return <PropertyManagement properties={properties} />
 }
