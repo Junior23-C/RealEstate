@@ -1,9 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { notificationService } from '@/lib/notifications'
 
-export async function POST(request: NextRequest) {
+export async function POST() {
   try {
     // Check if user is admin
     const session = await getServerSession(authOptions)

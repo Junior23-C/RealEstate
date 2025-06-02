@@ -27,6 +27,21 @@ interface WhatsAppMessage {
   }
 }
 
+interface WhatsAppWebhookBody {
+  entry?: Array<{
+    changes?: Array<{
+      value?: {
+        messages?: Array<{
+          from: string
+          text?: {
+            body: string
+          }
+        }>
+      }
+    }>
+  }>
+}
+
 class WhatsAppService {
   private config: WhatsAppConfig
 
@@ -155,7 +170,7 @@ ${inquiry.phone ? `📱 *Telefoni:* ${inquiry.phone}` : ''}
   }
 
   // Process incoming webhook
-  processWebhook(body: any): void {
+  processWebhook(body: WhatsAppWebhookBody): void {
     try {
       if (body.entry && body.entry[0] && body.entry[0].changes) {
         const changes = body.entry[0].changes[0]

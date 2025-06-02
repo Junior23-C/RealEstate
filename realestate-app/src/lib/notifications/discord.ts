@@ -3,6 +3,24 @@ interface DiscordConfig {
   webhookUrl: string
 }
 
+interface DiscordEmbed {
+  title: string
+  description: string
+  color: number
+  fields: Array<{
+    name: string
+    value: string
+    inline: boolean
+  }>
+  timestamp: string
+  footer: {
+    text: string
+  }
+  thumbnail?: {
+    url: string
+  }
+}
+
 class DiscordService {
   private config: DiscordConfig
 
@@ -49,7 +67,7 @@ class DiscordService {
     propertyImageUrl?: string
   }): Promise<boolean> {
     try {
-      const embed = {
+      const embed: DiscordEmbed = {
         title: "🏠 Pyetje e Re nga Klienti",
         description: `Keni marrë një pyetje të re për pronën **${inquiry.propertyTitle}**`,
         color: 0x00ff00, // Green color
