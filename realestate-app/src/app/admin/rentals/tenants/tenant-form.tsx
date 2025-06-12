@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { ArrowLeft, Loader2, Users } from "lucide-react"
+import { toast } from "sonner"
 
 interface TenantFormProps {
   tenant?: {
@@ -78,14 +79,14 @@ export function TenantForm({ tenant, isEdit = false }: TenantFormProps) {
       })
 
       if (response.ok) {
+        toast.success(`Qiramarrësi u ${isEdit ? "përditësua" : "krijua"} me sukses`)
         router.push("/admin/rentals/tenants")
       } else {
         const error = await response.text()
-        alert(`Failed to ${isEdit ? "update" : "create"} tenant: ${error}`)
+        toast.error(`Dështoi ${isEdit ? "përditësimi" : "krijimi"} i qiramarrësit: ${error}`)
       }
-    } catch (error) {
-      console.error("Error submitting tenant:", error)
-      alert(`Failed to ${isEdit ? "update" : "create"} tenant`)
+    } catch {
+      toast.error(`Ndodhi një gabim gjatë ${isEdit ? "përditësimit" : "krijimit"} të qiramarrësit`)
     } finally {
       setIsLoading(false)
     }

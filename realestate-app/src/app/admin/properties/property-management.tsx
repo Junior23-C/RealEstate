@@ -9,6 +9,7 @@ import {
   Building2, Plus, Edit, Trash2, Eye, Mail, MapPin, 
   BedDouble, Bath, Square, Search, Grid, List
 } from "lucide-react"
+import { toast } from "sonner"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -51,22 +52,26 @@ export function PropertyManagement({ properties }: PropertyManagementProps) {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedStatus, setSelectedStatus] = useState("all")
+  const [isDeleting, setIsDeleting] = useState(false)
 
   const handleDelete = async (id: string) => {
+    setIsDeleting(true)
     try {
       const response = await fetch(`/api/properties/${id}`, {
         method: "DELETE"
       })
 
       if (response.ok) {
+        toast.success("Prona u fshi me sukses")
         router.refresh()
       } else {
-        alert("Dështoi fshirja e pronës")
+        const errorData = await response.text()
+        toast.error(`Dështoi fshirja e pronës: ${errorData}`)
       }
-    } catch (error) {
-      console.error("Error deleting property:", error)
-      alert("Dështoi fshirja e pronës")
+    } catch {
+      toast.error("Ndodhi një gabim gjatë fshirjes së pronës")
     } finally {
+      setIsDeleting(false)
       setDeletingId(null)
     }
   }
@@ -458,9 +463,10 @@ export function PropertyManagement({ properties }: PropertyManagementProps) {
             <AlertDialogCancel>Anulo</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => deletingId && handleDelete(deletingId)}
-              className="bg-red-600 hover:bg-red-700"
+              disabled={isDeleting}
+              className="bg-red-600 hover:bg-red-700 disabled:opacity-50"
             >
-              Fshi
+              {isDeleting ? "Duke fshirë..." : "Fshi"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

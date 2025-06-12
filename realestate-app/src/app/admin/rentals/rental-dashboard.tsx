@@ -26,6 +26,7 @@ import {
   Eye,
   Plus
 } from "lucide-react"
+import { toast } from "sonner"
 
 interface RentalDashboardProps {
   stats: {
@@ -165,13 +166,14 @@ export function RentalDashboard({
       })
 
       if (response.ok) {
+        toast.success("Pagesa u shënua si e paguar me sukses")
         router.refresh()
       } else {
-        alert("Dështoi shënimi i pagesës si e paguar")
+        const errorData = await response.text()
+        toast.error(`Dështoi shënimi i pagesës si e paguar: ${errorData}`)
       }
-    } catch (error) {
-      console.error("Error marking payment as paid:", error)
-      alert("Dështoi shënimi i pagesës si e paguar")
+    } catch {
+      toast.error("Ndodhi një gabim gjatë shënimit të pagesës")
     } finally {
       setMarkingPayment(null)
     }

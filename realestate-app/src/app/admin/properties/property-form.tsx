@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ArrowLeft, Plus, X, Loader2, Upload } from "lucide-react"
 import { PropertyType, PropertyStatus } from "@/lib/constants"
+import { toast } from "sonner"
 
 interface PropertyFormProps {
   property?: {
@@ -115,14 +116,14 @@ export function PropertyForm({ property, isEdit = false }: PropertyFormProps) {
       })
 
       if (response.ok) {
+        toast.success(`Prona u ${isEdit ? "përditësua" : "krijua"} me sukses`)
         router.push("/admin/properties")
       } else {
         const error = await response.text()
-        alert(`Failed to ${isEdit ? "update" : "create"} property: ${error}`)
+        toast.error(`Dështoi ${isEdit ? "përditësimi" : "krijimi"} i pronës: ${error}`)
       }
-    } catch (error) {
-      console.error("Error submitting property:", error)
-      alert(`Failed to ${isEdit ? "update" : "create"} property`)
+    } catch {
+      toast.error(`Ndodhi një gabim gjatë ${isEdit ? "përditësimit" : "krijimit"} të pronës`)
     } finally {
       setIsLoading(false)
     }
@@ -182,12 +183,11 @@ export function PropertyForm({ property, isEdit = false }: PropertyFormProps) {
           setUploadedImages(prev => [...prev, { url, isPrimary: prev.length === 0 }])
         } else {
           const error = await response.json()
-          alert(`Failed to upload ${file.name}: ${error.error}`)
+          toast.error(`Dështoi ngarkimi i ${file.name}: ${error.error}`)
         }
       }
-    } catch (error) {
-      console.error("Upload error:", error)
-      alert("Failed to upload images")
+    } catch {
+      toast.error("Dështoi ngarkimi i fotove")
     } finally {
       setUploadingImages(false)
       // Clear the input

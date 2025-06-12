@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ArrowLeft, Loader2, FileText, Home, User } from "lucide-react"
+import { toast } from "sonner"
 
 interface LeaseFormProps {
   availableProperties: Array<{
@@ -102,15 +103,14 @@ export function LeaseForm({ availableProperties, tenants }: LeaseFormProps) {
 
       if (response.ok) {
         const result = await response.json()
-        alert(`Lease created successfully! ${result.paymentsCreated} monthly payments have been scheduled.`)
+        toast.success(`Kontrata u krijua me sukses! ${result.paymentsCreated} pagesa mujore janë planifikuar.`)
         router.push("/admin/rentals")
       } else {
         const error = await response.text()
-        alert(`Failed to create lease: ${error}`)
+        toast.error(`Dështoi krijimi i kontratës: ${error}`)
       }
-    } catch (error) {
-      console.error("Error creating lease:", error)
-      alert("Failed to create lease")
+    } catch {
+      toast.error("Ndodhi një gabim gjatë krijimit të kontratës")
     } finally {
       setIsLoading(false)
     }

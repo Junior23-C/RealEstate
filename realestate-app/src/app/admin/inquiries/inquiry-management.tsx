@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { Mail, Phone, Eye, Trash2 } from "lucide-react"
+import { toast } from "sonner"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -54,27 +55,33 @@ export function InquiryManagement({ inquiries }: InquiryManagementProps) {
   const router = useRouter()
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [selectedInquiry, setSelectedInquiry] = useState<InquiryManagementProps['inquiries'][0] | null>(null)
+  const [isDeleting, setIsDeleting] = useState(false)
+  const [isUpdating, setIsUpdating] = useState(false)
 
   const handleDelete = async (id: string) => {
+    setIsDeleting(true)
     try {
       const response = await fetch(`/api/inquiries/${id}`, {
         method: "DELETE"
       })
 
       if (response.ok) {
+        toast.success("Pyetja u fshi me sukses")
         router.refresh()
       } else {
-        alert("Dështoi fshirja e pyetjes")
+        const errorData = await response.text()
+        toast.error(`Dështoi fshirja e pyetjes: ${errorData}`)
       }
-    } catch (error) {
-      console.error("Error deleting inquiry:", error)
-      alert("Dështoi fshirja e pyetjes")
+    } catch {
+      toast.error("Ndodhi një gabim gjatë fshirjes së pyetjes")
     } finally {
+      setIsDeleting(false)
       setDeletingId(null)
     }
   }
 
   const updateStatus = async (id: string, status: string) => {
+    setIsUpdating(true)
     try {
       const response = await fetch(`/api/inquiries/${id}`, {
         method: "PATCH",
@@ -85,13 +92,16 @@ export function InquiryManagement({ inquiries }: InquiryManagementProps) {
       })
 
       if (response.ok) {
+        toast.success("Statusi u përditësua me sukses")
         router.refresh()
       } else {
-        alert("Dështoi përditësimi i statusit të pyetjes")
+        const errorData = await response.text()
+        toast.error(`Dështoi përditësimi i statusit: ${errorData}`)
       }
-    } catch (error) {
-      console.error("Error updating inquiry:", error)
-      alert("Dështoi përditësimi i statusit të pyetjes")
+    } catch {
+      toast.error("Ndodhi një gabim gjatë përditësimit të statusit")
+    } finally {
+      setIsUpdating(false)
     }
   }
 
@@ -178,7 +188,8 @@ export function InquiryManagement({ inquiries }: InquiryManagementProps) {
                         <select
                           value={inquiry.status}
                           onChange={(e) => updateStatus(inquiry.id, e.target.value)}
-                          className="rounded border bg-background px-2 py-1 text-sm"
+                          disabled={isUpdating}
+                          className="rounded border bg-background px-2 py-1 text-sm disabled:opacity-50"
                         >
                           <option value="PENDING">Në Pritje</option>
                           <option value="CONTACTED">Kontaktuar</option>
@@ -275,8 +286,11 @@ export function InquiryManagement({ inquiries }: InquiryManagementProps) {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Anullo</AlertDialogCancel>
-            <AlertDialogAction onClick={() => deletingId && handleDelete(deletingId)}>
-              Fshi
+            <AlertDialogAction 
+              onClick={() => deletingId && handleDelete(deletingId)}
+              disabled={isDeleting}
+            >
+              {isDeleting ? "Duke fshirë..." : "Fshi"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

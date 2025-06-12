@@ -17,7 +17,7 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    console.log("🕐 Running payment reminder cron job...")
+    // Running payment reminder cron job
 
     // Get current date
     const today = new Date()
@@ -53,7 +53,7 @@ export async function GET(request: Request) {
           status: "LATE"
         }
       })
-      console.log(`📅 Updated ${overduePayments.length} payments to LATE status`)
+      // Updated payments to LATE status
     }
 
     // Check for payments due in 3 days
@@ -85,7 +85,6 @@ export async function GET(request: Request) {
     for (const payment of upcomingPayments) {
       // Skip if lease or tenant data is missing
       if (!payment.lease || !payment.lease.tenant || !payment.lease.property) {
-        console.warn(`Skipping payment ${payment.id}: missing lease/tenant/property data`)
         continue
       }
       
@@ -135,7 +134,6 @@ Property Management Team`,
     for (const payment of overduePayments) {
       // Skip if lease or tenant data is missing
       if (!payment.lease || !payment.lease.tenant || !payment.lease.property) {
-        console.warn(`Skipping overdue payment ${payment.id}: missing lease/tenant/property data`)
         continue
       }
       

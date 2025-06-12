@@ -72,7 +72,6 @@ export async function POST() {
     for (const payment of upcomingPayments) {
       // Skip if lease or tenant data is missing
       if (!payment.lease || !payment.lease.tenant || !payment.lease.property) {
-        console.warn(`Skipping payment ${payment.id}: missing lease/tenant/property data`)
         continue
       }
       
@@ -105,7 +104,6 @@ export async function POST() {
     for (const payment of overduePayments) {
       // Skip if lease or tenant data is missing
       if (!payment.lease || !payment.lease.tenant || !payment.lease.property) {
-        console.warn(`Skipping overdue payment ${payment.id}: missing lease/tenant/property data`)
         continue
       }
       
@@ -144,10 +142,7 @@ export async function POST() {
     // - Nodemailer with Gmail
     // - AWS SES (very cheap)
 
-    // For now, we'll just log the notifications
-    console.log(`Created ${notificationsToCreate.length} notifications`)
-    console.log(`Found ${overduePayments.length} overdue payments`)
-    console.log(`Found ${upcomingPayments.length} upcoming payments`)
+    // Notifications processed successfully
 
     return NextResponse.json({
       success: true,
@@ -155,8 +150,7 @@ export async function POST() {
       overduePayments: overduePayments.length,
       upcomingPayments: upcomingPayments.length
     })
-  } catch (error) {
-    console.error("Error processing notifications:", error)
+  } catch {
     return NextResponse.json(
       { error: "Failed to process notifications" },
       { status: 500 }
@@ -186,8 +180,7 @@ export async function GET() {
     })
 
     return NextResponse.json(notifications)
-  } catch (error) {
-    console.error("Error fetching notifications:", error)
+  } catch {
     return NextResponse.json(
       { error: "Failed to fetch notifications" },
       { status: 500 }

@@ -41,11 +41,11 @@ export function useContactSettings() {
       try {
         const response = await fetch('/api/contact-info')
         if (response.ok) {
-          const data = await response.json()
-          setSettings(data)
+          const contactData = await response.json()
+          setSettings(contactData)
         }
-      } catch (error) {
-        console.error('Error fetching contact settings:', error)
+      } catch {
+        // Handle error silently
       } finally {
         setLoading(false)
       }

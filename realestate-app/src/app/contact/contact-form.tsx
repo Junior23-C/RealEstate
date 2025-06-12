@@ -17,10 +17,22 @@ export function ContactForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // TODO: Implement form submission
-    console.log("Form submitted:", formData)
-    alert("Faleminderit për mesazhin tuaj! Do t'ju kontaktojmë së shpejti.")
-    setFormData({ name: "", email: "", phone: "", message: "" })
+    
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+      
+      if (response.ok) {
+        setFormData({ name: "", email: "", phone: "", message: "" })
+      }
+    } catch {
+      // Handle error silently for now
+    }
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {

@@ -40,18 +40,10 @@ export function InquiryForm({ propertyId, propertyTitle, onClose }: InquiryFormP
       })
 
       if (response.ok) {
-        const result = await response.json()
-        console.log('Inquiry submitted successfully:', result)
-        alert('Faleminderit për pyetjen tuaj! Do t\'ju kontaktojmë së shpejti.')
         onClose()
-      } else {
-        const error = await response.text()
-        console.error('Inquiry submission failed:', error)
-        alert('Diçka shkoi keq. Ju lutem provoni përsëri.')
       }
-    } catch (error) {
-      console.error('Error submitting inquiry:', error)
-      alert('Diqka shkoi keq. Ju lutem provoni përsëri.')
+    } catch {
+      // Handle error silently
     } finally {
       setIsSubmitting(false)
     }
