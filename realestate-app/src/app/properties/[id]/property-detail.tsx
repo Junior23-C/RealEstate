@@ -112,7 +112,7 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
         >
           {/* Image Gallery */}
           <div className="relative mb-8">
-            <div className="relative h-[60vh] rounded-lg overflow-hidden">
+            <div className="relative h-[60vh] rounded-lg overflow-hidden touch-manipulation">
               {property.images.length > 0 ? (
                 <>
                   <Image
@@ -120,6 +120,8 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
                     alt={property.images[currentImageIndex].alt || property.title}
                     fill
                     className="object-cover"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
+                    priority={currentImageIndex === 0}
                   />
                   
                   {property.images.length > 1 && (
@@ -333,21 +335,22 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
 
       {/* Fullscreen Image Modal */}
       {showFullscreen && (
-        <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur">
+        <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur overscroll-none">
           <button
             onClick={() => setShowFullscreen(false)}
-            className="absolute top-4 right-4 p-2 rounded-full bg-background/80 hover:bg-background transition-colors"
+            className="absolute top-4 right-4 p-2 rounded-full bg-background/80 hover:bg-background transition-colors z-10"
           >
             <X className="h-6 w-6" />
           </button>
           
-          <div className="h-full w-full flex items-center justify-center p-8">
-            <div className="relative h-full w-full max-w-7xl">
+          <div className="h-full w-full flex items-center justify-center p-4 md:p-8">
+            <div className="relative h-full w-full max-w-7xl touch-manipulation">
               <Image
                 src={property.images[currentImageIndex].url}
                 alt={property.images[currentImageIndex].alt || property.title}
                 fill
                 className="object-contain"
+                sizes="100vw"
               />
               
               {property.images.length > 1 && (

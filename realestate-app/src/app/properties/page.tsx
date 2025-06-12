@@ -3,7 +3,7 @@ import { PropertyList } from "./property-list"
 import { PropertyFilters } from "./property-filters"
 import { NavbarWrapper } from "@/components/navbar-wrapper"
 import { Footer } from "@/components/footer"
-import { MobileFilterSheet } from "@/components/mobile-filter-sheet"
+import { FloatingFilterButton } from "@/components/floating-filter-button"
 import { PropertyListSkeleton } from "@/components/property-card-skeleton"
 import { PropertyListWrapper, DesktopPropertyList } from "@/components/property-list-wrapper"
 
@@ -23,13 +23,8 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
       <NavbarWrapper />
       
       <div className="container py-8">
-        <div className="flex items-center justify-between mb-8">
+        <div className="mb-8">
           <h1 className="text-4xl font-bold">Shfletoni Pronat</h1>
-          
-          {/* Mobile filter button - visible on mobile only */}
-          <div className="lg:hidden">
-            <MobileFilterSheet />
-          </div>
         </div>
         
         <div className="grid lg:grid-cols-4 gap-8">
@@ -50,6 +45,9 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
           </div>
         </div>
       </div>
+      
+      {/* Floating filter button for mobile */}
+      <FloatingFilterButton />
       
       <Footer />
     </div>

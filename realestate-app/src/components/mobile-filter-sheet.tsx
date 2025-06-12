@@ -101,8 +101,8 @@ export function MobileFilterSheet({ totalProperties }: MobileFilterSheetProps) {
         </Button>
       </SheetTrigger>
       
-      <SheetContent side="bottom" className="h-[90vh] overflow-y-auto">
-        <SheetHeader className="pb-6">
+      <SheetContent side="bottom" className="h-[85vh] flex flex-col">
+        <SheetHeader className="pb-6 flex-shrink-0">
           <div className="flex items-center justify-between">
             <SheetTitle>Filtrat</SheetTitle>
             {totalProperties && (
@@ -113,7 +113,8 @@ export function MobileFilterSheet({ totalProperties }: MobileFilterSheetProps) {
           </div>
         </SheetHeader>
 
-        <div className="space-y-6">
+        <div className="flex-1 overflow-y-auto overscroll-contain touch-pan-y pb-4">
+          <div className="space-y-6">
           <div>
             <Label className="mb-3 block text-base font-medium">Statusi i Pronës</Label>
             <RadioGroup
@@ -218,9 +219,10 @@ export function MobileFilterSheet({ totalProperties }: MobileFilterSheetProps) {
               </div>
             </div>
           </div>
+          </div>
         </div>
 
-        <div className="sticky bottom-0 bg-background pt-6 space-y-3 border-t mt-6">
+        <div className="flex-shrink-0 bg-background pt-6 space-y-3 border-t">
           <Button onClick={applyFilters} className="w-full h-12 text-base">
             <Search className="mr-2 h-5 w-5" />
             Shfaq Rezultatet

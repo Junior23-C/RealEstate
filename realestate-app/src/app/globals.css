@@ -56,5 +56,38 @@
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
+    overscroll-behavior: none;
+  }
+  
+  /* Improve mobile touch handling */
+  .touch-manipulation {
+    touch-action: manipulation;
+  }
+  
+  .touch-pan-y {
+    touch-action: pan-y;
+  }
+  
+  .overscroll-none {
+    overscroll-behavior: none;
+  }
+  
+  .overscroll-contain {
+    overscroll-behavior: contain;
+  }
+  
+  /* Prevent zoom on mobile inputs */
+  input[type="text"],
+  input[type="number"],
+  input[type="email"],
+  input[type="tel"],
+  textarea,
+  select {
+    font-size: 16px;
+  }
+  
+  /* Smooth scrolling for better UX */
+  html {
+    scroll-behavior: smooth;
   }
 }
