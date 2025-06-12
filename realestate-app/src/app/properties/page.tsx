@@ -3,6 +3,9 @@ import { PropertyList } from "./property-list"
 import { PropertyFilters } from "./property-filters"
 import { NavbarWrapper } from "@/components/navbar-wrapper"
 import { Footer } from "@/components/footer"
+import { MobileFilterSheet } from "@/components/mobile-filter-sheet"
+import { PropertyListSkeleton } from "@/components/property-card-skeleton"
+import { PropertyListWrapper, DesktopPropertyList } from "@/components/property-list-wrapper"
 
 interface PropertiesPageProps {
   searchParams: Promise<{
@@ -20,16 +23,29 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
       <NavbarWrapper />
       
       <div className="container py-8">
-        <h1 className="text-4xl font-bold mb-8">Shfletoni Pronat</h1>
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="text-4xl font-bold">Shfletoni Pronat</h1>
+          
+          {/* Mobile filter button */}
+          <div className="lg:hidden">
+            <MobileFilterSheet />
+          </div>
+        </div>
         
         <div className="grid lg:grid-cols-4 gap-8">
-          <div className="lg:col-span-1">
+          {/* Desktop filters - hidden on mobile */}
+          <div className="hidden lg:block lg:col-span-1">
             <PropertyFilters />
           </div>
           
           <div className="lg:col-span-3">
-            <Suspense fallback={<div>Duke ngarkuar pronat...</div>}>
-              <PropertyList searchParams={params} />
+            <Suspense fallback={<PropertyListSkeleton />}>
+              <DesktopPropertyList>
+                <PropertyList searchParams={params} />
+              </DesktopPropertyList>
+              <PropertyListWrapper>
+                <PropertyList searchParams={params} />
+              </PropertyListWrapper>
             </Suspense>
           </div>
         </div>

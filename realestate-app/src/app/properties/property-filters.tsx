@@ -81,7 +81,7 @@ export function PropertyFilters() {
   }
 
   return (
-    <Card>
+    <Card className="sticky top-4">
       <CardHeader>
         <CardTitle>Filtrat</CardTitle>
       </CardHeader>
