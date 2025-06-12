@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db"
 import { PropertyCard } from "@/components/property-card"
 import { PropertyStatus, PropertyType } from "@/lib/constants"
+import { Prisma } from "@prisma/client"
 
 interface PropertyListProps {
   searchParams?: {
@@ -14,7 +15,7 @@ interface PropertyListProps {
 }
 
 export async function PropertyList({ searchParams }: PropertyListProps = {}) {
-  const where: any = {}
+  const where: Prisma.PropertyWhereInput = {}
   
   if (searchParams?.status && searchParams.status !== "all") {
     where.status = searchParams.status as PropertyStatus
@@ -33,7 +34,7 @@ export async function PropertyList({ searchParams }: PropertyListProps = {}) {
   }
   
   if (searchParams?.minPrice || searchParams?.maxPrice) {
-    const priceFilter: any = {}
+    const priceFilter: Prisma.FloatFilter = {}
     if (searchParams.minPrice) {
       priceFilter.gte = parseFloat(searchParams.minPrice)
     }
