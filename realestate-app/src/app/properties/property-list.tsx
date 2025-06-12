@@ -14,7 +14,7 @@ interface PropertyListProps {
 }
 
 export async function PropertyList({ searchParams }: PropertyListProps = {}) {
-  const where: Record<string, unknown> = {}
+  const where: any = {}
   
   if (searchParams?.status && searchParams.status !== "all") {
     where.status = searchParams.status as PropertyStatus
@@ -33,13 +33,14 @@ export async function PropertyList({ searchParams }: PropertyListProps = {}) {
   }
   
   if (searchParams?.minPrice || searchParams?.maxPrice) {
-    where.price = {}
+    const priceFilter: any = {}
     if (searchParams.minPrice) {
-      where.price.gte = parseFloat(searchParams.minPrice)
+      priceFilter.gte = parseFloat(searchParams.minPrice)
     }
     if (searchParams.maxPrice) {
-      where.price.lte = parseFloat(searchParams.maxPrice)
+      priceFilter.lte = parseFloat(searchParams.maxPrice)
     }
+    where.price = priceFilter
   }
 
   const properties = await prisma.property.findMany({
