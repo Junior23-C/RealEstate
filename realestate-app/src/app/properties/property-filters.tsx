@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Input } from "@/components/ui/input"
 // Property type and status constants
 const PropertyType = {
   HOUSE: 'HOUSE',
@@ -126,6 +127,29 @@ export function PropertyFilters() {
               <SelectItem value="4">4+</SelectItem>
             </SelectContent>
           </Select>
+        </div>
+
+        <div>
+          <Label className="mb-2 block">Çmimi</Label>
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <Input
+                type="number"
+                placeholder="Min"
+                value={searchParams.get("minPrice") || ""}
+                onChange={(e) => updateFilter("minPrice", e.target.value)}
+                className="w-full"
+              />
+              <span className="text-sm text-muted-foreground">-</span>
+              <Input
+                type="number"
+                placeholder="Max"
+                value={searchParams.get("maxPrice") || ""}
+                onChange={(e) => updateFilter("maxPrice", e.target.value)}
+                className="w-full"
+              />
+            </div>
+          </div>
         </div>
 
         <Button onClick={clearFilters} variant="outline" className="w-full">

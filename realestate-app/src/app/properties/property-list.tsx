@@ -8,6 +8,8 @@ interface PropertyListProps {
     type?: string
     bedrooms?: string
     bathrooms?: string
+    minPrice?: string
+    maxPrice?: string
   }
 }
 
@@ -28,6 +30,16 @@ export async function PropertyList({ searchParams }: PropertyListProps = {}) {
   
   if (searchParams?.bathrooms && searchParams.bathrooms !== "all") {
     where.bathrooms = { gte: parseInt(searchParams.bathrooms) }
+  }
+  
+  if (searchParams?.minPrice || searchParams?.maxPrice) {
+    where.price = {}
+    if (searchParams.minPrice) {
+      where.price.gte = parseFloat(searchParams.minPrice)
+    }
+    if (searchParams.maxPrice) {
+      where.price.lte = parseFloat(searchParams.maxPrice)
+    }
   }
 
   const properties = await prisma.property.findMany({
