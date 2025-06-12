@@ -26,7 +26,7 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-4xl font-bold">Shfletoni Pronat</h1>
           
-          {/* Mobile filter button */}
+          {/* Mobile filter button - visible on mobile only */}
           <div className="lg:hidden">
             <MobileFilterSheet />
           </div>
