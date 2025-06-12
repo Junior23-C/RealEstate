@@ -8,25 +8,27 @@ async function main() {
     // Check if data already exists
     const existingProperties = await prisma.property.count()
     if (existingProperties > 0) {
-      console.log('Database already seeded, skipping...')
+      // Database already seeded, skipping
       return
     }
 
     // Create admin user
-    const hashedPassword = await bcrypt.hash('admin123', 10)
+    const adminPassword = process.env.ADMIN_PASSWORD || 'admin123'
+    const adminEmail = process.env.ADMIN_EMAIL || 'admin@premiumestate.com'
+    const hashedPassword = await bcrypt.hash(adminPassword, 10)
     
     const admin = await prisma.user.upsert({
-      where: { email: 'admin@premiumestate.com' },
+      where: { email: adminEmail },
       update: {},
       create: {
-        email: 'admin@premiumestate.com',
+        email: adminEmail,
         password: hashedPassword,
         name: 'Admin User',
         role: 'ADMIN'
       }
     })
 
-    console.log('Created admin user:', admin.email)
+    // Admin user created successfully
 
     // Create sample properties
     const properties = [
@@ -134,22 +136,18 @@ async function main() {
           }
         }
       })
-      console.log(`Created property: ${property.title}`)
+      // Property created successfully
     }
 
-    console.log('Seed data created successfully!')
+    // Seed data created successfully
   } catch (error) {
-    console.error('Seed error:', error)
-    // Don't throw error to prevent build failure
-    console.log('Continuing with build...')
+    // Seed error occurred, continuing with build
   }
 }
 
 main()
-  .catch((e) => {
-    console.error('Seed error:', e)
-    // Don't exit with error to prevent build failure
-    console.log('Continuing with build despite seed error...')
+  .catch(() => {
+    // Seed error occurred, continuing with build
   })
   .finally(async () => {
     await prisma.$disconnect()

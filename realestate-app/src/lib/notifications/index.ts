@@ -113,28 +113,6 @@ class NotificationService {
     }
   }
 
-  // Test all notification services
-  async testNotifications(): Promise<void> {
-    const testInquiry: InquiryNotification = {
-      name: 'Test Klient',
-      email: 'test@example.com',
-      phone: '+355 69 123 4567',
-      message: 'Kjo është një pyetje për test.',
-      propertyTitle: 'Vila e Bukur në Tiranë',
-      propertyId: 'test-123',
-      propertyImageUrl: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=300'
-    }
-
-    console.log('🧪 Testing all notification services...')
-    const results = await this.sendInquiryNotifications(testInquiry)
-    
-    console.log('📊 Test Results:')
-    console.log(`✅ WhatsApp: ${results.whatsapp ? 'Success' : 'Failed'}`)
-    console.log(`✅ Telegram: ${results.telegram ? 'Success' : 'Failed'}`)
-    console.log(`✅ Discord: ${results.discord ? 'Success' : 'Failed'}`)
-    console.log(`✅ Email: ${results.email ? 'Success' : 'Failed'}`)
-    console.log(`✅ Auto-Reply: ${results.autoReply ? 'Success' : 'Failed'}`)
-  }
 }
 
 export const notificationService = new NotificationService()

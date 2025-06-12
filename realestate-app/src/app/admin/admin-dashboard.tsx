@@ -7,7 +7,6 @@ import {
   ArrowUpRight, Activity
 } from "lucide-react"
 import { motion } from "framer-motion"
-import { TestTelegram } from "./test-telegram"
 
 interface AdminDashboardProps {
   stats: {
@@ -250,10 +249,6 @@ export function AdminDashboard({ stats, recentInquiries }: AdminDashboardProps) 
         </div>
       </div>
 
-      {/* Test Telegram Component */}
-      <div className="mt-8">
-        <TestTelegram />
-      </div>
 
     </div>
   )
