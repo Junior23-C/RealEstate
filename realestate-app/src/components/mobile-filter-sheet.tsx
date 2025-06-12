@@ -85,7 +85,7 @@ export function MobileFilterSheet({ totalProperties }: MobileFilterSheetProps) {
     setOpen(false)
   }
 
-  const hasActiveFilters = Object.entries(filters).some(([key, value]) => 
+  const hasActiveFilters = Object.entries(filters).some(([, value]) => 
     value && value !== "all" && value !== ""
   )
 
