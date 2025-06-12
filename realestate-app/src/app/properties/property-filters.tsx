@@ -1,5 +1,6 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -7,6 +8,7 @@ import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
+import { Search } from "lucide-react"
 // Property type and status constants
 const PropertyType = {
   HOUSE: 'HOUSE',
@@ -28,17 +30,53 @@ export function PropertyFilters() {
   const router = useRouter()
   const searchParams = useSearchParams()
 
+  // Initialize state from URL params
+  const [filters, setFilters] = useState({
+    status: searchParams.get("status") || "all",
+    type: searchParams.get("type") || "all", 
+    bedrooms: searchParams.get("bedrooms") || "all",
+    bathrooms: searchParams.get("bathrooms") || "all",
+    minPrice: searchParams.get("minPrice") || "",
+    maxPrice: searchParams.get("maxPrice") || ""
+  })
+
+  // Update local state when URL changes
+  useEffect(() => {
+    setFilters({
+      status: searchParams.get("status") || "all",
+      type: searchParams.get("type") || "all",
+      bedrooms: searchParams.get("bedrooms") || "all", 
+      bathrooms: searchParams.get("bathrooms") || "all",
+      minPrice: searchParams.get("minPrice") || "",
+      maxPrice: searchParams.get("maxPrice") || ""
+    })
+  }, [searchParams])
+
   const updateFilter = (key: string, value: string) => {
-    const params = new URLSearchParams(searchParams.toString())
-    if (value === "all" || !value) {
-      params.delete(key)
-    } else {
-      params.set(key, value)
-    }
+    setFilters(prev => ({ ...prev, [key]: value }))
+  }
+
+  const applyFilters = () => {
+    const params = new URLSearchParams()
+    
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value && value !== "all" && value !== "") {
+        params.set(key, value)
+      }
+    })
+    
     router.push(`/properties?${params.toString()}`)
   }
 
   const clearFilters = () => {
+    setFilters({
+      status: "all",
+      type: "all",
+      bedrooms: "all",
+      bathrooms: "all", 
+      minPrice: "",
+      maxPrice: ""
+    })
     router.push("/properties")
   }
 
@@ -51,7 +89,7 @@ export function PropertyFilters() {
         <div>
           <Label className="mb-2 block">Statusi i Pronës</Label>
           <RadioGroup
-            defaultValue={searchParams.get("status") || "all"}
+            value={filters.status}
             onValueChange={(value) => updateFilter("status", value)}
           >
             <div className="flex items-center space-x-2">
@@ -72,7 +110,7 @@ export function PropertyFilters() {
         <div>
           <Label htmlFor="type" className="mb-2 block">Lloji i Pronës</Label>
           <Select
-            value={searchParams.get("type") || "all"}
+            value={filters.type}
             onValueChange={(value) => updateFilter("type", value)}
           >
             <SelectTrigger id="type">
@@ -93,7 +131,7 @@ export function PropertyFilters() {
         <div>
           <Label htmlFor="bedrooms" className="mb-2 block">Dhoma Gjumi</Label>
           <Select
-            value={searchParams.get("bedrooms") || "all"}
+            value={filters.bedrooms}
             onValueChange={(value) => updateFilter("bedrooms", value)}
           >
             <SelectTrigger id="bedrooms">
@@ -113,7 +151,7 @@ export function PropertyFilters() {
         <div>
           <Label htmlFor="bathrooms" className="mb-2 block">Banjo</Label>
           <Select
-            value={searchParams.get("bathrooms") || "all"}
+            value={filters.bathrooms}
             onValueChange={(value) => updateFilter("bathrooms", value)}
           >
             <SelectTrigger id="bathrooms">
@@ -136,7 +174,7 @@ export function PropertyFilters() {
               <Input
                 type="number"
                 placeholder="Min"
-                value={searchParams.get("minPrice") || ""}
+                value={filters.minPrice}
                 onChange={(e) => updateFilter("minPrice", e.target.value)}
                 className="w-full"
               />
@@ -144,7 +182,7 @@ export function PropertyFilters() {
               <Input
                 type="number"
                 placeholder="Max"
-                value={searchParams.get("maxPrice") || ""}
+                value={filters.maxPrice}
                 onChange={(e) => updateFilter("maxPrice", e.target.value)}
                 className="w-full"
               />
@@ -152,9 +190,15 @@ export function PropertyFilters() {
           </div>
         </div>
 
-        <Button onClick={clearFilters} variant="outline" className="w-full">
-          Pastro Filtrat
-        </Button>
+        <div className="space-y-2">
+          <Button onClick={applyFilters} className="w-full">
+            <Search className="mr-2 h-4 w-4" />
+            Kërko
+          </Button>
+          <Button onClick={clearFilters} variant="outline" className="w-full">
+            Pastro Filtrat
+          </Button>
+        </div>
       </CardContent>
     </Card>
   )
