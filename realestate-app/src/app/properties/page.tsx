@@ -1,9 +1,6 @@
 import { Suspense } from "react"
 import { PropertyList } from "./property-list"
 import { PropertyFilters } from "./property-filters"
-import { SmartSearch } from "@/components/smart-search"
-import { GeolocationFinder } from "@/components/geolocation-finder"
-import { CurrencyCalculator } from "@/components/currency-calculator"
 import { NavbarWrapper } from "@/components/navbar-wrapper"
 import { Footer } from "@/components/footer"
 import { FloatingFilterButton } from "@/components/floating-filter-button"
@@ -62,7 +59,20 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
             </TabsList>
             
             <TabsContent value="smart" className="p-6">
-              <SmartSearch onSearch={() => {}} />
+              <div className="space-y-4">
+                <div className="text-center p-8 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl">
+                  <Search className="h-12 w-12 text-blue-500 mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold mb-2">Kërkim i Mençur</h3>
+                  <p className="text-slate-600 dark:text-slate-400 mb-4">
+                    Kërkoni me gjuhë natyrale në shqip ose anglisht
+                  </p>
+                  <div className="text-sm text-slate-500 space-y-1">
+                    <div>Shembuj: &quot;2 dhoma gjumi në Tiranë nën €100k&quot;</div>
+                    <div>&quot;Apartament për qira pranë detit&quot;</div>
+                    <div>&quot;Vilë me pishina mbi €200k&quot;</div>
+                  </div>
+                </div>
+              </div>
             </TabsContent>
             
             <TabsContent value="filters" className="p-6">
@@ -70,11 +80,40 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
             </TabsContent>
             
             <TabsContent value="nearby" className="p-6">
-              <GeolocationFinder onPropertiesFound={() => {}} />
+              <div className="space-y-4">
+                <div className="text-center p-8 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl">
+                  <MapPin className="h-12 w-12 text-green-500 mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold mb-2">Pronat Pranë Jush</h3>
+                  <p className="text-slate-600 dark:text-slate-400 mb-4">
+                    Gjeni pronat më të afërta duke përdorur vendndodhjen tuaj
+                  </p>
+                  <button className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg">
+                    Aktivizo vendndodhjen
+                  </button>
+                </div>
+              </div>
             </TabsContent>
             
             <TabsContent value="calculator" className="p-6">
-              <CurrencyCalculator />
+              <div className="space-y-4">
+                <div className="text-center p-8 bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 rounded-xl">
+                  <Calculator className="h-12 w-12 text-orange-500 mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold mb-2">Kalkulator Valutash</h3>
+                  <p className="text-slate-600 dark:text-slate-400 mb-4">
+                    Konvertoni çmimet midis EUR dhe LEK me kurse të azhurnuara
+                  </p>
+                  <div className="grid grid-cols-2 gap-4 mt-6">
+                    <div className="text-center p-4 bg-white dark:bg-slate-800 rounded-lg">
+                      <div className="text-2xl font-bold text-blue-600">€108.5</div>
+                      <div className="text-sm text-slate-500">1 EUR</div>
+                    </div>
+                    <div className="text-center p-4 bg-white dark:bg-slate-800 rounded-lg">
+                      <div className="text-2xl font-bold text-green-600">LEK</div>
+                      <div className="text-sm text-slate-500">Këmbim real</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </TabsContent>
           </Tabs>
         </div>
