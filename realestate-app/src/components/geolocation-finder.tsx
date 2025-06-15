@@ -4,26 +4,10 @@ import { useState } from "react"
 import { MapPin, Navigation, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-
-interface Property {
-  id: string
-  title: string
-  price: number
-  city: string
-  state: string
-  latitude?: number
-  longitude?: number
-  distance?: number
-  type: string
-  status: string
-  images: Array<{
-    url: string
-    alt?: string | null
-  }>
-}
+import { PropertyForGeolocation } from "@/types/property"
 
 interface GeolocationFinderProps {
-  onPropertiesFound: (properties: Property[]) => void
+  onPropertiesFound: (properties: PropertyForGeolocation[]) => void
   maxDistance?: number // in kilometers
 }
 
@@ -31,7 +15,7 @@ export function GeolocationFinder({ onPropertiesFound, maxDistance = 10 }: Geolo
   const [isLoading, setIsLoading] = useState(false)
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null)
   const [locationError, setLocationError] = useState<string | null>(null)
-  const [nearbyProperties, setNearbyProperties] = useState<Property[]>([])
+  const [nearbyProperties, setNearbyProperties] = useState<PropertyForGeolocation[]>([])
 
   const getUserLocation = (): Promise<GeolocationPosition> => {
     return new Promise((resolve, reject) => {
@@ -130,7 +114,7 @@ export function GeolocationFinder({ onPropertiesFound, maxDistance = 10 }: Geolo
     }
   }
 
-  const openInMaps = (property: Property) => {
+  const openInMaps = (property: PropertyForGeolocation) => {
     if (property.latitude && property.longitude) {
       const url = `https://www.google.com/maps/dir/?api=1&destination=${property.latitude},${property.longitude}`
       window.open(url, '_blank')

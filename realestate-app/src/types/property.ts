@@ -25,6 +25,49 @@ export interface Property {
   updatedAt: Date
 }
 
+// For client components that need simplified property data
+export interface PropertyForClient {
+  id: string
+  title: string
+  price: number
+  city: string
+  state: string
+  latitude?: number
+  longitude?: number
+  distance?: number
+  type: string
+  status: string
+  address: string
+  bedrooms: number
+  bathrooms: number
+  squareFeet: number
+  images: Array<{
+    url: string
+    alt?: string | null
+    isPrimary: boolean
+  }>
+  description?: string
+  features?: string
+}
+
+// For geolocation finder with minimal required fields
+export interface PropertyForGeolocation {
+  id: string
+  title: string
+  price: number
+  city: string
+  state: string
+  latitude?: number
+  longitude?: number
+  distance?: number
+  type: string
+  status: string
+  images: Array<{
+    url: string
+    alt?: string | null
+  }>
+}
+
 export interface PropertyImage {
   id: string
   url: string
