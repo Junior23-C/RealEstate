@@ -12,6 +12,9 @@ export const metadata = {
   robots: "noindex, nofollow" // Admin pages shouldn't be indexed
 }
 
+// Cache dashboard for 1 minute
+export const revalidate = 60
+
 export default async function AdminPage() {
   // Optimize authentication check
   const session = await getServerSession(authOptions)
@@ -21,21 +24,19 @@ export default async function AdminPage() {
   }
 
   try {
-    // Get admin stats directly from database
+    // Optimized parallel queries with minimal data selection
     const [totalProperties, totalInquiries, recentInquiries, propertyStats] = await Promise.all([
       prisma.property.count(),
       prisma.inquiry.count(),
       prisma.inquiry.findMany({
-        take: 5,
+        take: 3, // Reduced from 5 to 3
         orderBy: { createdAt: "desc" },
         select: {
           id: true,
           name: true,
-          email: true,
           createdAt: true,
           property: {
             select: {
-              id: true,
               title: true
             }
           }

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useMemo, memo } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
@@ -114,21 +114,24 @@ export function PropertyManagement({ properties }: PropertyManagementProps) {
     return typeMap[type] || type
   }
 
-  // Filter properties
-  const filteredProperties = properties.filter(property => {
-    const matchesSearch = property.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         property.city.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesStatus = selectedStatus === 'all' || property.status === selectedStatus
-    return matchesSearch && matchesStatus
-  })
+  // Memoized filtered properties for performance
+  const filteredProperties = useMemo(() => {
+    return properties.filter(property => {
+      const matchesSearch = property.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           property.city.toLowerCase().includes(searchTerm.toLowerCase())
+      const matchesStatus = selectedStatus === 'all' || property.status === selectedStatus
+      return matchesSearch && matchesStatus
+    })
+  }, [properties, searchTerm, selectedStatus])
 
-  const stats = {
+  // Memoized stats calculation
+  const stats = useMemo(() => ({
     total: properties.length,
     forRent: properties.filter(p => p.status === 'FOR_RENT').length,
     forSale: properties.filter(p => p.status === 'FOR_SALE').length,
     rented: properties.filter(p => p.status === 'RENTED').length,
     sold: properties.filter(p => p.status === 'SOLD').length,
-  }
+  }), [properties])
 
   return (
     <div>

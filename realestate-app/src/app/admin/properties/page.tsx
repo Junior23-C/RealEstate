@@ -11,8 +11,8 @@ export const metadata = {
   description: "Menaxhoni të gjitha listimet e pronave të paluajtshme",
 }
 
-// Cache for 5 minutes
-export const revalidate = 300
+// Cache for 2 minutes for faster updates
+export const revalidate = 120
 
 export default async function AdminPropertiesPage() {
   const session = await getServerSession(authOptions)
@@ -21,7 +21,7 @@ export default async function AdminPropertiesPage() {
     redirect("/admin/login")
   }
 
-  // Optimized query with specific field selection
+  // Highly optimized query - only essential fields and limit images
   const properties = await prisma.property.findMany({
     select: {
       id: true,
@@ -40,10 +40,12 @@ export default async function AdminPropertiesPage() {
           id: true,
           url: true,
           alt: true,
-          isPrimary: true,
-          propertyId: true,
-          createdAt: true
-        }
+          isPrimary: true
+        },
+        where: {
+          isPrimary: true
+        },
+        take: 1
       },
       _count: {
         select: { inquiries: true }
@@ -51,7 +53,8 @@ export default async function AdminPropertiesPage() {
     },
     orderBy: {
       createdAt: "desc"
-    }
+    },
+    take: 50 // Limit to 50 properties for pagination
   })
 
   return (
