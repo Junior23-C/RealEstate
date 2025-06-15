@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { 
   Home, Building2, Users, MessageSquare, Settings, BarChart3, 
-  Menu, X, ChevronRight, Bell, Search, Plus, LogOut, User
+  Menu, X, ChevronRight, Bell, Search, LogOut, User
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { signOut } from 'next-auth/react'
@@ -166,18 +166,6 @@ export default function AdminLayout({ children, user }: AdminLayoutProps) {
                 <Bell className="h-5 w-5" />
                 <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full animate-pulse" />
               </motion.button>
-
-              {/* Quick Add Button */}
-              <Link href="/admin/properties/new">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-xl font-medium shadow-lg shadow-blue-500/25"
-                >
-                  <Plus className="h-4 w-4" />
-                  <span className="hidden sm:inline">Shto Pronë</span>
-                </motion.button>
-              </Link>
             </div>
           </div>
         </header>
