@@ -25,6 +25,11 @@ export default withAuth(
         return NextResponse.next()
       }
       
+      // Allow property detail pages on admin subdomain
+      if (pathname.startsWith("/properties/")) {
+        return NextResponse.next()
+      }
+      
       // Redirect root to admin dashboard
       if (pathname === "/") {
         return NextResponse.redirect(new URL("/admin", req.url))
