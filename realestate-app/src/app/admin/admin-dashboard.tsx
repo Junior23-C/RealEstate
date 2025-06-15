@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { 
-  Building2, Home, Plus, Mail, DollarSign, 
+  Building2, Home, Mail, DollarSign, 
   TrendingUp, Clock, MapPin, BarChart3,
   ArrowUpRight, Activity
 } from "lucide-react"
@@ -62,7 +62,6 @@ export function AdminDashboard({ stats, recentInquiries }: AdminDashboardProps) 
   ]
 
   const quickActions = [
-    { label: 'Shto Pronë', icon: Plus, href: '/admin/properties/new', color: 'blue' },
     { label: 'Shiko Pyetjet', icon: Mail, href: '/admin/inquiries', color: 'purple' },
     { label: 'Menaxho Qiratë', icon: DollarSign, href: '/admin/rentals', color: 'green' },
     { label: 'Raporte', icon: BarChart3, href: '/admin/rentals', color: 'orange' }
