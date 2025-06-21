@@ -32,9 +32,6 @@ export interface PropertyForClient {
   price: number
   city: string
   state: string
-  latitude?: number
-  longitude?: number
-  distance?: number
   type: string
   status: string
   address: string
@@ -50,23 +47,6 @@ export interface PropertyForClient {
   features?: string
 }
 
-// For geolocation finder with minimal required fields
-export interface PropertyForGeolocation {
-  id: string
-  title: string
-  price: number
-  city: string
-  state: string
-  latitude?: number
-  longitude?: number
-  distance?: number
-  type: string
-  status: string
-  images: Array<{
-    url: string
-    alt?: string | null
-  }>
-}
 
 export interface PropertyImage {
   id: string

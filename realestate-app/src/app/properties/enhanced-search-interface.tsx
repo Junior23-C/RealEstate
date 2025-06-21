@@ -2,19 +2,16 @@
 
 import React, { useState } from "react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Search, MapPin, Calculator, SlidersHorizontal } from "lucide-react"
+import { Search, Calculator, SlidersHorizontal } from "lucide-react"
 import { SmartSearch } from "@/components/smart-search"
-import { GeolocationFinder } from "@/components/geolocation-finder"
 import { CurrencyCalculator } from "@/components/currency-calculator"
 import { PropertyFilters } from "./property-filters"
 import { SmartSearchParams } from "@/lib/smart-search"
-import { PropertyForGeolocation } from "@/types/property"
 import { Suspense } from "react"
 
 interface EnhancedSearchInterfaceProps {
   onSearchResults: (results: {
     smartSearchParams?: SmartSearchParams
-    nearbyProperties?: PropertyForGeolocation[]
     activeTab: string
   }) => void
 }
@@ -25,19 +22,9 @@ export function EnhancedSearchInterface({ onSearchResults }: EnhancedSearchInter
   const handleSmartSearch = (params: SmartSearchParams) => {
     onSearchResults({
       smartSearchParams: params,
-      nearbyProperties: undefined,
       activeTab: "smart"
     })
     setActiveTab("smart")
-  }
-
-  const handleNearbyProperties = (properties: PropertyForGeolocation[]) => {
-    onSearchResults({
-      smartSearchParams: undefined,
-      nearbyProperties: properties,
-      activeTab: "nearby"
-    })
-    setActiveTab("nearby")
   }
 
   const handleTabChange = (value: string) => {
@@ -45,7 +32,6 @@ export function EnhancedSearchInterface({ onSearchResults }: EnhancedSearchInter
     if (value === "filters") {
       onSearchResults({
         smartSearchParams: undefined,
-        nearbyProperties: undefined,
         activeTab: "filters"
       })
     }
@@ -65,11 +51,6 @@ export function EnhancedSearchInterface({ onSearchResults }: EnhancedSearchInter
             <span className="hidden sm:inline">Filtrat</span>
             <span className="sm:hidden">Filtro</span>
           </TabsTrigger>
-          <TabsTrigger value="nearby" className="flex items-center gap-2">
-            <MapPin className="h-4 w-4" />
-            <span className="hidden sm:inline">Pranë Meje</span>
-            <span className="sm:hidden">Afër</span>
-          </TabsTrigger>
           <TabsTrigger value="calculator" className="flex items-center gap-2">
             <Calculator className="h-4 w-4" />
             <span className="hidden sm:inline">Kalkulatori</span>
@@ -87,12 +68,6 @@ export function EnhancedSearchInterface({ onSearchResults }: EnhancedSearchInter
           </Suspense>
         </TabsContent>
         
-        <TabsContent value="nearby" className="p-6">
-          <GeolocationFinder 
-            onPropertiesFound={handleNearbyProperties}
-            maxDistance={15}
-          />
-        </TabsContent>
         
         <TabsContent value="calculator" className="p-6">
           <CurrencyCalculator 

@@ -7,7 +7,7 @@ import { PropertyListClient } from "./property-list-client"
 import { EnhancedSearchInterface } from "./enhanced-search-interface"
 import { PropertyList } from "./property-list"
 import { SmartSearchParams } from "@/lib/smart-search"
-import { PropertyForClient, PropertyForGeolocation } from "@/types/property"
+import { PropertyForClient } from "@/types/property"
 
 interface PropertiesPageClientProps {
   initialProperties: PropertyForClient[]
@@ -25,7 +25,6 @@ export function PropertiesPageClient({
 }: PropertiesPageClientProps) {
   const [searchResults, setSearchResults] = useState<{
     smartSearchParams?: SmartSearchParams
-    nearbyProperties?: PropertyForGeolocation[]
     activeTab: string
   }>({
     activeTab: "smart"
@@ -33,7 +32,6 @@ export function PropertiesPageClient({
 
   const handleSearchResults = (results: {
     smartSearchParams?: SmartSearchParams
-    nearbyProperties?: PropertyForGeolocation[]
     activeTab: string
   }) => {
     setSearchResults(results)
@@ -63,7 +61,6 @@ export function PropertiesPageClient({
                   <PropertyListClient 
                     initialProperties={initialProperties}
                     smartSearchParams={searchResults.smartSearchParams}
-                    nearbyProperties={searchResults.nearbyProperties}
                     activeTab={searchResults.activeTab}
                   />
                 </DesktopPropertyList>
@@ -71,7 +68,6 @@ export function PropertiesPageClient({
                   <PropertyListClient 
                     initialProperties={initialProperties}
                     smartSearchParams={searchResults.smartSearchParams}
-                    nearbyProperties={searchResults.nearbyProperties}
                     activeTab={searchResults.activeTab}
                   />
                 </PropertyListWrapper>

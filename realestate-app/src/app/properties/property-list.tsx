@@ -16,22 +16,9 @@ interface PropertyListProps {
     features?: string
   }
   smartSearchParams?: SmartSearchParams
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  nearbyProperties?: any[]
 }
 
-export async function PropertyList({ searchParams, smartSearchParams, nearbyProperties }: PropertyListProps = {}) {
-  // If nearby properties are provided, use them directly
-  if (nearbyProperties && nearbyProperties.length > 0) {
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {nearbyProperties.map((property) => (
-          <PropertyCard key={property.id} property={property} />
-        ))}
-      </div>
-    )
-  }
-
+export async function PropertyList({ searchParams, smartSearchParams }: PropertyListProps = {}) {
   const where: Prisma.PropertyWhereInput = {}
   
   // Apply smart search parameters first

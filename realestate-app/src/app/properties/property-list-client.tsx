@@ -3,19 +3,17 @@
 import { useState, useEffect } from "react"
 import { PropertyCard } from "@/components/property-card"
 import { SmartSearchParams } from "@/lib/smart-search"
-import { PropertyForClient, PropertyForGeolocation } from "@/types/property"
+import { PropertyForClient } from "@/types/property"
 
 interface PropertyListClientProps {
   initialProperties: PropertyForClient[]
   smartSearchParams?: SmartSearchParams
-  nearbyProperties?: PropertyForGeolocation[]
   activeTab: string
 }
 
 export function PropertyListClient({ 
   initialProperties, 
   smartSearchParams, 
-  nearbyProperties, 
   activeTab 
 }: PropertyListClientProps) {
   const [properties, setProperties] = useState<PropertyForClient[]>(initialProperties)
@@ -44,22 +42,6 @@ export function PropertyListClient({
       })
     }
   }, [smartSearchParams, activeTab])
-
-  // Handle nearby properties
-  useEffect(() => {
-    if (activeTab === "nearby" && nearbyProperties) {
-      // Convert PropertyForGeolocation to PropertyForClient
-      const convertedProperties: PropertyForClient[] = nearbyProperties.map(p => ({
-        ...p,
-        address: `${p.city}, ${p.state}`, // Create address from city/state
-        bedrooms: 1, // Default values - these should come from API
-        bathrooms: 1,
-        squareFeet: 100,
-        images: p.images.map(img => ({ ...img, isPrimary: true }))
-      }))
-      setProperties(convertedProperties)
-    }
-  }, [nearbyProperties, activeTab])
 
   // Reset to initial properties for filters tab
   useEffect(() => {
