@@ -4,6 +4,8 @@ import { Footer } from "@/components/footer"
 import { FloatingFilterButton } from "@/components/floating-filter-button"
 import { PropertiesPageClient } from "./properties-page-client"
 import { prisma } from "@/lib/db"
+import { Prisma } from "@prisma/client"
+import { PropertyStatus, PropertyType } from "@/lib/constants"
 
 
 interface PropertiesPageProps {
@@ -18,8 +20,28 @@ interface PropertiesPageProps {
 export default async function PropertiesPage({ searchParams }: PropertiesPageProps) {
   const params = await searchParams
   
+  // Build where clause based on search params
+  const where: Prisma.PropertyWhereInput = {}
+  
+  if (params.status && params.status !== 'all') {
+    where.status = params.status as PropertyStatus
+  }
+  
+  if (params.type && params.type !== 'all') {
+    where.type = params.type as PropertyType
+  }
+  
+  if (params.bedrooms && params.bedrooms !== 'all') {
+    where.bedrooms = { gte: parseInt(params.bedrooms) }
+  }
+  
+  if (params.bathrooms && params.bathrooms !== 'all') {
+    where.bathrooms = { gte: parseInt(params.bathrooms) }
+  }
+  
   // Fetch initial properties for the page
   const properties = await prisma.property.findMany({
+    where,
     include: {
       images: true
     },
@@ -61,7 +83,6 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
             description: p.description,
             features: p.features || undefined
           }))}
-          initialSearchParams={params}
         />
       </div>
       
