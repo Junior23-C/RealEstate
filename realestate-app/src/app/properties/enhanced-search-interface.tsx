@@ -5,9 +5,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Search, Calculator, SlidersHorizontal } from "lucide-react"
 import { SmartSearch } from "@/components/smart-search"
 import { CurrencyCalculator } from "@/components/currency-calculator"
-import { PropertyFilters } from "./property-filters"
+import { PropertyFiltersWrapper } from "./property-filters-wrapper"
 import { SmartSearchParams } from "@/lib/smart-search"
-import { Suspense } from "react"
 
 interface EnhancedSearchInterfaceProps {
   onSearchResults: (results: {
@@ -40,7 +39,7 @@ export function EnhancedSearchInterface({ onSearchResults }: EnhancedSearchInter
   return (
     <div className="mb-8 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
       <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="smart" className="flex items-center gap-2">
             <Search className="h-4 w-4" />
             <span className="hidden sm:inline">Kërkim i Mençur</span>
@@ -63,9 +62,7 @@ export function EnhancedSearchInterface({ onSearchResults }: EnhancedSearchInter
         </TabsContent>
         
         <TabsContent value="filters" className="p-6">
-          <Suspense fallback={<div className="p-4 text-center">Duke ngarkuar filtrat...</div>}>
-            <PropertyFilters />
-          </Suspense>
+          <PropertyFiltersWrapper />
         </TabsContent>
         
         
