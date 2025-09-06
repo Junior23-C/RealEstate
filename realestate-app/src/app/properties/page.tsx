@@ -79,7 +79,7 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
         <div className="mb-8">
           <h1 className="text-4xl font-bold">Shfletoni Pronat</h1>
           <p className="text-slate-600 dark:text-slate-400 mt-2">
-            Përdorni kërkimin e mençur, gjetjen me vendndodhje, ose kalkulatorin e valutave
+            Përdorni kërkimin e mençur, gjetjen me vendndodhje, ose kalkulatorin e valutave për të gjetur pronën perfekte
           </p>
         </div>
 
