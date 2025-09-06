@@ -26,7 +26,7 @@ export function Navbar({ companyName = "Aliaj Real Estate" }: NavbarProps) {
 
   const navItems = [
     { href: "/", label: "Kryefaqja", icon: Home },
-    { href: "/properties", label: "Pronat", icon: Building2 },
+    { href: "/properties", label: "Pronat", icon: Building2, prefetch: true },
     { href: "/contact", label: "Kontakt", icon: Phone },
   ]
 
@@ -46,6 +46,7 @@ export function Navbar({ companyName = "Aliaj Real Estate" }: NavbarProps) {
               <Link
                 key={item.href}
                 href={item.href}
+                prefetch={'prefetch' in item ? item.prefetch : false}
                 className={cn(
                   "flex items-center text-sm font-medium transition-colors hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-md px-2 py-1",
                   pathname === item.href

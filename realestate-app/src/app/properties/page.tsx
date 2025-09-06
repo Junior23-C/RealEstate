@@ -3,6 +3,7 @@ import { NavbarWrapper } from "@/components/navbar-wrapper"
 import { Footer } from "@/components/footer"
 import { FloatingFilterButton } from "@/components/floating-filter-button"
 import { PropertiesPageClient } from "./properties-page-client"
+import { PropertyListSkeleton } from "@/components/property-card-skeleton"
 import { prisma } from "@/lib/db"
 import { Prisma } from "@prisma/client"
 import { PropertyStatus, PropertyType } from "@/lib/constants"
@@ -39,16 +40,36 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
     where.bathrooms = { gte: parseInt(params.bathrooms) }
   }
   
-  // Fetch initial properties for the page
+  // Fetch initial properties with optimized query
   const properties = await prisma.property.findMany({
     where,
-    include: {
-      images: true
+    select: {
+      id: true,
+      title: true,
+      price: true,
+      city: true,
+      state: true,
+      type: true,
+      status: true,
+      address: true,
+      bedrooms: true,
+      bathrooms: true,
+      squareFeet: true,
+      description: true,
+      features: true,
+      images: {
+        select: {
+          url: true,
+          alt: true,
+          isPrimary: true
+        },
+        take: 3 // Limit images for initial load
+      }
     },
     orderBy: {
       createdAt: 'desc'
     },
-    take: 50 // Limit for performance
+    take: 24 // Optimized limit for grid layout
   })
   return (
     <div className="min-h-screen">
@@ -62,28 +83,30 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
           </p>
         </div>
 
-        <PropertiesPageClient 
-          initialProperties={properties.map(p => ({
-            id: p.id,
-            title: p.title,
-            price: p.price,
-            city: p.city,
-            state: p.state,
-            type: p.type,
-            status: p.status,
-            address: p.address,
-            bedrooms: p.bedrooms,
-            bathrooms: p.bathrooms,
-            squareFeet: p.squareFeet,
-            images: p.images.map(img => ({
-              url: img.url,
-              alt: img.alt,
-              isPrimary: img.isPrimary
-            })),
-            description: p.description,
-            features: p.features || undefined
-          }))}
-        />
+        <Suspense fallback={<PropertyListSkeleton />}>
+          <PropertiesPageClient 
+            initialProperties={properties.map(p => ({
+              id: p.id,
+              title: p.title,
+              price: p.price,
+              city: p.city,
+              state: p.state,
+              type: p.type,
+              status: p.status,
+              address: p.address,
+              bedrooms: p.bedrooms,
+              bathrooms: p.bathrooms,
+              squareFeet: p.squareFeet,
+              images: p.images.map(img => ({
+                url: img.url,
+                alt: img.alt,
+                isPrimary: img.isPrimary
+              })),
+              description: p.description,
+              features: p.features || undefined
+            }))}
+          />
+        </Suspense>
       </div>
       
       {/* Floating filter button for mobile */}

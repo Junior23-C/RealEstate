@@ -30,9 +30,13 @@ export default function Home() {
           
           <div className="text-center mt-12">
             <Button size="lg" variant="outline" asChild>
-              <Link href="/properties">
+              <Link 
+                href="/properties" 
+                prefetch={true}
+                className="inline-flex items-center justify-center gap-2 group transition-all duration-200 hover:scale-105"
+              >
                 Shiko të Gjitha Pronat
-                <ArrowRight className="ml-2 h-5 w-5" />
+                <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
               </Link>
             </Button>
           </div>

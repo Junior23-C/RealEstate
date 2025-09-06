@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, memo, useCallback, useMemo } from "react"
 import { PropertyCard } from "@/components/property-card"
 import { SmartSearchParams } from "@/lib/smart-search"
 import { PropertyForClient } from "@/types/property"
@@ -11,7 +11,7 @@ interface PropertyListClientProps {
   activeTab: string
 }
 
-export function PropertyListClient({ 
+const PropertyListClient = memo(function PropertyListClient({ 
   initialProperties, 
   smartSearchParams, 
   activeTab 
@@ -19,38 +19,7 @@ export function PropertyListClient({
   const [properties, setProperties] = useState<PropertyForClient[]>(initialProperties)
   const [isLoading, setIsLoading] = useState(false)
 
-  // Handle smart search
-  useEffect(() => {
-    if (activeTab === "smart" && smartSearchParams && Object.keys(smartSearchParams).length > 0) {
-      setIsLoading(true)
-      fetch('/api/properties/smart-search', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ query: buildQueryFromParams(smartSearchParams) })
-      })
-      .then(res => res.json())
-      .then(data => {
-        setProperties(data.properties || [])
-        setIsLoading(false)
-      })
-      .catch(error => {
-        console.error('Smart search error:', error)
-        setProperties([])
-        setIsLoading(false)
-      })
-    }
-  }, [smartSearchParams, activeTab])
-
-  // Reset to initial properties for filters tab
-  useEffect(() => {
-    if (activeTab === "filters") {
-      setProperties(initialProperties)
-    }
-  }, [activeTab, initialProperties])
-
-  function buildQueryFromParams(params: SmartSearchParams): string {
+  const buildQueryFromParams = useCallback((params: SmartSearchParams): string => {
     const parts: string[] = []
     
     if (params.bedrooms) parts.push(`${params.bedrooms} dhoma gjumi`)
@@ -78,22 +47,70 @@ export function PropertyListClient({
     if (params.features) parts.push(...params.features)
     
     return parts.join(' ')
-  }
+  }, [])
+
+  // Handle smart search with debouncing
+  useEffect(() => {
+    if (activeTab === "smart" && smartSearchParams && Object.keys(smartSearchParams).length > 0) {
+      setIsLoading(true)
+      
+      const controller = new AbortController()
+      
+      const performSearch = async () => {
+        try {
+          const response = await fetch('/api/properties/smart-search', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ query: buildQueryFromParams(smartSearchParams) }),
+            signal: controller.signal
+          })
+          
+          if (!response.ok) throw new Error('Search failed')
+          
+          const data = await response.json()
+          setProperties(data.properties || [])
+        } catch (error) {
+          if (error instanceof Error && error.name !== 'AbortError') {
+            console.error('Smart search error:', error)
+            setProperties([])
+          }
+        } finally {
+          setIsLoading(false)
+        }
+      }
+      
+      performSearch()
+      
+      return () => controller.abort()
+    }
+  }, [smartSearchParams, activeTab, buildQueryFromParams])
+
+  // Reset to initial properties for filters tab
+  useEffect(() => {
+    if (activeTab === "filters") {
+      setProperties(initialProperties)
+    }
+  }, [activeTab, initialProperties])
+
+
+  const loadingSkeleton = useMemo(() => (
+    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {[...Array(6)].map((_, i) => (
+        <div key={i} className="animate-pulse">
+          <div className="bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-600 h-48 rounded-xl mb-4"></div>
+          <div className="space-y-3">
+            <div className="bg-gradient-to-r from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-600 h-4 rounded-lg w-3/4"></div>
+            <div className="bg-gradient-to-r from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-600 h-4 rounded-lg w-1/2"></div>
+          </div>
+        </div>
+      ))}
+    </div>
+  ), [])
 
   if (isLoading) {
-    return (
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {[...Array(6)].map((_, i) => (
-          <div key={i} className="animate-pulse">
-            <div className="bg-slate-200 dark:bg-slate-700 h-48 rounded-lg mb-4"></div>
-            <div className="space-y-2">
-              <div className="bg-slate-200 dark:bg-slate-700 h-4 rounded w-3/4"></div>
-              <div className="bg-slate-200 dark:bg-slate-700 h-4 rounded w-1/2"></div>
-            </div>
-          </div>
-        ))}
-      </div>
-    )
+    return loadingSkeleton
   }
 
   if (properties.length === 0) {
@@ -111,4 +128,6 @@ export function PropertyListClient({
       ))}
     </div>
   )
-}
+})
+
+export { PropertyListClient }

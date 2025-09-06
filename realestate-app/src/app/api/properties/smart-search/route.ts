@@ -2,12 +2,32 @@ import { NextResponse } from "next/server"
 import { prisma } from "@/lib/db"
 import { parseNaturalLanguageQuery } from "@/lib/smart-search"
 
+// Simple in-memory cache for search results
+interface CacheEntry {
+  data: {
+    properties: unknown[]
+    searchParams: unknown
+    count: number
+    query: string
+  }
+  timestamp: number
+}
+const searchCache = new Map<string, CacheEntry>()
+const CACHE_TTL = 5 * 60 * 1000 // 5 minutes
+
 export async function POST(request: Request) {
   try {
     const { query } = await request.json()
     
     if (!query || typeof query !== 'string') {
       return new NextResponse("Query is required", { status: 400 })
+    }
+
+    // Check cache first
+    const cacheKey = query.toLowerCase().trim()
+    const cached = searchCache.get(cacheKey)
+    if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+      return NextResponse.json(cached.data)
     }
 
     // Parse natural language query
@@ -55,7 +75,7 @@ export async function POST(request: Request) {
       }
     }
 
-    // Execute search query
+    // Execute optimized search query
     const properties = await prisma.property.findMany({
       where: whereClause,
       select: {
@@ -68,14 +88,12 @@ export async function POST(request: Request) {
         address: true,
         city: true,
         state: true,
-        zipCode: true,
         bedrooms: true,
         bathrooms: true,
         squareFeet: true,
         features: true,
         images: {
           select: {
-            id: true,
             url: true,
             alt: true,
             isPrimary: true
@@ -84,21 +102,34 @@ export async function POST(request: Request) {
             isPrimary: true
           },
           take: 1
-        },
-        createdAt: true
+        }
       },
-      orderBy: [
-        { createdAt: 'desc' }
-      ],
-      take: 50 // Limit results for performance
+      orderBy: {
+        createdAt: 'desc'
+      },
+      take: 24 // Optimized limit
     })
 
-    return NextResponse.json({
+    const result = {
       properties,
       searchParams,
       count: properties.length,
       query: query
+    }
+
+    // Cache the result
+    searchCache.set(cacheKey, {
+      data: result,
+      timestamp: Date.now()
     })
+
+    // Clean up old cache entries (simple cleanup)
+    if (searchCache.size > 100) {
+      const entries = Array.from(searchCache.entries())
+      entries.slice(0, 50).forEach(([key]) => searchCache.delete(key))
+    }
+
+    return NextResponse.json(result)
   } catch (error) {
     console.error("Smart search error:", error)
     return new NextResponse("Internal Server Error", { status: 500 })
