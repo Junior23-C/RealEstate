@@ -5,31 +5,64 @@ const prisma = new PrismaClient()
 
 async function main() {
   try {
-    // Check if data already exists
+    // Always ensure there's a default admin user (separate from property seeding)
+    await ensureDefaultAdmin()
+
+    // Check if properties already exist
     const existingProperties = await prisma.property.count()
     if (existingProperties > 0) {
-      // Database already seeded, skipping
+      console.log('✅ Database already seeded with properties, skipping property creation')
+      console.log('✅ Default admin ensured')
       return
     }
 
-    // Create admin user
-    const adminPassword = process.env.ADMIN_PASSWORD || 'admin123'
-    const adminEmail = process.env.ADMIN_EMAIL || 'admin@premiumestate.com'
-    const hashedPassword = await bcrypt.hash(adminPassword, 10)
+    console.log('🌱 Seeding database with sample data...')
+    await createSampleProperties()
+
+    console.log('✅ Database seeded successfully!')
+  } catch (error) {
+    console.error('❌ Seed error:', error)
+  }
+}
+
+async function ensureDefaultAdmin() {
+  try {
+    // Check if any admin exists
+    const existingAdmins = await prisma.user.count({
+      where: { role: 'ADMIN' }
+    })
+
+    if (existingAdmins > 0) {
+      console.log('✅ Admin user already exists, skipping admin creation')
+      return
+    }
+
+    // Create default admin
+    const adminPassword = process.env.ADMIN_PASSWORD || 'Admin2024!'
+    const adminEmail = process.env.ADMIN_EMAIL || 'admin@aliajrealestate.com'
+    const hashedPassword = await bcrypt.hash(adminPassword, 12)
     
-    const admin = await prisma.user.upsert({
-      where: { email: adminEmail },
-      update: {},
-      create: {
+    const admin = await prisma.user.create({
+      data: {
         email: adminEmail,
         password: hashedPassword,
-        name: 'Admin User',
+        name: 'Default Admin',
         role: 'ADMIN'
       }
     })
 
-    // Admin user created successfully
+    console.log('✅ Default admin user created:')
+    console.log('   Email:', adminEmail)
+    console.log('   Password:', adminPassword)
+    console.log('   Login URL: /admin/login')
+    console.log('   ⚠️  Change this password after first login!')
+  } catch (error) {
+    console.error('❌ Error creating default admin:', error)
+  }
+}
 
+async function createSampleProperties() {
+  try {
     // Create sample properties
     const properties = [
       {
@@ -139,9 +172,9 @@ async function main() {
       // Property created successfully
     }
 
-    // Seed data created successfully
+    console.log('✅ Sample properties created successfully!')
   } catch (error) {
-    // Seed error occurred, continuing with build
+    console.error('❌ Error creating sample properties:', error)
   }
 }
 
