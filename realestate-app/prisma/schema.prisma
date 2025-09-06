@@ -1,12 +1,12 @@
-// This is the SQLite version for local development
-// To use: copy this content to schema.prisma for local development
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -100,6 +100,14 @@ enum LeaseStatus {
   EXPIRED
   TERMINATED
   PENDING
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  LATE
+  PARTIAL
+  CANCELLED
 }
 
 model ContactSettings {
@@ -232,12 +240,4 @@ enum PaymentType {
   LATE_FEE
   MAINTENANCE
   OTHER
-}
-
-enum PaymentStatus {
-  PENDING
-  PAID
-  LATE
-  PARTIAL
-  CANCELLED
 }
