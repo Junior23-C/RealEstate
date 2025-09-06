@@ -17,7 +17,8 @@ export async function POST(request: Request) {
       return new NextResponse("Super admin not configured", { status: 503 })
     }
 
-    const { email, password, action } = await request.json()
+    const body = await request.json()
+    const { email, password, action, adminEmail, adminPassword, adminName } = body
     
     // Verify super admin credentials
     if (email !== SUPER_ADMIN_EMAIL || password !== SUPER_ADMIN_PASSWORD) {
@@ -26,7 +27,6 @@ export async function POST(request: Request) {
 
     switch (action) {
       case 'create_admin': {
-        const { adminEmail, adminPassword, adminName } = await request.json()
         
         if (!adminEmail || !adminPassword) {
           return new NextResponse("Admin email and password required", { status: 400 })
