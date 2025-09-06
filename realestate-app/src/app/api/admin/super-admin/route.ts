@@ -80,7 +80,7 @@ export async function POST(request: Request) {
         const defaultPassword = 'Admin' + Math.random().toString(36).slice(-8) + '!'
         const hashedPassword = await bcrypt.hash(defaultPassword, 12)
 
-        const admin = await prisma.user.upsert({
+        await prisma.user.upsert({
           where: { email: defaultEmail },
           update: {
             password: hashedPassword,
