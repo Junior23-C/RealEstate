@@ -19,7 +19,9 @@
     "test:pages": "node scripts/test-pages.js",
     "test:prod": "cp prisma/schema.prod.prisma prisma/schema.prisma && prisma generate && npm run build",
     "precommit": "npm run test:all",
-    "manage-admin": "node scripts/manage-admin.js"
+    "manage-admin": "node scripts/manage-admin.js",
+    "git-push": "python3 scripts/git-push.py",
+    "push": "python3 scripts/git-push.py --push"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
