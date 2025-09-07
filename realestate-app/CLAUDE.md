@@ -1,5 +1,7 @@
 # CLAUDE.md - Real Estate Application
 
+<!-- Updated: Document management system deployed -->
+
 > **This file helps Claude Code understand the project structure, workflows, and best practices for effective development assistance.**
 
 ## 📋 Project Overview
