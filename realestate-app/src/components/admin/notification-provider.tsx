@@ -125,13 +125,7 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
             duration: notification.urgent ? 10000 : 5000,
           })
           
-          // Browser notification (optional)
-          if ('Notification' in window && Notification.permission === 'granted') {
-            new Notification(notification.title, {
-              body: notification.message,
-              icon: '/favicon.ico'
-            })
-          }
+          // Removed browser notifications to avoid security flags
         })
 
         socketInstance.on('notification-updated', (notificationId: string) => {
@@ -155,10 +149,7 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
     // Connect socket
     connectSocket()
 
-    // Request notification permission
-    if ('Notification' in window && Notification.permission === 'default') {
-      Notification.requestPermission()
-    }
+    // Removed automatic notification permission request to avoid security flags
 
     return () => {
       if (socketInstance) {
