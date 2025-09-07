@@ -77,24 +77,54 @@ export async function DELETE(
   const { id } = await context.params
 
   try {
-    // Check if property is assigned to any leases
+    // Check if property is assigned to any leases with new archive logic
     const existingLeases = await prisma.lease.findMany({
       where: { propertyId: id },
-      select: { id: true, status: true }
+      select: { 
+        id: true, 
+        status: true,
+        payments: { select: { id: true } }
+      }
     })
 
     if (existingLeases.length > 0) {
       const activeLeases = existingLeases.filter(lease => lease.status === 'ACTIVE')
-      const anyLeases = existingLeases.length
+      const nonArchivedLeases = existingLeases.filter(lease => 
+        lease.status !== 'ARCHIVED'
+      )
       
       if (activeLeases.length > 0) {
         return NextResponse.json({
-          error: `Cannot delete property. It has ${activeLeases.length} active lease(s). Please terminate the lease(s) first.`
+          error: `Cannot delete property. It has ${activeLeases.length} active lease(s). Please terminate the lease(s) first, then archive them.`,
+          suggestion: "TERMINATE_LEASES_FIRST",
+          activeLeaseIds: activeLeases.map(l => l.id)
         }, { status: 400 })
-      } else if (anyLeases > 0) {
-        return NextResponse.json({
-          error: `Cannot delete property. It has ${anyLeases} lease(s) assigned. Please remove the lease(s) first.`
-        }, { status: 400 })
+      } else if (nonArchivedLeases.length > 0) {
+        const leasesWithPayments = nonArchivedLeases.filter(lease => 
+          lease.payments && lease.payments.length > 0
+        )
+        
+        if (leasesWithPayments.length > 0) {
+          return NextResponse.json({
+            error: `Cannot delete property. It has ${nonArchivedLeases.length} lease(s) that need to be archived first. ${leasesWithPayments.length} of them have payment history.`,
+            suggestion: "ARCHIVE_LEASES_FIRST",
+            nonArchivedLeaseIds: nonArchivedLeases.map(l => l.id),
+            archiveEndpoint: "/api/rentals/leases/[id]/archive"
+          }, { status: 400 })
+        } else {
+          return NextResponse.json({
+            error: `Cannot delete property. It has ${nonArchivedLeases.length} lease(s) without payments. You can delete these leases first, or archive the property instead.`,
+            suggestion: "DELETE_OR_ARCHIVE_LEASES",
+            nonArchivedLeaseIds: nonArchivedLeases.map(l => l.id)
+          }, { status: 400 })
+        }
+      }
+      
+      // All leases are archived - inform user but allow deletion
+      const archivedCount = existingLeases.filter(l => l.status === 'ARCHIVED').length
+      if (archivedCount > 0) {
+        // Could add a confirmation step here, but for now allow deletion
+        console.log(`Deleting property with ${archivedCount} archived leases`)
       }
     }
 

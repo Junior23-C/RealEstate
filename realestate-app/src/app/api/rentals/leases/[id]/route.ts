@@ -150,15 +150,25 @@ export async function DELETE(
       return NextResponse.json({ error: "Lease not found" }, { status: 404 })
     }
 
-    // Check if lease has payments - if so, don't allow deletion
+    // Check if lease has payments and implement archive workflow
     if (existingLease.payments.length > 0) {
-      return NextResponse.json(
-        { error: "Cannot delete lease with existing payments. Consider terminating it instead." },
-        { status: 400 }
-      )
+      // If lease has payments, it should be archived instead of deleted
+      if (existingLease.status === 'ACTIVE') {
+        return NextResponse.json({
+          error: "Cannot delete active lease with payments. Please terminate the lease first, then it can be archived or deleted.",
+          suggestion: "TERMINATE_FIRST"
+        }, { status: 400 })
+      } else {
+        // Lease is terminated/expired and has payments - offer archive option
+        return NextResponse.json({
+          error: "This lease has payment history. Would you like to archive it instead of permanently deleting it?",
+          suggestion: "ARCHIVE_INSTEAD",
+          archiveEndpoint: `/api/rentals/leases/${leaseId}/archive`
+        }, { status: 400 })
+      }
     }
 
-    // Delete the lease
+    // If no payments or user explicitly wants to delete terminated lease, allow deletion
     await prisma.lease.delete({
       where: { id: leaseId }
     })
