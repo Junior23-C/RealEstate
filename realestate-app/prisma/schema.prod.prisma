@@ -31,6 +31,8 @@ model Property {
   inquiries     Inquiry[]
   leases        Lease[]
   maintenanceRequests MaintenanceRequest[]
+  views         PropertyView[]
+  events        AnalyticsEvent[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 }
@@ -54,6 +56,8 @@ model Inquiry {
   propertyId  String
   property    Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
   status      InquiryStatus @default(PENDING)
+  response    InquiryResponse?
+  events      AnalyticsEvent[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 }
@@ -239,5 +243,139 @@ enum PaymentType {
   SECURITY_DEPOSIT
   LATE_FEE
   MAINTENANCE
+  OTHER
+}
+
+// Analytics and Tracking Models
+model PropertyView {
+  id          String    @id @default(cuid())
+  propertyId  String
+  property    Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  userAgent   String?
+  ipAddress   String?
+  referrer    String?
+  sessionId   String?
+  duration    Int?      // seconds spent viewing
+  source      String?   // organic, direct, social, etc.
+  location    String?   // geographic location
+  createdAt   DateTime  @default(now())
+  
+  @@index([propertyId, createdAt])
+}
+
+model AnalyticsEvent {
+  id          String    @id @default(cuid())
+  type        EventType
+  category    String
+  action      String
+  label       String?
+  value       Float?
+  propertyId  String?
+  property    Property? @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  inquiryId   String?
+  inquiry     Inquiry?  @relation(fields: [inquiryId], references: [id], onDelete: Cascade)
+  sessionId   String?
+  userAgent   String?
+  ipAddress   String?
+  referrer    String?
+  metadata    String?   // JSON string for additional data
+  createdAt   DateTime  @default(now())
+  
+  @@index([type, createdAt])
+  @@index([category, action, createdAt])
+}
+
+model UserSession {
+  id          String    @id @default(cuid())
+  sessionId   String    @unique
+  userAgent   String?
+  ipAddress   String?
+  location    String?   // geographic location
+  referrer    String?
+  landingPage String?
+  exitPage    String?
+  pageViews   Int       @default(0)
+  duration    Int?      // total session duration in seconds
+  isBot       Boolean   @default(false)
+  startedAt   DateTime  @default(now())
+  lastActivity DateTime @default(now())
+  endedAt     DateTime?
+  
+  @@index([sessionId])
+  @@index([startedAt])
+}
+
+model InquiryResponse {
+  id          String    @id @default(cuid())
+  inquiryId   String    @unique
+  inquiry     Inquiry   @relation(fields: [inquiryId], references: [id], onDelete: Cascade)
+  respondedAt DateTime?
+  responseTime Int?     // minutes from inquiry to first response
+  status      ResponseStatus @default(PENDING)
+  respondedBy String?   // admin user who responded
+  method      ResponseMethod? // EMAIL, PHONE, WHATSAPP
+  notes       String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model PageView {
+  id        String    @id @default(cuid())
+  path      String
+  title     String?
+  userAgent String?
+  ipAddress String?
+  referrer  String?
+  sessionId String?
+  location  String?   // geographic location
+  loadTime  Int?      // page load time in milliseconds
+  createdAt DateTime  @default(now())
+  
+  @@index([path, createdAt])
+  @@index([sessionId])
+}
+
+model SearchQuery {
+  id          String    @id @default(cuid())
+  query       String
+  filters     String?   // JSON string of applied filters
+  results     Int       @default(0)
+  sessionId   String?
+  userAgent   String?
+  ipAddress   String?
+  location    String?
+  createdAt   DateTime  @default(now())
+  
+  @@index([query])
+  @@index([createdAt])
+}
+
+enum EventType {
+  PAGE_VIEW
+  PROPERTY_VIEW
+  INQUIRY_SUBMIT
+  SEARCH
+  CONTACT_CLICK
+  PHONE_CLICK
+  EMAIL_CLICK
+  WHATSAPP_CLICK
+  IMAGE_VIEW
+  DOWNLOAD
+  SHARE
+  FAVORITE
+}
+
+enum ResponseStatus {
+  PENDING
+  RESPONDED
+  NO_RESPONSE
+  FOLLOW_UP_NEEDED
+}
+
+enum ResponseMethod {
+  EMAIL
+  PHONE
+  WHATSAPP
+  IN_PERSON
   OTHER
 }
