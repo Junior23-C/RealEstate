@@ -147,35 +147,45 @@ export function AnalyticsDashboard({ data }: AnalyticsDashboardProps) {
             Tendenca e Pyetjeve
           </h3>
           
-          <ResponsiveContainer width="100%" height={300}>
-            <AreaChart data={data.inquiriesTrend}>
-              <defs>
-                <linearGradient id="colorInquiries" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.3}/>
-                  <stop offset="95%" stopColor="#3B82F6" stopOpacity={0}/>
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
-              <XAxis dataKey="date" stroke="#64748B" />
-              <YAxis stroke="#64748B" />
-              <Tooltip 
-                contentStyle={{ 
-                  backgroundColor: 'rgba(255, 255, 255, 0.9)', 
-                  border: 'none',
-                  borderRadius: '8px',
-                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-                }}
-              />
-              <Area 
-                type="monotone" 
-                dataKey="count" 
-                stroke="#3B82F6" 
-                fillOpacity={1}
-                fill="url(#colorInquiries)"
-                strokeWidth={2}
-              />
-            </AreaChart>
-          </ResponsiveContainer>
+          {data.inquiriesTrend.length > 0 ? (
+            <ResponsiveContainer width="100%" height={300}>
+              <AreaChart data={data.inquiriesTrend}>
+                <defs>
+                  <linearGradient id="colorInquiries" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="#3B82F6" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
+                <XAxis dataKey="date" stroke="#64748B" />
+                <YAxis stroke="#64748B" />
+                <Tooltip 
+                  contentStyle={{ 
+                    backgroundColor: 'rgba(255, 255, 255, 0.9)', 
+                    border: 'none',
+                    borderRadius: '8px',
+                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                  }}
+                />
+                <Area 
+                  type="monotone" 
+                  dataKey="count" 
+                  stroke="#3B82F6" 
+                  fillOpacity={1}
+                  fill="url(#colorInquiries)"
+                  strokeWidth={2}
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="h-[300px] flex items-center justify-center text-slate-500 dark:text-slate-400">
+              <div className="text-center">
+                <Mail className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                <p>Asnjë të dhënë për pyetjet</p>
+                <p className="text-sm mt-1">Të dhënat do të shfaqen kur të ketë pyetje të reja</p>
+              </div>
+            </div>
+          )}
         </motion.div>
 
         {/* Properties by Type */}
@@ -190,32 +200,42 @@ export function AnalyticsDashboard({ data }: AnalyticsDashboardProps) {
             Pronat sipas Llojit
           </h3>
           
-          <ResponsiveContainer width="100%" height={300}>
-            <PieChart>
-              <Pie
-                data={data.propertiesByType}
-                cx="50%"
-                cy="50%"
-                labelLine={false}
-                label={({ type, count }) => `${type}: ${count}`}
-                outerRadius={80}
-                fill="#8884d8"
-                dataKey="count"
-              >
-                {data.propertiesByType.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip 
-                formatter={(value, name) => [`${value} prona`, name]}
-                contentStyle={{ 
-                  backgroundColor: 'rgba(255, 255, 255, 0.9)', 
-                  border: 'none',
-                  borderRadius: '8px' 
-                }}
-              />
-            </PieChart>
-          </ResponsiveContainer>
+          {data.propertiesByType.length > 0 ? (
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={data.propertiesByType}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={({ type, count }) => `${type}: ${count}`}
+                  outerRadius={80}
+                  fill="#8884d8"
+                  dataKey="count"
+                >
+                  {data.propertiesByType.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip 
+                  formatter={(value, name) => [`${value} prona`, name]}
+                  contentStyle={{ 
+                    backgroundColor: 'rgba(255, 255, 255, 0.9)', 
+                    border: 'none',
+                    borderRadius: '8px' 
+                  }}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="h-[300px] flex items-center justify-center text-slate-500 dark:text-slate-400">
+              <div className="text-center">
+                <Building2 className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                <p>Asnjë të dhënë për pronat</p>
+                <p className="text-sm mt-1">Të dhënat do të shfaqen kur të ketë prona të regjistruara</p>
+              </div>
+            </div>
+          )}
         </motion.div>
 
         {/* Monthly Revenue */}
@@ -230,23 +250,33 @@ export function AnalyticsDashboard({ data }: AnalyticsDashboardProps) {
             Të Hyrat Mujore vs Objektivi
           </h3>
           
-          <ResponsiveContainer width="100%" height={350}>
-            <BarChart data={data.monthlyRevenue}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
-              <XAxis dataKey="month" stroke="#64748B" />
-              <YAxis tickFormatter={formatCurrency} stroke="#64748B" />
-              <Tooltip 
-                formatter={(value, name) => [formatCurrency(Number(value)), name === 'revenue' ? 'Të Hyrat' : 'Objektivi']}
-                contentStyle={{ 
-                  backgroundColor: 'rgba(255, 255, 255, 0.9)', 
-                  border: 'none',
-                  borderRadius: '8px' 
-                }}
-              />
-              <Bar dataKey="target" fill="#E5E7EB" name="Objektivi" radius={[4, 4, 0, 0]} />
-              <Bar dataKey="revenue" fill="#3B82F6" name="Të Hyrat" radius={[4, 4, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
+          {data.monthlyRevenue.length > 0 ? (
+            <ResponsiveContainer width="100%" height={350}>
+              <BarChart data={data.monthlyRevenue}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
+                <XAxis dataKey="month" stroke="#64748B" />
+                <YAxis tickFormatter={formatCurrency} stroke="#64748B" />
+                <Tooltip 
+                  formatter={(value, name) => [formatCurrency(Number(value)), name === 'revenue' ? 'Të Hyrat' : 'Objektivi']}
+                  contentStyle={{ 
+                    backgroundColor: 'rgba(255, 255, 255, 0.9)', 
+                    border: 'none',
+                    borderRadius: '8px' 
+                  }}
+                />
+                <Bar dataKey="target" fill="#E5E7EB" name="Objektivi" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="revenue" fill="#3B82F6" name="Të Hyrat" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="h-[350px] flex items-center justify-center text-slate-500 dark:text-slate-400">
+              <div className="text-center">
+                <DollarSign className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                <p>Asnjë të dhënë për të hyrat</p>
+                <p className="text-sm mt-1">Të dhënat do të shfaqen kur të ketë pagesa të regjistruara</p>
+              </div>
+            </div>
+          )}
         </motion.div>
       </div>
 

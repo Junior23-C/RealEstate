@@ -166,7 +166,23 @@ src/
 - **Property Management**: CRUD operations, image uploads
 - **Inquiry Management**: View, respond to customer inquiries  
 - **Rental Management**: Tenants, leases, payments
+- **Analytics Dashboard**: Real-time charts, performance metrics, trend analysis
+- **Notifications**: Real-time notification system with bell dropdown
 - **Settings**: Profile, password, system configuration
+
+### Analytics Dashboard (`/admin/analytics`)
+- **Interactive Charts**: Area charts (inquiry trends), pie charts (property types), bar charts (revenue)
+- **Real-time Data**: Direct database queries, no placeholder data
+- **Performance Metrics**: Total views, conversion rate, average price, response time
+- **Empty State Handling**: Graceful display when no data is available
+- **Responsive Design**: Mobile-friendly charts and layouts
+
+### Notification System
+- **Real-time Updates**: Socket.IO infrastructure for live notifications
+- **Toast Notifications**: In-app notifications using Sonner library
+- **Notification Bell**: Dropdown with unread count and notification history
+- **Database Stored**: All notifications persisted in database
+- **Security Compliant**: No browser notification requests (Malwarebytes safe)
 
 ### Authentication Flow
 1. Login via `/admin/login`

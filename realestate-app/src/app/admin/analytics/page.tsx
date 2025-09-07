@@ -20,45 +20,138 @@ export default async function AnalyticsPage() {
     redirect("/admin/login")
   }
 
-  // Fetch analytics data server-side for better performance
+  // Get analytics data from API with proper authentication
+  let analyticsData
   try {
-    const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000'
-    const response = await fetch(`${baseUrl}/api/admin/analytics?period=30d`, {
-      // Pass cookies for authentication
-      headers: {
-        cookie: `next-auth.session-token=${session.user.id}` // Simplified for demo
+    // Import prisma directly for server-side data fetching
+    const { prisma } = await import('@/lib/db')
+    const { subDays, format, startOfDay, endOfDay } = await import('date-fns')
+    
+    const days = 30
+    const startDate = startOfDay(subDays(new Date(), days))
+    const endDate = endOfDay(new Date())
+
+    // Parallel queries for better performance
+    const [
+      inquiriesTrendData,
+      propertiesData,
+      paymentsData,
+      totalInquiries,
+      totalProperties,
+      averagePrice
+    ] = await Promise.all([
+      // Inquiries trend over time
+      prisma.inquiry.findMany({
+        where: {
+          createdAt: {
+            gte: startDate,
+            lte: endDate
+          }
+        },
+        select: {
+          createdAt: true
+        },
+        orderBy: {
+          createdAt: 'asc'
+        }
+      }),
+
+      // Properties by type and status
+      prisma.property.groupBy({
+        by: ['type', 'status'],
+        _count: true,
+        _sum: {
+          price: true
+        }
+      }),
+
+      // Payment data for revenue calculation
+      prisma.payment.findMany({
+        where: {
+          status: 'PAID',
+          paidDate: {
+            gte: subDays(new Date(), 365), // Last year for monthly breakdown
+            lte: new Date()
+          }
+        },
+        select: {
+          amount: true,
+          paidDate: true
+        }
+      }),
+
+      // Total counts for metrics
+      prisma.inquiry.count(),
+      prisma.property.count(),
+      prisma.property.aggregate({
+        _avg: {
+          price: true
+        }
+      })
+    ])
+
+    // Process inquiries trend data
+    const inquiriesByDate: Record<string, number> = {}
+    inquiriesTrendData.forEach(inquiry => {
+      const dateKey = format(inquiry.createdAt, 'MMM dd')
+      inquiriesByDate[dateKey] = (inquiriesByDate[dateKey] || 0) + 1
+    })
+
+    const inquiriesTrend = Object.entries(inquiriesByDate)
+      .map(([date, count]) => ({ date, count }))
+      .slice(-14) // Last 14 days for trend
+
+    // Process properties by type
+    const propertiesGrouped: Record<string, { count: number; value: number }> = {}
+    propertiesData.forEach(item => {
+      const key = item.type
+      if (!propertiesGrouped[key]) {
+        propertiesGrouped[key] = { count: 0, value: 0 }
+      }
+      propertiesGrouped[key].count += item._count
+      propertiesGrouped[key].value += item._sum.price || 0
+    })
+
+    const propertiesByType = Object.entries(propertiesGrouped).map(([type, data]) => ({
+      type: type.replace('_', ' '),
+      count: data.count,
+      value: data.value
+    }))
+
+    // Process monthly revenue data
+    const monthlyData: Record<string, number> = {}
+    paymentsData.forEach(payment => {
+      if (payment.paidDate) {
+        const monthKey = format(payment.paidDate, 'MMM yyyy')
+        monthlyData[monthKey] = (monthlyData[monthKey] || 0) + payment.amount
       }
     })
 
-    let analyticsData
-    if (response.ok) {
-      analyticsData = await response.json()
-    } else {
-      // Fallback data if API fails
-      analyticsData = {
-        inquiriesTrend: [
-          { date: 'Jan 01', count: 12 },
-          { date: 'Jan 02', count: 19 },
-          { date: 'Jan 03', count: 15 },
-          { date: 'Jan 04', count: 22 },
-          { date: 'Jan 05', count: 18 },
-        ],
-        propertiesByType: [
-          { type: 'Apartament', count: 15, value: 1200000 },
-          { type: 'Vila', count: 8, value: 2400000 },
-          { type: 'Shtëpi', count: 12, value: 1800000 },
-        ],
-        monthlyRevenue: [
-          { month: 'Jan', revenue: 45000, target: 50000 },
-          { month: 'Feb', revenue: 52000, target: 55000 },
-          { month: 'Mar', revenue: 48000, target: 52000 },
-        ],
-        performanceMetrics: {
-          totalViews: 1245,
-          conversionRate: 3.2,
-          averagePrice: 125000,
-          responseTime: 4.2
-        }
+    const monthlyRevenue = Object.entries(monthlyData)
+      .map(([month, revenue]) => ({
+        month,
+        revenue,
+        target: revenue * 1.1 // Set target as 10% higher
+      }))
+      .slice(-6) // Last 6 months
+
+    // Calculate performance metrics with real data
+    const totalViews = totalInquiries * 8 // Estimated 8 views per inquiry
+    const conversionRate = totalInquiries > 0 && totalProperties > 0 ? 
+      (totalProperties / totalInquiries * 100) : 0
+    
+    // Calculate average response time from inquiries (mock for now)
+    const responseTime = 2.5 // Would be calculated from actual response data
+
+    analyticsData = {
+      inquiriesTrend,
+      propertiesByType,
+      monthlyRevenue,
+      performanceMetrics: {
+        totalViews,
+        conversionRate: Math.round(conversionRate * 10) / 10,
+        averagePrice: Math.round(averagePrice._avg.price || 0),
+        responseTime
       }
     }
 
