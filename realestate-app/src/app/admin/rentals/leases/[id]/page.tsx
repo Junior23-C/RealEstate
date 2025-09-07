@@ -26,6 +26,11 @@ async function getLeaseDetails(id: string) {
           orderBy: {
             dueDate: 'desc'
           }
+        },
+        leaseDocuments: {
+          orderBy: {
+            createdAt: 'desc'
+          }
         }
       }
     })
@@ -44,6 +49,11 @@ async function getLeaseDetails(id: string) {
         paidDate: payment.paidDate,
         createdAt: payment.createdAt,
         updatedAt: payment.updatedAt
+      })),
+      leaseDocuments: lease.leaseDocuments.map(doc => ({
+        ...doc,
+        createdAt: doc.createdAt,
+        updatedAt: doc.updatedAt
       }))
     }
   } catch (error) {

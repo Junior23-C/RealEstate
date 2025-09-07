@@ -31,6 +31,7 @@ model Property {
   inquiries     Inquiry[]
   leases        Lease[]
   maintenanceRequests MaintenanceRequest[]
+  documents     Document[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 }
@@ -144,6 +145,7 @@ model Tenant {
   leases             Lease[]
   payments           Payment[]
   maintenanceRequests MaintenanceRequest[]
+  documents          Document[]
 }
 
 model Lease {
@@ -165,6 +167,7 @@ model Lease {
   tenant          Tenant    @relation(fields: [tenantId], references: [id])
   payments        Payment[]
   notifications   Notification[]
+  leaseDocuments  Document[]
 }
 
 model Payment {
@@ -239,6 +242,47 @@ enum PaymentType {
   SECURITY_DEPOSIT
   LATE_FEE
   MAINTENANCE
+  OTHER
+}
+
+model Document {
+  id          String      @id @default(cuid())
+  filename    String
+  originalName String
+  fileSize    Int
+  mimeType    String
+  url         String
+  type        DocumentType
+  description String?
+  leaseId     String?
+  lease       Lease?      @relation(fields: [leaseId], references: [id], onDelete: Cascade)
+  propertyId  String?
+  property    Property?   @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  tenantId    String?
+  tenant      Tenant?     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  uploadedBy  String      // Admin user ID
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  
+  @@index([leaseId])
+  @@index([propertyId])
+  @@index([tenantId])
+  @@index([type])
+}
+
+enum DocumentType {
+  LEASE_AGREEMENT
+  TENANT_ID
+  INCOME_PROOF
+  REFERENCE_LETTER
+  INVENTORY_CHECKLIST
+  INSPECTION_REPORT
+  INSURANCE_DOCUMENT
+  UTILITY_BILL
+  BANK_STATEMENT
+  MAINTENANCE_RECORD
+  RENEWAL_DOCUMENT
+  TERMINATION_NOTICE
   OTHER
 }
 
