@@ -1,6 +1,6 @@
 # Premium Real Estate Platform
 
-A modern, full-featured real estate management system built with Next.js 15, TypeScript, and Prisma. Features a beautiful public-facing website for property browsing and a comprehensive admin dashboard for property and rental management.
+A modern, full-featured real estate management system built with Next.js 15, TypeScript, and Prisma. Features a beautiful public-facing website for property browsing and a comprehensive admin dashboard for property and rental management with enhanced security features.
 
 ## 🌟 Overview
 
