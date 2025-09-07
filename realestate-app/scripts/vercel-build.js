@@ -19,9 +19,19 @@ async function build() {
     execSync('npx prisma generate', { stdio: 'inherit' });
     console.log('Prisma client generated successfully!');
     
-    // Skip database operations during build
-    // These should be done after deployment
-    console.log('Skipping database operations during build...');
+    // Apply database schema changes in production
+    if (process.env.DATABASE_URL && !process.env.DATABASE_URL.includes('localhost')) {
+      console.log('Applying database schema changes...');
+      try {
+        execSync('npx prisma db push --accept-data-loss', { stdio: 'inherit' });
+        console.log('Database schema updated successfully!');
+      } catch (dbError) {
+        console.error('Database schema update failed:', dbError.message);
+        console.log('Continuing with build anyway...');
+      }
+    } else {
+      console.log('Skipping database operations - no production DATABASE_URL');
+    }
     
     console.log('Building Next.js application...');
     try {
