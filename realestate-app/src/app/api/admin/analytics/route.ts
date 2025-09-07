@@ -7,11 +7,17 @@ import { subDays, format, startOfDay, endOfDay, subMonths } from 'date-fns'
 
 export async function GET(request: NextRequest) {
   try {
+    console.log('Analytics API called')
     // Check authentication
     const session = await getServerSession(authOptions)
+    console.log('Session:', session ? 'Found' : 'Not found', session ? session.user.role : 'N/A')
+    
     if (!session || session.user.role !== "ADMIN") {
+      console.log('Authentication failed:', !session ? 'No session' : `Wrong role: ${session.user.role}`)
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
+    
+    console.log('Authentication successful for user:', session.user.email)
 
     // Rate limiting
     const clientId = getClientIdentifier(request)
@@ -403,6 +409,7 @@ export async function GET(request: NextRequest) {
       }
     }
 
+    console.log('Analytics data prepared successfully, returning', Object.keys(analyticsData).length, 'properties')
     return NextResponse.json(analyticsData)
   } catch (error) {
     console.error("Analytics API error:", error)
