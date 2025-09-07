@@ -65,17 +65,23 @@ export function ComprehensiveAnalyticsDashboard({ initialData }: ComprehensiveAn
   const [activeTab, setActiveTab] = useState('overview')
 
   const fetchAnalytics = async (period: string) => {
+    console.log('Fetching analytics for period:', period)
     setLoading(true)
     try {
       const response = await fetch(`/api/admin/analytics?period=${period}`)
+      console.log('Analytics API response status:', response.status)
+      
       if (response.ok) {
         const analyticsData = await response.json()
+        console.log('Analytics data received:', analyticsData ? 'Yes' : 'No', analyticsData ? Object.keys(analyticsData).length + ' properties' : 'null/undefined')
         setData(analyticsData)
       } else if (response.status === 401) {
         console.error('Authentication failed - redirecting to login')
         window.location.href = '/admin/login'
       } else {
         console.error('Failed to fetch analytics:', response.status, response.statusText)
+        const errorText = await response.text()
+        console.error('Error response:', errorText)
       }
     } catch (error) {
       console.error('Failed to fetch analytics:', error)
@@ -85,10 +91,15 @@ export function ComprehensiveAnalyticsDashboard({ initialData }: ComprehensiveAn
   }
 
   useEffect(() => {
-    if (selectedPeriod) {
+    fetchAnalytics(selectedPeriod)
+  }, [selectedPeriod])
+
+  // Initial data fetch on component mount
+  useEffect(() => {
+    if (!data) {
       fetchAnalytics(selectedPeriod)
     }
-  }, [selectedPeriod])
+  }, [])
 
   const exportData = async (format: 'csv' | 'pdf') => {
     try {
