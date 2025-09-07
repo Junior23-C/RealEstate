@@ -42,7 +42,6 @@ export async function GET(request: NextRequest) {
     const [
       inquiriesTrendData,
       propertiesData,
-      paymentsData,
       totalInquiries,
       totalProperties,
       averagePrice
@@ -72,21 +71,6 @@ export async function GET(request: NextRequest) {
         }
       }),
 
-      // Payment data for revenue calculation
-      prisma.payment.findMany({
-        where: {
-          status: 'PAID',
-          paidDate: {
-            gte: subDays(new Date(), 365), // Last year for monthly breakdown
-            lte: new Date()
-          }
-        },
-        select: {
-          amount: true,
-          paidDate: true
-        }
-      }),
-
       // Total counts for metrics
       prisma.inquiry.count(),
       prisma.property.count(),
@@ -97,16 +81,25 @@ export async function GET(request: NextRequest) {
       })
     ])
 
-    // Process inquiries trend data
+    // Process inquiries trend data - create complete date range
     const inquiriesByDate: Record<string, number> = {}
     inquiriesTrendData.forEach(inquiry => {
       const dateKey = format(inquiry.createdAt, 'MMM dd')
       inquiriesByDate[dateKey] = (inquiriesByDate[dateKey] || 0) + 1
     })
 
-    const inquiriesTrend = Object.entries(inquiriesByDate)
-      .map(([date, count]) => ({ date, count }))
-      .slice(-14) // Last 14 days for trend
+    // Create complete date range with zero counts for missing days
+    const inquiriesTrend: Array<{ date: string; count: number }> = []
+    const displayDays = Math.min(days, 14) // Show up to 14 days for better visibility
+    
+    for (let i = displayDays - 1; i >= 0; i--) {
+      const date = subDays(new Date(), i)
+      const dateKey = format(date, 'MMM dd')
+      inquiriesTrend.push({
+        date: dateKey,
+        count: inquiriesByDate[dateKey] || 0
+      })
+    }
 
     // Process properties by type
     const propertiesGrouped: Record<string, { count: number; value: number }> = {}
@@ -125,23 +118,6 @@ export async function GET(request: NextRequest) {
       value: data.value
     }))
 
-    // Process monthly revenue data
-    const monthlyData: Record<string, number> = {}
-    paymentsData.forEach(payment => {
-      if (payment.paidDate) {
-        const monthKey = format(payment.paidDate, 'MMM yyyy')
-        monthlyData[monthKey] = (monthlyData[monthKey] || 0) + payment.amount
-      }
-    })
-
-    const monthlyRevenue = Object.entries(monthlyData)
-      .map(([month, revenue]) => ({
-        month,
-        revenue,
-        target: revenue * 1.1 // Set target as 10% higher for demo
-      }))
-      .slice(-6) // Last 6 months
-
     // Calculate performance metrics
     const totalViews = Math.floor(totalInquiries * 15.5) // Estimated based on conversion rate
     const conversionRate = totalInquiries > 0 ? ((totalProperties * 0.8) / totalInquiries * 100) : 0
@@ -150,7 +126,6 @@ export async function GET(request: NextRequest) {
     const analyticsData = {
       inquiriesTrend,
       propertiesByType,
-      monthlyRevenue,
       performanceMetrics: {
         totalViews,
         conversionRate: Math.round(conversionRate * 10) / 10,

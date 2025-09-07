@@ -4,36 +4,65 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { 
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  BarChart, Bar, PieChart, Pie, Cell, AreaChart, Area
+  PieChart, Pie, Cell, AreaChart, Area
 } from 'recharts'
 import { 
   TrendingUp, TrendingDown, DollarSign, Building2, Mail,
   Eye, Target, Activity
 } from 'lucide-react'
 
-interface AnalyticsDashboardProps {
-  data: {
-    inquiriesTrend: Array<{ date: string; count: number }>
-    propertiesByType: Array<{ type: string; count: number; value: number }>
-    monthlyRevenue: Array<{ month: string; revenue: number; target: number }>
-    performanceMetrics: {
-      totalViews: number
-      conversionRate: number
-      averagePrice: number
-      responseTime: number
-    }
+interface AnalyticsData {
+  inquiriesTrend: Array<{ date: string; count: number }>
+  propertiesByType: Array<{ type: string; count: number; value: number }>
+  performanceMetrics: {
+    totalViews: number
+    conversionRate: number
+    averagePrice: number
+    responseTime: number
   }
+}
+
+interface AnalyticsDashboardProps {
+  initialData?: AnalyticsData
 }
 
 const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#06B6D4']
 
-export function AnalyticsDashboard({ data }: AnalyticsDashboardProps) {
+export function AnalyticsDashboard({ initialData }: AnalyticsDashboardProps) {
   const [selectedPeriod, setSelectedPeriod] = useState('30d')
   const [animationKey, setAnimationKey] = useState(0)
+  const [data, setData] = useState<AnalyticsData | null>(initialData || null)
+  const [, setLoading] = useState(false)
+
+  const fetchAnalytics = async (period: string) => {
+    setLoading(true)
+    try {
+      const response = await fetch(`/api/admin/analytics?period=${period}`)
+      if (response.ok) {
+        const analyticsData = await response.json()
+        setData(analyticsData)
+      }
+    } catch (error) {
+      console.error('Failed to fetch analytics:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   useEffect(() => {
+    fetchAnalytics(selectedPeriod)
     setAnimationKey(prev => prev + 1)
   }, [selectedPeriod])
+
+  if (!data) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-slate-500 dark:text-slate-400">
+          Loading analytics...
+        </div>
+      </div>
+    )
+  }
 
   const metrics = [
     {
@@ -70,7 +99,6 @@ export function AnalyticsDashboard({ data }: AnalyticsDashboardProps) {
     }
   ]
 
-  const formatCurrency = (value: number) => `€${value.toLocaleString()}`
 
   return (
     <div className="space-y-6">
@@ -238,46 +266,6 @@ export function AnalyticsDashboard({ data }: AnalyticsDashboardProps) {
           )}
         </motion.div>
 
-        {/* Monthly Revenue */}
-        <motion.div
-          key={`revenue-${animationKey}`}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="lg:col-span-2 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl rounded-xl p-6 border border-white/20 dark:border-slate-700/20"
-        >
-          <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-            <DollarSign className="h-5 w-5" />
-            Të Hyrat Mujore vs Objektivi
-          </h3>
-          
-          {data.monthlyRevenue.length > 0 ? (
-            <ResponsiveContainer width="100%" height={350}>
-              <BarChart data={data.monthlyRevenue}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
-                <XAxis dataKey="month" stroke="#64748B" />
-                <YAxis tickFormatter={formatCurrency} stroke="#64748B" />
-                <Tooltip 
-                  formatter={(value, name) => [formatCurrency(Number(value)), name === 'revenue' ? 'Të Hyrat' : 'Objektivi']}
-                  contentStyle={{ 
-                    backgroundColor: 'rgba(255, 255, 255, 0.9)', 
-                    border: 'none',
-                    borderRadius: '8px' 
-                  }}
-                />
-                <Bar dataKey="target" fill="#E5E7EB" name="Objektivi" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="revenue" fill="#3B82F6" name="Të Hyrat" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          ) : (
-            <div className="h-[350px] flex items-center justify-center text-slate-500 dark:text-slate-400">
-              <div className="text-center">
-                <DollarSign className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                <p>Asnjë të dhënë për të hyrat</p>
-                <p className="text-sm mt-1">Të dhënat do të shfaqen kur të ketë pagesa të regjistruara</p>
-              </div>
-            </div>
-          )}
-        </motion.div>
       </div>
 
       {/* Additional Insights */}
