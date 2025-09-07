@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/db"
-import { rateLimit, getClientIdentifier, RATE_LIMITS } from "@/lib/rate-limit"
-import { subDays, format, startOfDay, endOfDay, subMonths } from 'date-fns'
+import { rateLimit, getClientIdentifier } from "@/lib/rate-limit"
+import { subDays, format, startOfDay, endOfDay } from 'date-fns'
 
 export async function GET(request: NextRequest) {
   try {
@@ -16,8 +16,8 @@ export async function GET(request: NextRequest) {
     // Rate limiting
     const clientId = getClientIdentifier(request)
     const rateLimitResult = rateLimit(`analytics_export:${clientId}`, {
-      windowMs: 60 * 1000, // 1 minute
-      maxAttempts: 5 // 5 exports per minute
+      requests: 5, // 5 exports per minute
+      window: 60 // 1 minute
     })
     
     if (!rateLimitResult.success) {
@@ -208,7 +208,91 @@ export async function GET(request: NextRequest) {
   }
 }
 
-function generateCSVExport(data: any) {
+interface ExportData {
+  inquiries: Array<{
+    id: string
+    name: string
+    email: string
+    createdAt: Date
+    status: string
+    property: {
+      title: string
+      city: string
+      price: number
+    } | null
+  }>
+  properties: Array<{
+    id: string
+    title: string
+    type: string
+    status: string
+    price: number
+    city: string
+    createdAt: Date
+    _count: {
+      inquiries: number
+      views: number
+    } | null
+  }>
+  pageViews: Array<{
+    path: string
+    _count: number
+  }>
+  propertyViews: Array<{
+    id: string
+    propertyId: string
+    sessionId: string | null
+    duration: number | null
+    source: string | null
+    location: string | null
+    createdAt: Date
+  }>
+  userSessions: Array<{
+    sessionId: string
+    location: string | null
+    pageViews: number
+    duration: number | null
+    referrer: string | null
+    startedAt: Date
+  }>
+  searchQueries: Array<{
+    query: string
+    results: number
+    location: string | null
+    createdAt: Date
+  }>
+  payments: Array<{
+    amount: number
+    status: string
+    type: string
+    createdAt: Date
+    paidDate: Date | null
+    lease: {
+      property: {
+        title: string
+        city: string
+      } | null
+    } | null
+  }>
+  leases: Array<{
+    id: string
+    monthlyRent: number
+    status: string
+    startDate: Date
+    endDate: Date | null
+    property: {
+      title: string
+      city: string
+    } | null
+    tenant: {
+      firstName: string
+      lastName: string
+    } | null
+  }>
+  period: string
+}
+
+function generateCSVExport(data: ExportData) {
   // Generate comprehensive CSV with multiple sheets worth of data
   let csvContent = ""
   
@@ -219,13 +303,13 @@ function generateCSVExport(data: any) {
   csvContent += `Total Inquiries,${data.inquiries.length}\n`
   csvContent += `Total Properties,${data.properties.length}\n`
   csvContent += `Total Sessions,${data.userSessions.length}\n`
-  csvContent += `Total Revenue,€${data.payments.filter((p: any) => p.status === 'PAID').reduce((sum: number, p: any) => sum + p.amount, 0)}\n`
+  csvContent += `Total Revenue,€${data.payments.filter((p) => p.status === 'PAID').reduce((sum, p) => sum + p.amount, 0)}\n`
   csvContent += "\n"
 
   // Inquiries Section
   csvContent += "INQUIRIES\n"
   csvContent += "Date,Name,Email,Property,City,Price,Status\n"
-  data.inquiries.forEach((inquiry: any) => {
+  data.inquiries.forEach((inquiry) => {
     csvContent += `${format(new Date(inquiry.createdAt), 'yyyy-MM-dd')},${inquiry.name},${inquiry.email},${inquiry.property?.title || 'N/A'},${inquiry.property?.city || 'N/A'},€${inquiry.property?.price || 0},${inquiry.status}\n`
   })
   csvContent += "\n"
@@ -233,7 +317,7 @@ function generateCSVExport(data: any) {
   // Properties Section
   csvContent += "PROPERTIES PERFORMANCE\n"
   csvContent += "Title,Type,Status,Price,City,Inquiries,Views,Created\n"
-  data.properties.forEach((property: any) => {
+  data.properties.forEach((property) => {
     csvContent += `${property.title},${property.type},${property.status},€${property.price},${property.city},${property._count?.inquiries || 0},${property._count?.views || 0},${format(new Date(property.createdAt), 'yyyy-MM-dd')}\n`
   })
   csvContent += "\n"
@@ -241,7 +325,7 @@ function generateCSVExport(data: any) {
   // Page Views Section
   csvContent += "PAGE VIEWS\n"
   csvContent += "Page,Views\n"
-  data.pageViews.forEach((page: any) => {
+  data.pageViews.forEach((page) => {
     csvContent += `${page.path},${page._count}\n`
   })
   csvContent += "\n"
@@ -249,7 +333,7 @@ function generateCSVExport(data: any) {
   // Sessions Section
   csvContent += "USER SESSIONS\n"
   csvContent += "Session ID,Location,Page Views,Duration (seconds),Referrer,Started At\n"
-  data.userSessions.forEach((session: any) => {
+  data.userSessions.forEach((session) => {
     csvContent += `${session.sessionId},${session.location || 'Unknown'},${session.pageViews},${session.duration || 0},${session.referrer || 'Direct'},${format(new Date(session.startedAt), 'yyyy-MM-dd HH:mm')}\n`
   })
   csvContent += "\n"
@@ -257,7 +341,7 @@ function generateCSVExport(data: any) {
   // Search Queries Section
   csvContent += "SEARCH QUERIES\n"
   csvContent += "Query,Results,Location,Date\n"
-  data.searchQueries.forEach((search: any) => {
+  data.searchQueries.forEach((search) => {
     csvContent += `${search.query},${search.results},${search.location || 'Unknown'},${format(new Date(search.createdAt), 'yyyy-MM-dd HH:mm')}\n`
   })
   csvContent += "\n"
@@ -265,7 +349,7 @@ function generateCSVExport(data: any) {
   // Financial Section
   csvContent += "PAYMENTS\n"
   csvContent += "Amount,Status,Type,Property,City,Date,Paid Date\n"
-  data.payments.forEach((payment: any) => {
+  data.payments.forEach((payment) => {
     csvContent += `€${payment.amount},${payment.status},${payment.type},${payment.lease?.property?.title || 'N/A'},${payment.lease?.property?.city || 'N/A'},${format(new Date(payment.createdAt), 'yyyy-MM-dd')},${payment.paidDate ? format(new Date(payment.paidDate), 'yyyy-MM-dd') : 'N/A'}\n`
   })
 
@@ -279,7 +363,7 @@ function generateCSVExport(data: any) {
   return response
 }
 
-function generatePDFExport(data: any) {
+function generatePDFExport(data: ExportData) {
   // For PDF export, we'll create a detailed HTML report
   // In a real implementation, you'd use a library like puppeteer or jsPDF
   
@@ -322,7 +406,7 @@ function generatePDFExport(data: any) {
           <p>Sessions</p>
         </div>
         <div class="metric">
-          <h3>€${data.payments.filter((p: any) => p.status === 'PAID').reduce((sum: number, p: any) => sum + p.amount, 0).toLocaleString()}</h3>
+          <h3>€${data.payments.filter((p) => p.status === 'PAID').reduce((sum, p) => sum + p.amount, 0).toLocaleString()}</h3>
           <p>Revenue</p>
         </div>
       </div>
@@ -331,7 +415,7 @@ function generatePDFExport(data: any) {
         <h3>Top Properties by Inquiries</h3>
         <table>
           <tr><th>Property</th><th>Type</th><th>City</th><th>Price</th><th>Inquiries</th></tr>
-          ${data.properties.slice(0, 10).map((prop: any) => `
+          ${data.properties.slice(0, 10).map((prop) => `
             <tr>
               <td>${prop.title}</td>
               <td>${prop.type}</td>
@@ -347,7 +431,7 @@ function generatePDFExport(data: any) {
         <h3>Recent Inquiries</h3>
         <table>
           <tr><th>Date</th><th>Name</th><th>Property</th><th>Status</th></tr>
-          ${data.inquiries.slice(0, 15).map((inquiry: any) => `
+          ${data.inquiries.slice(0, 15).map((inquiry) => `
             <tr>
               <td>${format(new Date(inquiry.createdAt), 'MMM dd, yyyy')}</td>
               <td>${inquiry.name}</td>
@@ -362,7 +446,7 @@ function generatePDFExport(data: any) {
         <h3>Top Search Queries</h3>
         <table>
           <tr><th>Query</th><th>Results</th><th>Location</th></tr>
-          ${data.searchQueries.slice(0, 10).map((search: any) => `
+          ${data.searchQueries.slice(0, 10).map((search) => `
             <tr>
               <td>${search.query}</td>
               <td>${search.results}</td>
@@ -376,7 +460,7 @@ function generatePDFExport(data: any) {
         <h3>Financial Overview</h3>
         <table>
           <tr><th>Date</th><th>Amount</th><th>Type</th><th>Status</th><th>Property</th></tr>
-          ${data.payments.slice(0, 20).map((payment: any) => `
+          ${data.payments.slice(0, 20).map((payment) => `
             <tr>
               <td>${format(new Date(payment.createdAt), 'MMM dd, yyyy')}</td>
               <td>€${payment.amount}</td>

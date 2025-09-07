@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from "next/server"
 import { AnalyticsTracker } from "@/lib/analytics"
-import { rateLimit, getClientIdentifier, RATE_LIMITS } from "@/lib/rate-limit"
+import { rateLimit, getClientIdentifier } from "@/lib/rate-limit"
 
 export async function POST(request: NextRequest) {
   try {
     // Rate limiting for analytics to prevent spam
     const clientId = getClientIdentifier(request)
     const rateLimitResult = rateLimit(`analytics_track:${clientId}`, {
-      windowMs: 60 * 1000, // 1 minute
-      maxAttempts: 100 // 100 events per minute
+      requests: 100, // 100 events per minute
+      window: 60 // 1 minute
     })
     
     if (!rateLimitResult.success) {
@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
       case 'SHARE':
       case 'FAVORITE':
         await AnalyticsTracker.trackEvent({
-          type: eventType as any,
+          type: eventType as 'CONTACT_CLICK' | 'PHONE_CLICK' | 'EMAIL_CLICK' | 'WHATSAPP_CLICK' | 'IMAGE_VIEW' | 'DOWNLOAD' | 'SHARE' | 'FAVORITE',
           category: data.category || 'User Interaction',
           action: data.action || eventType.replace('_', ' '),
           label: data.label,

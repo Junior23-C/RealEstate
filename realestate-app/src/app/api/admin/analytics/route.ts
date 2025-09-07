@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/db"
 import { rateLimit, getClientIdentifier, RATE_LIMITS } from "@/lib/rate-limit"
-import { subDays, format, startOfDay, endOfDay, startOfMonth, endOfMonth, subMonths, subYears } from 'date-fns'
+import { subDays, format, startOfDay, endOfDay, subMonths } from 'date-fns'
 
 export async function GET(request: NextRequest) {
   try {
@@ -48,7 +48,6 @@ export async function GET(request: NextRequest) {
       inquiriesTrendData,
       propertiesData,
       totalInquiries,
-      totalProperties,
       averagePrice,
       previousInquiries,
       
@@ -91,7 +90,6 @@ export async function GET(request: NextRequest) {
       prisma.inquiry.count({
         where: { createdAt: { gte: startDate, lte: endDate } }
       }),
-      prisma.property.count(),
       prisma.property.aggregate({
         _avg: { price: true }
       }),

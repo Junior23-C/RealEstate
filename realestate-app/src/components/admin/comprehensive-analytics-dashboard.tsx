@@ -4,12 +4,12 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { 
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, AreaChart, Area, BarChart, Bar, LineChart, Line
+  PieChart, Pie, Cell, AreaChart, Area, BarChart, Bar
 } from 'recharts'
 import { 
   TrendingUp, TrendingDown, DollarSign, Building2, Mail, Eye, Target, Activity,
-  Users, Clock, MapPin, Search, Download, Share2, Calendar, ArrowUpRight,
-  Globe, Smartphone, Monitor, FileText, CreditCard, AlertTriangle
+  Clock, MapPin, Search, Download, Calendar,
+  Globe, FileText, CreditCard, AlertTriangle
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -271,7 +271,7 @@ export function ComprehensiveAnalyticsDashboard({ initialData }: ComprehensiveAn
 
       {/* Advanced Metrics Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {advancedMetrics.map((metric, index) => (
+        {advancedMetrics.map((metric) => (
           <Card key={metric.title} className="bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">

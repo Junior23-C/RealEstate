@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect } from 'react'
+import { useEffect, Suspense } from 'react'
 import { usePathname, useSearchParams } from 'next/navigation'
 
 interface AnalyticsTrackerProps {
@@ -10,14 +10,14 @@ interface AnalyticsTrackerProps {
 declare global {
   interface Window {
     analyticsTracker: {
-      track: (eventType: string, data: any) => void
+      track: (eventType: string, data: Record<string, unknown>) => void
       trackPropertyView: (propertyId: string, duration?: number) => void
       trackContactClick: (type: string, propertyId?: string) => void
     }
   }
 }
 
-export function AnalyticsTracker({ propertyId }: AnalyticsTrackerProps) {
+function AnalyticsTrackerInner({ propertyId }: AnalyticsTrackerProps) {
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
@@ -25,7 +25,7 @@ export function AnalyticsTracker({ propertyId }: AnalyticsTrackerProps) {
     // Initialize analytics tracker
     if (typeof window !== 'undefined' && !window.analyticsTracker) {
       window.analyticsTracker = {
-        track: function(eventType: string, data: any) {
+        track: function(eventType: string, data: Record<string, unknown>) {
           fetch('/api/analytics/track', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -82,9 +82,17 @@ export function AnalyticsTracker({ propertyId }: AnalyticsTrackerProps) {
   return null // This component doesn't render anything
 }
 
+export function AnalyticsTracker({ propertyId }: AnalyticsTrackerProps) {
+  return (
+    <Suspense fallback={null}>
+      <AnalyticsTrackerInner propertyId={propertyId} />
+    </Suspense>
+  )
+}
+
 // Hook for tracking events from components
 export function useAnalytics() {
-  const trackEvent = (eventType: string, data: any = {}) => {
+  const trackEvent = (eventType: string, data: Record<string, unknown> = {}) => {
     if (typeof window !== 'undefined' && window.analyticsTracker) {
       window.analyticsTracker.track(eventType, data)
     }
@@ -94,7 +102,7 @@ export function useAnalytics() {
     trackEvent(type.toUpperCase() + '_CLICK', { propertyId })
   }
 
-  const trackSearch = (query: string, filters: any = {}, results = 0) => {
+  const trackSearch = (query: string, filters: Record<string, unknown> = {}, results = 0) => {
     trackEvent('SEARCH', { query, filters, results })
   }
 

@@ -9,7 +9,7 @@ interface TrackEventParams {
   value?: number
   propertyId?: string
   inquiryId?: string
-  metadata?: Record<string, any>
+  metadata?: Record<string, unknown>
 }
 
 interface SessionData {
@@ -127,7 +127,7 @@ export class AnalyticsTracker {
     }
   }
 
-  static async trackSearch(query: string, filters?: Record<string, any>, results?: number): Promise<void> {
+  static async trackSearch(query: string, filters?: Record<string, unknown>, results?: number): Promise<void> {
     try {
       const sessionData = await this.getSessionData()
       
@@ -221,7 +221,7 @@ export class AnalyticsTracker {
   }
 
   private static async getSessionData(): Promise<SessionData> {
-    const headersList = headers()
+    const headersList = await headers()
     const userAgent = headersList.get('user-agent') || undefined
     const forwardedFor = headersList.get('x-forwarded-for')
     const realIp = headersList.get('x-real-ip')
@@ -236,7 +236,7 @@ export class AnalyticsTracker {
       userAgent,
       ipAddress,
       referrer,
-      location: await this.getLocationFromIP(ipAddress)
+      location: await this.getLocationFromIP()
     }
   }
 
@@ -245,7 +245,7 @@ export class AnalyticsTracker {
     return Buffer.from(data).toString('base64').substring(0, 24)
   }
 
-  private static async getLocationFromIP(ipAddress?: string): Promise<string | undefined> {
+  private static async getLocationFromIP(): Promise<string | undefined> {
     // TODO: Implement IP geolocation (e.g., using MaxMind or similar service)
     // For now, return undefined
     return undefined
