@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/db"
 import bcrypt from "bcryptjs"
+import { passwordChangeSchema } from "@/lib/schemas/admin"
 
 export async function PUT(request: Request) {
   const session = await getServerSession(authOptions)
@@ -13,7 +14,17 @@ export async function PUT(request: Request) {
 
   try {
     const body = await request.json()
-    const { currentPassword, newPassword } = body
+    
+    // Validate input data
+    const validationResult = passwordChangeSchema.safeParse(body)
+    if (!validationResult.success) {
+      return NextResponse.json({
+        error: "Invalid input data",
+        details: validationResult.error.issues
+      }, { status: 400 })
+    }
+    
+    const { currentPassword, newPassword } = validationResult.data
 
     // Get current user with password
     const user = await prisma.user.findUnique({

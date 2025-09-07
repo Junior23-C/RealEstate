@@ -1,14 +1,41 @@
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/db"
 import bcrypt from "bcryptjs"
+import { superAdminAuthSchema } from "@/lib/schemas/admin"
+import { rateLimit, getClientIdentifier, RATE_LIMITS } from "@/lib/rate-limit"
+import { SecureLogger, SecurityEvents } from "@/lib/logger"
 
 /**
  * Super Admin Endpoint - Permanent solution for admin management
  * Uses environment variables for security
  * Only works if SUPER_ADMIN_EMAIL and SUPER_ADMIN_PASSWORD are set in environment
  */
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
+    // Rate limiting for super admin endpoint
+    const clientId = getClientIdentifier(request)
+    const rateLimitResult = rateLimit(`super-admin:${clientId}`, RATE_LIMITS.SUPER_ADMIN)
+    
+    if (!rateLimitResult.success) {
+      SecureLogger.security(SecurityEvents.RATE_LIMIT_EXCEEDED, {
+        ip: clientId,
+        endpoint: '/api/admin/super-admin',
+        limit: RATE_LIMITS.SUPER_ADMIN.requests
+      })
+      
+      return NextResponse.json({
+        error: "Too many attempts. Please try again later.",
+        resetTime: rateLimitResult.resetTime
+      }, { 
+        status: 429,
+        headers: {
+          'X-RateLimit-Limit': RATE_LIMITS.SUPER_ADMIN.requests.toString(),
+          'X-RateLimit-Remaining': rateLimitResult.remaining.toString(),
+          'X-RateLimit-Reset': rateLimitResult.resetTime.toString()
+        }
+      })
+    }
+
     // Check if super admin environment variables are set
     const SUPER_ADMIN_EMAIL = process.env.SUPER_ADMIN_EMAIL
     const SUPER_ADMIN_PASSWORD = process.env.SUPER_ADMIN_PASSWORD
@@ -18,10 +45,26 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json()
-    const { email, password, action, adminEmail, adminPassword, adminName } = body
+    
+    // Validate input data
+    const validationResult = superAdminAuthSchema.safeParse(body)
+    if (!validationResult.success) {
+      return NextResponse.json({
+        error: "Invalid input data",
+        details: validationResult.error.issues
+      }, { status: 400 })
+    }
+    
+    const { email, password, action, adminEmail, adminPassword, adminName } = validationResult.data
     
     // Verify super admin credentials
     if (email !== SUPER_ADMIN_EMAIL || password !== SUPER_ADMIN_PASSWORD) {
+      SecureLogger.security(SecurityEvents.INVALID_CREDENTIALS, {
+        ip: clientId,
+        endpoint: '/api/admin/super-admin',
+        email: email // This will be sanitized by the logger
+      })
+      
       return new NextResponse("Invalid super admin credentials", { status: 401 })
     }
 
@@ -112,7 +155,9 @@ export async function POST(request: Request) {
     }
 
   } catch (error) {
-    console.error('Super admin endpoint error:', error)
+    SecureLogger.error('Super admin endpoint error', error, {
+      endpoint: '/api/admin/super-admin'
+    })
     return new NextResponse("Internal Server Error", { status: 500 })
   }
 }

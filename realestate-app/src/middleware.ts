@@ -55,7 +55,36 @@ export default withAuth(
       return NextResponse.rewrite(new URL("/admin/login", req.url))
     }
     
-    return NextResponse.next()
+    // Add security headers
+    const response = NextResponse.next()
+    
+    // Content Security Policy
+    const cspHeader = `
+      default-src 'self';
+      script-src 'self' 'unsafe-eval' 'unsafe-inline' https://vercel.live;
+      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+      img-src 'self' blob: data: https://images.unsplash.com https://*.vercel-insights.com;
+      font-src 'self' https://fonts.gstatic.com;
+      object-src 'none';
+      base-uri 'self';
+      form-action 'self';
+      frame-ancestors 'none';
+      upgrade-insecure-requests;
+    `.replace(/\s{2,}/g, ' ').trim()
+    
+    response.headers.set('Content-Security-Policy', cspHeader)
+    response.headers.set('Referrer-Policy', 'origin-when-cross-origin')
+    response.headers.set('X-Frame-Options', 'DENY')
+    response.headers.set('X-Content-Type-Options', 'nosniff')
+    response.headers.set('X-DNS-Prefetch-Control', 'off')
+    response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()')
+    
+    // HSTS for production
+    if (process.env.NODE_ENV === 'production') {
+      response.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains')
+    }
+    
+    return response
   },
   {
     callbacks: {
