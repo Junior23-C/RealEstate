@@ -15,7 +15,6 @@ import {
   TableRow 
 } from "@/components/ui/table"
 import { 
-  ArrowLeft, 
   Users,
   Search,
   Eye,
@@ -138,21 +137,19 @@ export function TenantManagement({ tenants }: TenantManagementProps) {
 
   return (
     <div className="min-h-screen bg-muted/50">
-      {/* Header */}
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur">
-        <div className="container flex h-16 items-center">
-          <Link href="/admin/rentals" className="flex items-center space-x-2 mr-6">
-            <ArrowLeft className="h-4 w-4" />
-            <span>Kthehu në Panelin e Qirave</span>
-          </Link>
-          <div className="flex items-center space-x-2">
-            <Users className="h-6 w-6" />
-            <span className="font-bold">Menaxhimi i Qiramarrësve</span>
-          </div>
-        </div>
-      </header>
 
       <div className="container py-8">
+        {/* Page Header */}
+        <div className="mb-8">
+          <div className="flex items-center gap-2 mb-2">
+            <Users className="h-6 w-6 text-blue-600" />
+            <h1 className="text-3xl font-bold">Menaxhimi i Qiramarrësve</h1>
+          </div>
+          <p className="text-slate-600 dark:text-slate-400">
+            Menaxhoni qiramarrësit tuaj dhe informacionet e tyre
+          </p>
+        </div>
+
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <Card>

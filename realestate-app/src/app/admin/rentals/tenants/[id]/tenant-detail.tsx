@@ -146,17 +146,20 @@ export function TenantDetail({ tenant }: TenantDetailProps) {
 
   return (
     <div className="min-h-screen bg-muted/50">
-      {/* Header */}
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur">
-        <div className="container flex h-16 items-center justify-between">
-          <div className="flex items-center">
-            <Link href="/admin/rentals/tenants" className="flex items-center space-x-2 mr-6">
+      <div className="container py-8">
+        {/* Page Header */}
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-4">
+            <Link 
+              href="/admin/rentals/tenants" 
+              className="flex items-center gap-2 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 transition-colors"
+            >
               <ArrowLeft className="h-4 w-4" />
-              <span>Kthehu te Qiramarrësit</span>
+              Kthehu te Qiramarrësit
             </Link>
-            <div className="flex items-center space-x-2">
-              <Users className="h-6 w-6" />
-              <span className="font-bold">{tenant.firstName} {tenant.lastName}</span>
+            <div className="flex items-center gap-3">
+              <Users className="h-6 w-6 text-blue-600" />
+              <h1 className="text-3xl font-bold">{tenant.firstName} {tenant.lastName}</h1>
             </div>
           </div>
           <Button asChild>
@@ -166,9 +169,6 @@ export function TenantDetail({ tenant }: TenantDetailProps) {
             </Link>
           </Button>
         </div>
-      </header>
-
-      <div className="container py-8">
         {/* Tenant Overview */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           {/* Contact Information */}
