@@ -20,28 +20,9 @@ export default async function AnalyticsPage() {
     redirect("/admin/login")
   }
 
-  // Get initial analytics data for faster page load
-  let initialData
-  try {
-    // Fetch initial data from our comprehensive API
-    const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000'
-    const response = await fetch(`${baseUrl}/api/admin/analytics?period=30d`, {
-      headers: {
-        'Cookie': `next-auth.session-token=${session.user.id}` // Pass session for server-side auth
-      }
-    })
-    
-    if (response.ok) {
-      initialData = await response.json()
-    }
-  } catch (error) {
-    console.error("Error fetching initial analytics data:", error)
-    // Will use fallback in component
-  }
-
   return (
     <AdminLayout user={session.user}>
-      <ComprehensiveAnalyticsDashboard initialData={initialData} />
+      <ComprehensiveAnalyticsDashboard />
     </AdminLayout>
   )
 }

@@ -71,6 +71,11 @@ export function ComprehensiveAnalyticsDashboard({ initialData }: ComprehensiveAn
       if (response.ok) {
         const analyticsData = await response.json()
         setData(analyticsData)
+      } else if (response.status === 401) {
+        console.error('Authentication failed - redirecting to login')
+        window.location.href = '/admin/login'
+      } else {
+        console.error('Failed to fetch analytics:', response.status, response.statusText)
       }
     } catch (error) {
       console.error('Failed to fetch analytics:', error)
