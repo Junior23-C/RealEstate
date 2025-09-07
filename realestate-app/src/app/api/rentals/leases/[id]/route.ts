@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/db"
+import { Prisma } from "@prisma/client"
 
 export async function PUT(
   request: NextRequest,
@@ -49,7 +50,7 @@ export async function PUT(
     }
 
     // Prepare update data
-    let updateData: any = {
+    let updateData: Prisma.LeaseUpdateInput = {
       updatedAt: new Date()
     }
 
@@ -88,8 +89,8 @@ export async function PUT(
 
       // Full update
       updateData = {
-        propertyId,
-        tenantId,
+        property: { connect: { id: propertyId } },
+        tenant: { connect: { id: tenantId } },
         startDate: start,
         endDate: end,
         monthlyRent: parseFloat(monthlyRent),
