@@ -126,16 +126,16 @@ export function AdminDashboard({ stats, recentInquiries }: AdminDashboardProps) 
       {/* Quick Actions */}
       <div className="mb-8">
         <h2 className="text-lg font-semibold mb-4">Veprime të Shpejta</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {quickActions.map((action, index) => (
             <motion.div
               key={index}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
             >
               <Link href={action.href}>
-                <div className={`p-6 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl rounded-xl border border-white/20 dark:border-slate-700/20 hover:shadow-xl transition-all cursor-pointer`}>
-                  <div className={`inline-flex p-3 rounded-lg bg-${action.color}-100 dark:bg-${action.color}-900/30 mb-3`}>
+                <div className={`p-6 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl rounded-xl border border-white/20 dark:border-slate-700/20 hover:shadow-xl transition-all cursor-pointer min-h-[120px] flex flex-col justify-center`}>
+                  <div className={`inline-flex p-3 rounded-lg bg-${action.color}-100 dark:bg-${action.color}-900/30 mb-3 w-fit`}>
                     <action.icon className={`h-6 w-6 text-${action.color}-600 dark:text-${action.color}-400`} />
                   </div>
                   <p className="font-medium text-sm">{action.label}</p>

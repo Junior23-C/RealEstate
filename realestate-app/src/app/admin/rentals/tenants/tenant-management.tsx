@@ -202,13 +202,14 @@ export function TenantManagement({ tenants }: TenantManagementProps) {
           </Button>
         </div>
 
-        {/* Tenants Table */}
+        {/* Tenants Table/Cards */}
         <Card>
           <CardHeader>
             <CardTitle>Të Gjithë Qiramarrësit ({filteredTenants.length})</CardTitle>
           </CardHeader>
           <CardContent className="p-0">
-            <div className="overflow-x-auto">
+            {/* Desktop Table View */}
+            <div className="hidden lg:block overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -321,12 +322,127 @@ export function TenantManagement({ tenants }: TenantManagementProps) {
                   })}
                 </TableBody>
               </Table>
-              {filteredTenants.length === 0 && (
-                <div className="p-8 text-center text-muted-foreground">
-                  {searchTerm ? "Asnjë qiramarrës nuk u gjet sipas kërkimit tuaj" : "Asnjë qiramarrës nuk u gjet"}
-                </div>
-              )}
             </div>
+
+            {/* Mobile Card View */}
+            <div className="lg:hidden p-4 space-y-4">
+              {filteredTenants.map((tenant) => {
+                const activeLease = tenant.leases.find(lease => lease.status === 'ACTIVE')
+                const currentPayment = activeLease?.payments?.[0]
+                
+                return (
+                  <div key={tenant.id} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-4 shadow-sm">
+                    {/* Header with name and action button */}
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-base">
+                          {tenant.firstName} {tenant.lastName}
+                        </h3>
+                        {tenant.employer && (
+                          <p className="text-sm text-muted-foreground mt-1">
+                            {tenant.employer}
+                          </p>
+                        )}
+                      </div>
+                      <Button variant="outline" size="sm" asChild className="ml-3">
+                        <Link href={`/admin/rentals/tenants/${tenant.id}`} className="flex items-center gap-2">
+                          <Eye className="h-4 w-4" />
+                          <span className="hidden sm:inline">Shiko</span>
+                        </Link>
+                      </Button>
+                    </div>
+
+                    {/* Contact Information */}
+                    <div className="space-y-2 mb-4">
+                      <div className="flex items-center gap-2 text-sm">
+                        <Mail className="h-4 w-4 text-muted-foreground" />
+                        <span className="break-all">{tenant.email}</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm">
+                        <Phone className="h-4 w-4 text-muted-foreground" />
+                        <span>{formatPhone(tenant.phone)}</span>
+                      </div>
+                    </div>
+
+                    {/* Property Information */}
+                    <div className="bg-slate-50 dark:bg-slate-900/50 rounded-lg p-3 mb-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Home className="h-4 w-4 text-blue-600" />
+                        <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Prona Aktuale</span>
+                      </div>
+                      {activeLease && activeLease.property ? (
+                        <div>
+                          <p className="font-medium text-sm">{activeLease.property.title}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {activeLease.property.city}, {activeLease.property.state}
+                          </p>
+                        </div>
+                      ) : (
+                        <p className="text-sm text-muted-foreground">Asnjë kontratë aktive</p>
+                      )}
+                    </div>
+
+                    {/* Status and Payment Info */}
+                    <div className="grid grid-cols-2 gap-4">
+                      {/* Lease Status */}
+                      <div>
+                        <p className="text-xs text-muted-foreground mb-1">Statusi i Kontratës</p>
+                        {activeLease ? (
+                          <div className="space-y-1">
+                            <Badge variant={getLeaseStatusColor(activeLease.status)} className="text-xs">
+                              {activeLease.status}
+                            </Badge>
+                            <p className="text-xs text-muted-foreground">
+                              Deri {formatDate(activeLease.endDate)}
+                            </p>
+                          </div>
+                        ) : (
+                          <Badge variant="outline" className="text-xs">Pa kontratë</Badge>
+                        )}
+                      </div>
+
+                      {/* Monthly Rent */}
+                      <div>
+                        <p className="text-xs text-muted-foreground mb-1">Qiraja Mujore</p>
+                        {activeLease ? (
+                          <p className="font-semibold text-green-600">
+                            {formatCurrency(activeLease.monthlyRent)}
+                          </p>
+                        ) : (
+                          <span className="text-muted-foreground text-sm">-</span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Payment Status */}
+                    <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
+                      <p className="text-xs text-muted-foreground mb-2">Statusi i Pagesës</p>
+                      {currentPayment ? (
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <Badge variant={getPaymentStatusColor(currentPayment.status)} className="text-xs">
+                            {currentPayment.status}
+                          </Badge>
+                          <span className="text-xs text-muted-foreground">
+                            Skadon: {formatDate(currentPayment.dueDate)}
+                          </span>
+                        </div>
+                      ) : activeLease ? (
+                        <Badge variant="outline" className="text-xs">Asnjë pagesë për sot</Badge>
+                      ) : (
+                        <span className="text-muted-foreground text-sm">-</span>
+                      )}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+
+            {/* Empty State */}
+            {filteredTenants.length === 0 && (
+              <div className="p-8 text-center text-muted-foreground">
+                {searchTerm ? "Asnjë qiramarrës nuk u gjet sipas kërkimit tuaj" : "Asnjë qiramarrës nuk u gjet"}
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

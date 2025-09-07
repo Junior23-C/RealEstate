@@ -226,18 +226,21 @@ export function SettingsForm({ user, contactSettings }: SettingsFormProps) {
           )}
 
           <Tabs defaultValue="profile" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="profile">
-                <User className="h-4 w-4 mr-2" />
-                Profili
+            <TabsList className="grid w-full grid-cols-3 h-auto">
+              <TabsTrigger value="profile" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 py-3 text-xs sm:text-sm">
+                <User className="h-4 w-4" />
+                <span className="hidden sm:inline">Profili</span>
+                <span className="sm:hidden">Prof.</span>
               </TabsTrigger>
-              <TabsTrigger value="password">
-                <Lock className="h-4 w-4 mr-2" />
-                Fjalëkalimi
+              <TabsTrigger value="password" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 py-3 text-xs sm:text-sm">
+                <Lock className="h-4 w-4" />
+                <span className="hidden sm:inline">Fjalëkalimi</span>
+                <span className="sm:hidden">Pass.</span>
               </TabsTrigger>
-              <TabsTrigger value="contact">
-                <Building2 className="h-4 w-4 mr-2" />
-                Kontakti
+              <TabsTrigger value="contact" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 py-3 text-xs sm:text-sm">
+                <Building2 className="h-4 w-4" />
+                <span className="hidden sm:inline">Kontakti</span>
+                <span className="sm:hidden">Kont.</span>
               </TabsTrigger>
             </TabsList>
 
@@ -446,25 +449,31 @@ export function SettingsForm({ user, contactSettings }: SettingsFormProps) {
                       </div>
                     </div>
 
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                       <Label>Orët e Punës</Label>
-                      {Object.entries(contactData.businessHours).map(([day, hours]) => (
-                        <div key={day} className="flex items-center gap-2">
-                          <Label className="w-24 capitalize">{day}:</Label>
-                          <Input
-                            value={hours as string}
-                            onChange={(e) => setContactData(prev => ({
-                              ...prev,
-                              businessHours: {
-                                ...prev.businessHours,
-                                [day]: e.target.value
-                              }
-                            }))}
-                            placeholder="p.sh., 9:00 AM - 6:00 PM ose Mbyllur"
-                            disabled={isLoading}
-                          />
-                        </div>
-                      ))}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {Object.entries(contactData.businessHours).map(([day, hours]) => (
+                          <div key={day} className="space-y-2">
+                            <Label className="text-sm font-medium capitalize">{day}:</Label>
+                            <Input
+                              value={hours as string}
+                              onChange={(e) => setContactData(prev => ({
+                                ...prev,
+                                businessHours: {
+                                  ...prev.businessHours,
+                                  [day]: e.target.value
+                                }
+                              }))}
+                              placeholder="9:00 AM - 6:00 PM"
+                              disabled={isLoading}
+                              className="text-sm"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        Përdorni formatin &quot;9:00 AM - 6:00 PM&quot; ose shkruani &quot;Mbyllur&quot; për ditët e mbyllura
+                      </p>
                     </div>
 
                     <div className="pt-4">

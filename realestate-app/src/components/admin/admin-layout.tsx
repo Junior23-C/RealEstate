@@ -5,13 +5,14 @@ import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { 
   Home, Building2, Users, MessageSquare, Settings, BarChart3, 
-  Menu, X, ChevronRight, LogOut, User
+  Menu, X, ChevronRight, LogOut, User, Search
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { signOut } from 'next-auth/react'
 import { NotificationProvider } from './notification-provider'
 import { NotificationDropdown } from './notification-dropdown'
 import { GlobalSearch } from './global-search'
+import { MobileSearch } from './mobile-search'
 
 interface AdminLayoutProps {
   children: React.ReactNode
@@ -23,6 +24,7 @@ interface AdminLayoutProps {
 
 export default function AdminLayout({ children, user }: AdminLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false)
   const pathname = usePathname()
 
   const navItems = [
@@ -149,10 +151,18 @@ export default function AdminLayout({ children, user }: AdminLayoutProps) {
                 {sidebarOpen ? <X className="h-5 w-5 lg:hidden" /> : <Menu className="h-5 w-5" />}
               </button>
 
-              {/* Global Search */}
+              {/* Desktop Search */}
               <div className="hidden md:block">
                 <GlobalSearch />
               </div>
+              
+              {/* Mobile Search Button */}
+              <button
+                onClick={() => setMobileSearchOpen(true)}
+                className="md:hidden p-2 hover:bg-slate-100/50 dark:hover:bg-slate-800/50 rounded-lg transition-colors"
+              >
+                <Search className="h-5 w-5" />
+              </button>
             </div>
 
             <div className="flex items-center gap-3">
@@ -167,6 +177,9 @@ export default function AdminLayout({ children, user }: AdminLayoutProps) {
           {children}
         </main>
       </div>
+
+      {/* Mobile Search Modal */}
+      <MobileSearch isOpen={mobileSearchOpen} onClose={() => setMobileSearchOpen(false)} />
       </div>
     </NotificationProvider>
   )
