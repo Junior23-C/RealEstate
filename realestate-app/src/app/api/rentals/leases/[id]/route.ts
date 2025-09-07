@@ -28,8 +28,11 @@ export async function PUT(
       terms
     } = body
 
-    // Validate required fields
-    if (!propertyId || !tenantId || !startDate || !endDate || !monthlyRent || !securityDeposit) {
+    // Check if this is just a status update
+    const isStatusUpdate = status && Object.keys(body).length === 1
+
+    // If not just a status update, validate all required fields
+    if (!isStatusUpdate && (!propertyId || !tenantId || !startDate || !endDate || monthlyRent === undefined || securityDeposit === undefined)) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
@@ -45,39 +48,46 @@ export async function PUT(
       return NextResponse.json({ error: "Lease not found" }, { status: 404 })
     }
 
-    // Validate property exists
-    const property = await prisma.property.findUnique({
-      where: { id: propertyId }
-    })
-
-    if (!property) {
-      return NextResponse.json({ error: "Property not found" }, { status: 404 })
+    // Prepare update data
+    let updateData: any = {
+      updatedAt: new Date()
     }
 
-    // Validate tenant exists
-    const tenant = await prisma.tenant.findUnique({
-      where: { id: tenantId }
-    })
+    if (isStatusUpdate) {
+      // Only update status
+      updateData.status = status
+    } else {
+      // Validate property exists
+      const property = await prisma.property.findUnique({
+        where: { id: propertyId }
+      })
 
-    if (!tenant) {
-      return NextResponse.json({ error: "Tenant not found" }, { status: 404 })
-    }
+      if (!property) {
+        return NextResponse.json({ error: "Property not found" }, { status: 404 })
+      }
 
-    // Validate dates
-    const start = new Date(startDate)
-    const end = new Date(endDate)
-    
-    if (start >= end) {
-      return NextResponse.json(
-        { error: "End date must be after start date" },
-        { status: 400 }
-      )
-    }
+      // Validate tenant exists
+      const tenant = await prisma.tenant.findUnique({
+        where: { id: tenantId }
+      })
 
-    // Update the lease
-    const updatedLease = await prisma.lease.update({
-      where: { id: leaseId },
-      data: {
+      if (!tenant) {
+        return NextResponse.json({ error: "Tenant not found" }, { status: 404 })
+      }
+
+      // Validate dates
+      const start = new Date(startDate)
+      const end = new Date(endDate)
+      
+      if (start >= end) {
+        return NextResponse.json(
+          { error: "End date must be after start date" },
+          { status: 400 }
+        )
+      }
+
+      // Full update
+      updateData = {
         propertyId,
         tenantId,
         startDate: start,
@@ -87,7 +97,13 @@ export async function PUT(
         status: status || 'PENDING',
         terms: terms || null,
         updatedAt: new Date()
-      },
+      }
+    }
+
+    // Update the lease
+    const updatedLease = await prisma.lease.update({
+      where: { id: leaseId },
+      data: updateData,
       include: {
         property: true,
         tenant: true

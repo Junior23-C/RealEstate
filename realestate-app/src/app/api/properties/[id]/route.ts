@@ -77,6 +77,40 @@ export async function DELETE(
   const { id } = await context.params
 
   try {
+    // Check if property is assigned to any leases
+    const existingLeases = await prisma.lease.findMany({
+      where: { propertyId: id },
+      select: { id: true, status: true }
+    })
+
+    if (existingLeases.length > 0) {
+      const activeLeases = existingLeases.filter(lease => lease.status === 'ACTIVE')
+      const anyLeases = existingLeases.length
+      
+      if (activeLeases.length > 0) {
+        return NextResponse.json({
+          error: `Cannot delete property. It has ${activeLeases.length} active lease(s). Please terminate the lease(s) first.`
+        }, { status: 400 })
+      } else if (anyLeases > 0) {
+        return NextResponse.json({
+          error: `Cannot delete property. It has ${anyLeases} lease(s) assigned. Please remove the lease(s) first.`
+        }, { status: 400 })
+      }
+    }
+
+    // Check if property has any inquiries
+    const existingInquiries = await prisma.inquiry.findMany({
+      where: { propertyId: id },
+      select: { id: true }
+    })
+
+    if (existingInquiries.length > 0) {
+      return NextResponse.json({
+        error: `Cannot delete property. It has ${existingInquiries.length} inquiry/inquiries. Please remove the inquiries first or consider archiving the property instead.`
+      }, { status: 400 })
+    }
+
+    // Delete the property (this will also cascade delete images)
     await prisma.property.delete({
       where: { id }
     })
