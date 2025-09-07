@@ -5,6 +5,7 @@ import { Providers } from "@/components/providers";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/next";
 import { OrganizationStructuredData } from "@/components/structured-data";
+import { AnalyticsTracker } from "@/components/analytics/analytics-tracker";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -94,7 +95,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Providers>{children}</Providers>
+        <Providers>
+          {children}
+          <AnalyticsTracker />
+        </Providers>
         <OrganizationStructuredData />
         <SpeedInsights />
         <Analytics />
