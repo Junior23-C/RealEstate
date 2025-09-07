@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { 
   Home, Building2, Users, MessageSquare, Settings, BarChart3, 
-  Menu, X, ChevronRight, Search, LogOut, User, TrendingUp, Database
+  Menu, X, ChevronRight, Search, LogOut, User
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { signOut } from 'next-auth/react'
@@ -30,8 +30,6 @@ export default function AdminLayout({ children, user }: AdminLayoutProps) {
     { id: 'tenants', label: 'Qiramarrësit', icon: Users, href: '/admin/rentals/tenants' },
     { id: 'inquiries', label: 'Pyetjet', icon: MessageSquare, href: '/admin/inquiries' },
     { id: 'rentals', label: 'Qiratë', icon: BarChart3, href: '/admin/rentals' },
-    { id: 'analytics', label: 'Analitika', icon: TrendingUp, href: '/admin/analytics' },
-    { id: 'seed-data', label: 'Seed Data', icon: Database, href: '/admin/seed-data' },
     { id: 'settings', label: 'Cilësimet', icon: Settings, href: '/admin/settings' }
   ]
 
@@ -42,8 +40,6 @@ export default function AdminLayout({ children, user }: AdminLayoutProps) {
     if (pathname.includes('/tenants')) return 'tenants'
     if (pathname.includes('/inquiries')) return 'inquiries'
     if (pathname.includes('/rentals')) return 'rentals'
-    if (pathname.includes('/analytics')) return 'analytics'
-    if (pathname.includes('/seed-data')) return 'seed-data'
     if (pathname.includes('/settings')) return 'settings'
     return 'dashboard'
   }
