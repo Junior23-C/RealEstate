@@ -1,6 +1,14 @@
-import crypto from 'crypto'
-
 export function generateNonce(): string {
+  // Use Web Crypto API for Edge Runtime compatibility
+  if (typeof globalThis !== 'undefined' && globalThis.crypto) {
+    const array = new Uint8Array(16)
+    globalThis.crypto.getRandomValues(array)
+    return btoa(String.fromCharCode(...array))
+  }
+  
+  // Fallback for Node.js environment
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const crypto = require('crypto')
   return crypto.randomBytes(16).toString('base64')
 }
 

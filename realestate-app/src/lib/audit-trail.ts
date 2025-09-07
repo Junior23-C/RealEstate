@@ -8,7 +8,7 @@ export interface AuditContext {
   action: AuditAction
   entity: string
   entityId?: string
-  details?: Record<string, any>
+  details?: Record<string, unknown>
   ipAddress?: string
   userAgent?: string
   success?: boolean
@@ -60,7 +60,7 @@ export class AuditTrail {
     action: AuditAction,
     entity: string,
     entityId?: string,
-    details?: Record<string, any>,
+    details?: Record<string, unknown>,
     request?: NextRequest
   ): Promise<void> {
     await this.log({
@@ -82,7 +82,7 @@ export class AuditTrail {
     entity: string,
     error: string,
     entityId?: string,
-    details?: Record<string, any>,
+    details?: Record<string, unknown>,
     request?: NextRequest
   ): Promise<void> {
     await this.log({
@@ -103,7 +103,7 @@ export class AuditTrail {
     userId: string,
     entity: string,
     entityId: string,
-    details?: Record<string, any>,
+    details?: Record<string, unknown>,
     request?: NextRequest
   ): Promise<void> {
     await this.logSuccess(userId, AuditAction.CREATE, entity, entityId, details, request)
@@ -113,7 +113,7 @@ export class AuditTrail {
     userId: string,
     entity: string,
     entityId: string,
-    details?: Record<string, any>,
+    details?: Record<string, unknown>,
     request?: NextRequest
   ): Promise<void> {
     await this.logSuccess(userId, AuditAction.UPDATE, entity, entityId, details, request)
@@ -123,7 +123,7 @@ export class AuditTrail {
     userId: string,
     entity: string,
     entityId: string,
-    details?: Record<string, any>,
+    details?: Record<string, unknown>,
     request?: NextRequest
   ): Promise<void> {
     await this.logSuccess(userId, AuditAction.DELETE, entity, entityId, details, request)

@@ -100,7 +100,7 @@ export async function GET(
       let buffer: Buffer
       try {
         buffer = Buffer.from(base64Data, 'base64')
-      } catch (error) {
+      } catch {
         return NextResponse.json({ error: "Failed to decode document" }, { status: 400 })
       }
       

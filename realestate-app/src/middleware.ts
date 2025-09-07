@@ -36,7 +36,6 @@ const isValidProductionDomain = (hostname: string): boolean => {
 
 export default withAuth(
   function middleware(req) {
-    const startTime = Date.now()
     const hostname = req.headers.get("host") || ""
     const pathname = req.nextUrl.pathname
     const method = req.method
