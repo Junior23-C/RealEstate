@@ -641,12 +641,12 @@ export function LeaseDetailView({ lease }: LeaseDetailViewProps) {
                       <TableCell>
                         <div className="flex items-center gap-2">
                           <Button variant="ghost" size="icon" asChild>
-                            <a href={document.url} target="_blank" rel="noopener noreferrer">
+                            <a href={`/api/documents/${document.id}/view`} target="_blank" rel="noopener noreferrer">
                               <Eye className="h-4 w-4" />
                             </a>
                           </Button>
                           <Button variant="ghost" size="icon" asChild>
-                            <a href={document.url} download={document.originalName}>
+                            <a href={`/api/documents/${document.id}/download`}>
                               <Download className="h-4 w-4" />
                             </a>
                           </Button>
