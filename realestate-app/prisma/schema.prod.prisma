@@ -86,6 +86,7 @@ enum PropertyStatus {
   FOR_SALE
   RENTED
   SOLD
+  ARCHIVED
 }
 
 enum InquiryStatus {
@@ -104,6 +105,7 @@ enum LeaseStatus {
   EXPIRED
   TERMINATED
   PENDING
+  ARCHIVED
 }
 
 enum PaymentStatus {
