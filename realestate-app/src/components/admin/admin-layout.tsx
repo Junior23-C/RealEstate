@@ -5,12 +5,13 @@ import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { 
   Home, Building2, Users, MessageSquare, Settings, BarChart3, 
-  Menu, X, ChevronRight, Search, LogOut, User
+  Menu, X, ChevronRight, LogOut, User
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { signOut } from 'next-auth/react'
 import { NotificationProvider } from './notification-provider'
 import { NotificationDropdown } from './notification-dropdown'
+import { GlobalSearch } from './global-search'
 
 interface AdminLayoutProps {
   children: React.ReactNode
@@ -148,14 +149,9 @@ export default function AdminLayout({ children, user }: AdminLayoutProps) {
                 {sidebarOpen ? <X className="h-5 w-5 lg:hidden" /> : <Menu className="h-5 w-5" />}
               </button>
 
-              {/* Search Bar */}
-              <div className="relative hidden md:block">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-                <input
-                  type="text"
-                  placeholder="Kërko pronat, qiramarrësit..."
-                  className="pl-10 pr-4 py-2 w-80 lg:w-96 bg-slate-100/50 dark:bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-200/50 dark:border-slate-700/50 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-                />
+              {/* Global Search */}
+              <div className="hidden md:block">
+                <GlobalSearch />
               </div>
             </div>
 
