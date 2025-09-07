@@ -73,16 +73,16 @@ export function TenantManagement({ tenants }: TenantManagementProps) {
   )
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('sq-AL', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'EUR',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(amount)
   }
 
   const formatDate = (date: Date) => {
-    return new Date(date).toLocaleDateString()
+    return new Date(date).toLocaleDateString('sq-AL')
   }
 
   const formatPhone = (phone: string) => {

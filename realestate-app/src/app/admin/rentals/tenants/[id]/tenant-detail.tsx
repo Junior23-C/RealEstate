@@ -77,16 +77,16 @@ export function TenantDetail({ tenant }: TenantDetailProps) {
   const [activeTab, setActiveTab] = useState<'overview' | 'leases' | 'payments'>('overview')
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('sq-AL', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'EUR',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(amount)
   }
 
   const formatDate = (date: Date) => {
-    return new Date(date).toLocaleDateString()
+    return new Date(date).toLocaleDateString('sq-AL')
   }
 
   const formatPhone = (phone: string) => {
@@ -152,7 +152,7 @@ export function TenantDetail({ tenant }: TenantDetailProps) {
           <div className="flex items-center">
             <Link href="/admin/rentals/tenants" className="flex items-center space-x-2 mr-6">
               <ArrowLeft className="h-4 w-4" />
-              <span>Back to Tenants</span>
+              <span>Kthehu te Qiramarrësit</span>
             </Link>
             <div className="flex items-center space-x-2">
               <Users className="h-6 w-6" />
@@ -162,7 +162,7 @@ export function TenantDetail({ tenant }: TenantDetailProps) {
           <Button asChild>
             <Link href={`/admin/rentals/tenants/${tenant.id}/edit`}>
               <Edit className="h-4 w-4 mr-2" />
-              Edit Tenant
+              Ndrysho Qiramarrësin
             </Link>
           </Button>
         </div>
@@ -176,7 +176,7 @@ export function TenantDetail({ tenant }: TenantDetailProps) {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Mail className="h-5 w-5" />
-                Contact Information
+                Informacioni i Kontaktit
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
@@ -185,18 +185,18 @@ export function TenantDetail({ tenant }: TenantDetailProps) {
                 <p className="font-medium">{tenant.email}</p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Phone</p>
+                <p className="text-sm text-muted-foreground">Telefoni</p>
                 <p className="font-medium">{formatPhone(tenant.phone)}</p>
               </div>
               {tenant.dateOfBirth && (
                 <div>
-                  <p className="text-sm text-muted-foreground">Date of Birth</p>
+                  <p className="text-sm text-muted-foreground">Data e Lindjes</p>
                   <p className="font-medium">{formatDate(tenant.dateOfBirth)}</p>
                 </div>
               )}
               {tenant.emergencyContact && (
                 <div>
-                  <p className="text-sm text-muted-foreground">Emergency Contact</p>
+                  <p className="text-sm text-muted-foreground">Kontakti Urgjent</p>
                   <p className="font-medium">{tenant.emergencyContact}</p>
                   {tenant.emergencyContactPhone && (
                     <p className="text-sm text-muted-foreground">{formatPhone(tenant.emergencyContactPhone)}</p>
@@ -211,27 +211,27 @@ export function TenantDetail({ tenant }: TenantDetailProps) {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Building className="h-5 w-5" />
-                Employment
+                Punësimi
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               {tenant.employer ? (
                 <div>
-                  <p className="text-sm text-muted-foreground">Employer</p>
+                  <p className="text-sm text-muted-foreground">Punëdhënësi</p>
                   <p className="font-medium">{tenant.employer}</p>
                 </div>
               ) : (
-                <p className="text-muted-foreground">No employer information</p>
+                <p className="text-muted-foreground">Nuk ka informacion punëdhënësi</p>
               )}
               {tenant.monthlyIncome && (
                 <div>
-                  <p className="text-sm text-muted-foreground">Monthly Income</p>
+                  <p className="text-sm text-muted-foreground">Të Ardhura Mujore</p>
                   <p className="font-medium">{formatCurrency(tenant.monthlyIncome)}</p>
                 </div>
               )}
               {tenant.employerPhone && (
                 <div>
-                  <p className="text-sm text-muted-foreground">Employer Phone</p>
+                  <p className="text-sm text-muted-foreground">Telefoni i Punëdhënësit</p>
                   <p className="font-medium">{formatPhone(tenant.employerPhone)}</p>
                 </div>
               )}
@@ -243,25 +243,25 @@ export function TenantDetail({ tenant }: TenantDetailProps) {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Home className="h-5 w-5" />
-                Current Status
+                Statusi Aktual
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               {activeLease ? (
                 <>
                   <div>
-                    <p className="text-sm text-muted-foreground">Current Property</p>
+                    <p className="text-sm text-muted-foreground">Prona Aktuale</p>
                     <p className="font-medium">{activeLease.property.title}</p>
                     <p className="text-sm text-muted-foreground">
                       {activeLease.property.city}, {activeLease.property.state}
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">Monthly Rent</p>
+                    <p className="text-sm text-muted-foreground">Qiraja Mujore</p>
                     <p className="font-medium">{formatCurrency(activeLease.monthlyRent)}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">Lease Ends</p>
+                    <p className="text-sm text-muted-foreground">Qiraja Mbaron</p>
                     <p className="font-medium">{formatDate(activeLease.endDate)}</p>
                   </div>
                   <Badge variant={getLeaseStatusColor(activeLease.status)}>
@@ -271,7 +271,7 @@ export function TenantDetail({ tenant }: TenantDetailProps) {
               ) : (
                 <div className="text-center py-4">
                   <AlertCircle className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
-                  <p className="text-muted-foreground">No active lease</p>
+                  <p className="text-muted-foreground">Nuk ka qira aktive</p>
                 </div>
               )}
             </CardContent>
@@ -286,7 +286,7 @@ export function TenantDetail({ tenant }: TenantDetailProps) {
                 <CheckCircle className="h-4 w-4 text-green-600" />
                 <div>
                   <p className="text-2xl font-bold">{paymentStats.paid}</p>
-                  <p className="text-sm text-muted-foreground">Payments Made</p>
+                  <p className="text-sm text-muted-foreground">Pagesat e Bëra</p>
                 </div>
               </div>
             </CardContent>
@@ -298,7 +298,7 @@ export function TenantDetail({ tenant }: TenantDetailProps) {
                 <DollarSign className="h-4 w-4 text-green-600" />
                 <div>
                   <p className="text-2xl font-bold">{formatCurrency(paymentStats.totalPaid)}</p>
-                  <p className="text-sm text-muted-foreground">Total Paid</p>
+                  <p className="text-sm text-muted-foreground">Totali i Paguar</p>
                 </div>
               </div>
             </CardContent>
@@ -310,7 +310,7 @@ export function TenantDetail({ tenant }: TenantDetailProps) {
                 <Calendar className="h-4 w-4 text-orange-600" />
                 <div>
                   <p className="text-2xl font-bold">{paymentStats.pending}</p>
-                  <p className="text-sm text-muted-foreground">Pending</p>
+                  <p className="text-sm text-muted-foreground">Në Pritje</p>
                 </div>
               </div>
             </CardContent>
@@ -322,7 +322,7 @@ export function TenantDetail({ tenant }: TenantDetailProps) {
                 <AlertCircle className="h-4 w-4 text-red-600" />
                 <div>
                   <p className="text-2xl font-bold">{paymentStats.overdue}</p>
-                  <p className="text-sm text-muted-foreground">Late</p>
+                  <p className="text-sm text-muted-foreground">Vonë</p>
                 </div>
               </div>
             </CardContent>
@@ -335,19 +335,19 @@ export function TenantDetail({ tenant }: TenantDetailProps) {
             variant={activeTab === 'overview' ? 'default' : 'ghost'}
             onClick={() => setActiveTab('overview')}
           >
-            Overview
+            Përmbledhje
           </Button>
           <Button
             variant={activeTab === 'leases' ? 'default' : 'ghost'}
             onClick={() => setActiveTab('leases')}
           >
-            Leases ({tenant.leases.length})
+            Qirat ({tenant.leases.length})
           </Button>
           <Button
             variant={activeTab === 'payments' ? 'default' : 'ghost'}
             onClick={() => setActiveTab('payments')}
           >
-            Payment History ({allPayments.length})
+            Historia e Pagesave ({allPayments.length})
           </Button>
         </div>
 
@@ -357,18 +357,18 @@ export function TenantDetail({ tenant }: TenantDetailProps) {
             {(tenant.previousAddress || tenant.reasonForLeaving) && (
               <Card>
                 <CardHeader>
-                  <CardTitle>Previous Residence</CardTitle>
+                  <CardTitle>Banesa e Mëparshme</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
                   {tenant.previousAddress && (
                     <div>
-                      <p className="text-sm text-muted-foreground">Previous Address</p>
+                      <p className="text-sm text-muted-foreground">Adresa e Mëparshme</p>
                       <p className="font-medium">{tenant.previousAddress}</p>
                     </div>
                   )}
                   {tenant.reasonForLeaving && (
                     <div>
-                      <p className="text-sm text-muted-foreground">Reason for Leaving</p>
+                      <p className="text-sm text-muted-foreground">Arsyeja e Largimit</p>
                       <p className="font-medium">{tenant.reasonForLeaving}</p>
                     </div>
                   )}
@@ -378,7 +378,7 @@ export function TenantDetail({ tenant }: TenantDetailProps) {
             
             <Card>
               <CardHeader>
-                <CardTitle>Tenant Since</CardTitle>
+                <CardTitle>Qiramarrës që nga</CardTitle>
               </CardHeader>
               <CardContent>
                 <p>{formatDate(tenant.createdAt)}</p>
@@ -390,19 +390,19 @@ export function TenantDetail({ tenant }: TenantDetailProps) {
         {activeTab === 'leases' && (
           <Card>
             <CardHeader>
-              <CardTitle>Lease History</CardTitle>
+              <CardTitle>Historia e Qirave</CardTitle>
             </CardHeader>
             <CardContent className="p-0">
               <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Property</TableHead>
-                      <TableHead>Lease Period</TableHead>
-                      <TableHead>Monthly Rent</TableHead>
-                      <TableHead>Security Deposit</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Actions</TableHead>
+                      <TableHead>Prona</TableHead>
+                      <TableHead>Periudha e Qirasë</TableHead>
+                      <TableHead>Qiraja Mujore</TableHead>
+                      <TableHead>Depozita e Sigurimit</TableHead>
+                      <TableHead>Statusi</TableHead>
+                      <TableHead>Veprime</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -438,7 +438,7 @@ export function TenantDetail({ tenant }: TenantDetailProps) {
                             <div>
                               <p>{formatDate(lease.startDate)} - {formatDate(lease.endDate)}</p>
                               <p className="text-sm text-muted-foreground">
-                                {Math.ceil((new Date(lease.endDate).getTime() - new Date(lease.startDate).getTime()) / (1000 * 60 * 60 * 24))} days
+                                {Math.ceil((new Date(lease.endDate).getTime() - new Date(lease.startDate).getTime()) / (1000 * 60 * 60 * 24))} ditë
                               </p>
                             </div>
                           </TableCell>
@@ -456,7 +456,7 @@ export function TenantDetail({ tenant }: TenantDetailProps) {
                           <TableCell>
                             <Button variant="ghost" size="sm" asChild>
                               <Link href={`/admin/rentals/leases/${lease.id}`}>
-                                View Details
+                                Shiko Detajet
                               </Link>
                             </Button>
                           </TableCell>
@@ -467,7 +467,7 @@ export function TenantDetail({ tenant }: TenantDetailProps) {
                 </Table>
                 {tenant.leases.length === 0 && (
                   <div className="p-8 text-center text-muted-foreground">
-                    No leases found for this tenant
+                    Nuk u gjetën qira për këtë qiramarrës
                   </div>
                 )}
               </div>
@@ -478,19 +478,19 @@ export function TenantDetail({ tenant }: TenantDetailProps) {
         {activeTab === 'payments' && (
           <Card>
             <CardHeader>
-              <CardTitle>Payment History</CardTitle>
+              <CardTitle>Historia e Pagesave</CardTitle>
             </CardHeader>
             <CardContent className="p-0">
               <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Due Date</TableHead>
-                      <TableHead>Property</TableHead>
-                      <TableHead>Amount</TableHead>
-                      <TableHead>Paid Date</TableHead>
-                      <TableHead>Payment Method</TableHead>
-                      <TableHead>Status</TableHead>
+                      <TableHead>Data e Scadencës</TableHead>
+                      <TableHead>Prona</TableHead>
+                      <TableHead>Shuma</TableHead>
+                      <TableHead>Data e Paguar</TableHead>
+                      <TableHead>Mënyra e Pagesës</TableHead>
+                      <TableHead>Statusi</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -500,7 +500,7 @@ export function TenantDetail({ tenant }: TenantDetailProps) {
                       return (
                         <TableRow key={payment.id}>
                           <TableCell>{formatDate(payment.dueDate)}</TableCell>
-                          <TableCell>{payment.lease.property?.title || 'Unknown Property'}</TableCell>
+                          <TableCell>{payment.lease.property?.title || 'Pronë e Panjohur'}</TableCell>
                           <TableCell className="font-medium">
                             {formatCurrency(payment.amount)}
                           </TableCell>
@@ -522,7 +522,7 @@ export function TenantDetail({ tenant }: TenantDetailProps) {
                 </Table>
                 {allPayments.length === 0 && (
                   <div className="p-8 text-center text-muted-foreground">
-                    No payment history found
+                    Nuk u gjet histori pagesash
                   </div>
                 )}
               </div>
