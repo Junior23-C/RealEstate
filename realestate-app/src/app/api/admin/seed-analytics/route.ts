@@ -1,10 +1,9 @@
-import { NextRequest, NextResponse } from "next/server"
+import { NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/db"
-import { subDays } from 'date-fns'
 
-export async function POST(request: NextRequest) {
+export async function POST() {
   try {
     // Check authentication
     const session = await getServerSession(authOptions)
@@ -63,13 +62,16 @@ export async function POST(request: NextRequest) {
         const createdAt = new Date()
         createdAt.setDate(createdAt.getDate() - daysAgo)
         
+        const statusOptions = ['PENDING', 'CONTACTED', 'CLOSED'] as const
+        const randomStatus = statusOptions[Math.floor(Math.random() * statusOptions.length)]
+        
         inquiries.push({
           name,
           email,
           phone: '+1234567890',
           message,
           propertyId: property.id,
-          status: ['PENDING', 'CONTACTED', 'CLOSED'][Math.floor(Math.random() * 3)],
+          status: randomStatus,
           createdAt,
           updatedAt: createdAt
         })
@@ -165,7 +167,7 @@ export async function POST(request: NextRequest) {
     results.searchQueries = searchQueries.length
 
     // Create analytics events
-    const eventTypes = ['PAGE_VIEW', 'PROPERTY_VIEW', 'SEARCH', 'CONTACT_CLICK', 'PHONE_CLICK']
+    const eventTypes = ['PAGE_VIEW', 'PROPERTY_VIEW', 'SEARCH', 'CONTACT_CLICK', 'PHONE_CLICK'] as const
     const events = []
     
     for (let i = 0; i < 100; i++) {
@@ -200,7 +202,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Analytics seeding error:", error)
     return NextResponse.json(
-      { error: "Failed to seed analytics data", details: error.message },
+      { error: "Failed to seed analytics data", details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     )
   }

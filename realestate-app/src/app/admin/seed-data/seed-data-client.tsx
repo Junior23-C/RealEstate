@@ -5,9 +5,22 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Loader2, Database, CheckCircle, AlertCircle } from "lucide-react"
 
+interface SeedResult {
+  success: boolean
+  message: string
+  results?: {
+    inquiries: number
+    pageViews: number
+    propertyViews: number
+    userSessions: number
+    searchQueries: number
+    analyticsEvents: number
+  }
+}
+
 export default function SeedDataClient() {
   const [isSeeding, setIsSeeding] = useState(false)
-  const [result, setResult] = useState<any>(null)
+  const [result, setResult] = useState<SeedResult | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   const seedAnalyticsData = async () => {

@@ -99,6 +99,7 @@ export function ComprehensiveAnalyticsDashboard({ initialData }: ComprehensiveAn
     if (!data) {
       fetchAnalytics(selectedPeriod)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const exportData = async (format: 'csv' | 'pdf') => {
