@@ -150,6 +150,14 @@ export function RentalDashboard({
     return diffDays
   }
 
+  // Helper function to check if a payment is overdue
+  const isOverdue = (payment: { dueDate: Date, status: string }) => {
+    return payment.status === 'PENDING' && getDaysUntilDue(payment.dueDate) < 0
+  }
+
+  // Calculate overdue payments from the upcomingPayments array
+  const overduePayments = upcomingPayments.filter(isOverdue)
+
   const markPaymentAsPaid = async (paymentId: string) => {
     setMarkingPayment(paymentId)
     try {
@@ -500,10 +508,10 @@ export function RentalDashboard({
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold text-red-600">
-                    {formatCurrency(upcomingPayments.filter(p => p.status === 'LATE').reduce((sum, p) => sum + p.amount, 0))}
+                    {formatCurrency(overduePayments.reduce((sum, p) => sum + p.amount, 0))}
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    {upcomingPayments.filter(p => p.status === 'LATE').length} pagesa të vonuara
+                    {overduePayments.length} pagesa të vonuara
                   </p>
                 </CardContent>
               </Card>
@@ -557,12 +565,12 @@ export function RentalDashboard({
                               </div>
                             </TableCell>
                             <TableCell>
-                              <Badge variant={getPaymentStatusColor(payment.status)}>
-                                {payment.status}
+                              <Badge variant={isOverdue(payment) ? 'destructive' : getPaymentStatusColor(payment.status)}>
+                                {isOverdue(payment) ? 'LATE' : payment.status}
                               </Badge>
                             </TableCell>
                             <TableCell>
-                              {payment.status === 'PENDING' || payment.status === 'LATE' ? (
+                              {payment.status === 'PENDING' || isOverdue(payment) ? (
                                 <Button 
                                   variant="ghost" 
                                   size="sm"

@@ -76,12 +76,11 @@ export default async function AdminRentalsPage() {
       take: 10
     }),
     
-    // Upcoming payments (next 30 days)
+    // Upcoming payments (next 30 days) and overdue payments
     prisma.payment.findMany({
       where: {
         status: "PENDING",
         dueDate: {
-          gte: new Date(),
           lte: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
         }
       },
