@@ -13,33 +13,56 @@ interface LeaseDetailPageProps {
 
 async function getLeaseDetails(id: string) {
   try {
-    const lease = await prisma.lease.findUnique({
-      where: { id },
-      include: {
-        property: {
-          include: {
-            images: true
-          }
-        },
-        tenant: true,
-        payments: {
-          orderBy: {
-            dueDate: 'desc'
-          }
-        },
-        leaseDocuments: {
-          orderBy: {
-            createdAt: 'desc'
+    // First try with leaseDocuments
+    let lease
+    try {
+      lease = await prisma.lease.findUnique({
+        where: { id },
+        include: {
+          property: {
+            include: {
+              images: true
+            }
+          },
+          tenant: true,
+          payments: {
+            orderBy: {
+              dueDate: 'desc'
+            }
+          },
+          leaseDocuments: {
+            orderBy: {
+              createdAt: 'desc'
+            }
           }
         }
-      }
-    })
+      })
+    } catch (relationError) {
+      console.warn("leaseDocuments relation not available, falling back to basic query", relationError)
+      // Fallback: query without leaseDocuments if the relation doesn't exist yet
+      lease = await prisma.lease.findUnique({
+        where: { id },
+        include: {
+          property: {
+            include: {
+              images: true
+            }
+          },
+          tenant: true,
+          payments: {
+            orderBy: {
+              dueDate: 'desc'
+            }
+          }
+        }
+      })
+    }
 
     if (!lease) {
       return null
     }
 
-    return {
+    const result = {
       ...lease,
       startDate: lease.startDate,
       endDate: lease.endDate,
@@ -50,12 +73,33 @@ async function getLeaseDetails(id: string) {
         createdAt: payment.createdAt,
         updatedAt: payment.updatedAt
       })),
-      leaseDocuments: lease.leaseDocuments.map(doc => ({
+      leaseDocuments: [] as Array<{
+        id: string
+        filename: string
+        originalName: string
+        fileSize: number
+        mimeType: string
+        url: string
+        type: string
+        description?: string | null
+        uploadedBy: string
+        createdAt: Date
+        updatedAt: Date
+      }>
+    }
+
+    // Add leaseDocuments if they exist
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if ('leaseDocuments' in lease && Array.isArray((lease as any).leaseDocuments)) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      result.leaseDocuments = (lease as any).leaseDocuments.map((doc: any) => ({
         ...doc,
         createdAt: doc.createdAt,
         updatedAt: doc.updatedAt
       }))
     }
+
+    return result
   } catch (error) {
     console.error("Error fetching lease details:", error)
     return null

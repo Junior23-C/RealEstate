@@ -81,7 +81,7 @@ interface LeaseDetailViewProps {
       paymentMethod?: string | null
       notes?: string | null
     }>
-    leaseDocuments: Array<{
+    leaseDocuments?: Array<{
       id: string
       filename: string
       originalName: string
@@ -602,7 +602,7 @@ export function LeaseDetailView({ lease }: LeaseDetailViewProps) {
           </div>
 
           {/* Documents List */}
-          {lease.leaseDocuments.length > 0 ? (
+          {lease.leaseDocuments && lease.leaseDocuments.length > 0 ? (
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
@@ -616,7 +616,7 @@ export function LeaseDetailView({ lease }: LeaseDetailViewProps) {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {lease.leaseDocuments.map((document) => (
+                  {lease.leaseDocuments?.map((document) => (
                     <TableRow key={document.id}>
                       <TableCell>
                         <div className="flex items-center gap-2">
