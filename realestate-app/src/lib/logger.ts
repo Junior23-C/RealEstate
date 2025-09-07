@@ -75,6 +75,38 @@ export class SecureLogger {
     })
   }
   
+  // Enhanced request logging for security monitoring
+  static logRequest(method: string, url: string, context?: LogContext): void {
+    this.info(`${method} ${url}`, {
+      ...context,
+      type: 'request'
+    })
+  }
+  
+  static logSecurityEvent(event: string, context?: LogContext): void {
+    this.security(`Security event: ${event}`, {
+      ...context,
+      securityEvent: true
+    })
+  }
+  
+  static logApiAccess(endpoint: string, userRole?: string, success: boolean = true, context?: LogContext): void {
+    this.info(`API access: ${endpoint}`, {
+      ...context,
+      endpoint,
+      userRole,
+      success,
+      type: 'api_access'
+    })
+  }
+  
+  static logAuthEvent(event: string, context?: LogContext): void {
+    this.info(`Auth event: ${event}`, {
+      ...context,
+      type: 'authentication'
+    })
+  }
+  
   static info(message: string, context?: LogContext): void {
     console.log(this.formatMessage('INFO', message, context))
   }

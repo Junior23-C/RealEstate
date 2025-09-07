@@ -5,6 +5,7 @@ import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/db"
 import { DocumentType } from "@prisma/client"
 import { rateLimit, getClientIdentifier, RATE_LIMITS } from "@/lib/rate-limit"
+import { AuditTrail } from "@/lib/audit-trail"
 
 // Allowed document types
 const ALLOWED_DOCUMENT_TYPES = [
@@ -87,7 +88,7 @@ export async function POST(request: NextRequest) {
 
     // Rate limiting
     const clientId = getClientIdentifier(request)
-    const rateLimitResult = rateLimit(`documents:${clientId}`, RATE_LIMITS.UPLOAD)
+    const rateLimitResult = await rateLimit(`documents:${clientId}`, RATE_LIMITS.UPLOAD)
     
     if (!rateLimitResult.success) {
       return NextResponse.json(
@@ -199,6 +200,15 @@ export async function POST(request: NextRequest) {
       // Re-throw other database errors
       throw dbError
     }
+
+    // Log successful document upload
+    await AuditTrail.logDocumentUpload(
+      session.user.id,
+      document.id,
+      file.name,
+      file.size,
+      request
+    )
 
     return NextResponse.json({
       success: true,

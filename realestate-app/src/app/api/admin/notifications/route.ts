@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
 
     // Rate limiting
     const clientId = getClientIdentifier(request)
-    const rateLimitResult = rateLimit(`notifications:${clientId}`, RATE_LIMITS.API_GENERAL)
+    const rateLimitResult = await rateLimit(`notifications:${clientId}`, RATE_LIMITS.API_GENERAL)
     
     if (!rateLimitResult.success) {
       return NextResponse.json({
@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
 
     // Rate limiting
     const clientId = getClientIdentifier(request)
-    const rateLimitResult = rateLimit(`notifications-action:${clientId}`, RATE_LIMITS.API_GENERAL)
+    const rateLimitResult = await rateLimit(`notifications-action:${clientId}`, RATE_LIMITS.API_GENERAL)
     
     if (!rateLimitResult.success) {
       return NextResponse.json({

@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs"
 import { superAdminAuthSchema } from "@/lib/schemas/admin"
 import { rateLimit, getClientIdentifier, RATE_LIMITS } from "@/lib/rate-limit"
 import { SecureLogger, SecurityEvents } from "@/lib/logger"
+import { AuditTrail } from "@/lib/audit-trail"
 
 /**
  * Super Admin Endpoint - Permanent solution for admin management
@@ -14,7 +15,7 @@ export async function POST(request: NextRequest) {
   try {
     // Rate limiting for super admin endpoint
     const clientId = getClientIdentifier(request)
-    const rateLimitResult = rateLimit(`super-admin:${clientId}`, RATE_LIMITS.SUPER_ADMIN)
+    const rateLimitResult = await rateLimit(`super-admin:${clientId}`, RATE_LIMITS.SUPER_ADMIN)
     
     if (!rateLimitResult.success) {
       SecureLogger.security(SecurityEvents.RATE_LIMIT_EXCEEDED, {
@@ -65,8 +66,24 @@ export async function POST(request: NextRequest) {
         email: email // This will be sanitized by the logger
       })
       
+      SecureLogger.logApiAccess('/api/admin/super-admin', 'super-admin-attempt', false, {
+        ip: clientId,
+        action,
+        reason: 'invalid_credentials'
+      })
+      
       return new NextResponse("Invalid super admin credentials", { status: 401 })
     }
+
+    // Log successful super admin access
+    SecureLogger.logApiAccess('/api/admin/super-admin', 'super-admin', true, {
+      ip: clientId,
+      action,
+      email: email
+    })
+    
+    // Log to audit trail (using system user ID for super admin actions)
+    await AuditTrail.logSuperAdminAccess('super-admin-system', action, request)
 
     switch (action) {
       case 'create_admin': {
@@ -138,15 +155,15 @@ export async function POST(request: NextRequest) {
           }
         })
 
+        // Log the credentials securely instead of returning them
+        console.log(`Default admin reset: ${defaultEmail} / ${defaultPassword}`)
+        
         return NextResponse.json({
           success: true,
-          message: 'Default admin reset successfully',
-          credentials: {
-            email: defaultEmail,
-            password: defaultPassword,
-            loginUrl: '/admin/login'
-          },
-          warning: 'Change this password immediately after login!'
+          message: 'Default admin reset successfully. Check server logs for temporary credentials.',
+          email: defaultEmail,
+          loginUrl: '/admin/login',
+          warning: 'Temporary credentials have been logged to server. Change password immediately after login!'
         })
       }
 

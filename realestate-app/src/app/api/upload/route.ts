@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
 
     // Rate limiting for file uploads
     const clientId = getClientIdentifier(request)
-    const rateLimitResult = rateLimit(`upload:${clientId}`, RATE_LIMITS.UPLOAD)
+    const rateLimitResult = await rateLimit(`upload:${clientId}`, RATE_LIMITS.UPLOAD)
     
     if (!rateLimitResult.success) {
       return NextResponse.json({
@@ -68,10 +68,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid file type. Only JPEG, PNG, and WebP are allowed." }, { status: 400 })
     }
 
-    // Validate file size (max 5MB)
-    const maxSize = 5 * 1024 * 1024 // 5MB
-    if (file.size > maxSize) {
-      return NextResponse.json({ error: "File too large. Maximum size is 5MB." }, { status: 400 })
+    // Validate file size (max 5MB for images)
+    const MAX_IMAGE_SIZE = 5 * 1024 * 1024 // 5MB
+    if (file.size > MAX_IMAGE_SIZE) {
+      return NextResponse.json({ 
+        error: `File too large. Maximum size is ${MAX_IMAGE_SIZE / (1024 * 1024)}MB.` 
+      }, { status: 400 })
     }
 
     const bytes = await file.arrayBuffer()

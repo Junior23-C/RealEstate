@@ -21,7 +21,10 @@
     "precommit": "npm run test:all",
     "manage-admin": "node scripts/manage-admin.js",
     "git-push": "python3 scripts/git-push.py",
-    "push": "python3 scripts/git-push.py --push"
+    "push": "python3 scripts/git-push.py --push",
+    "security-check": "./scripts/security-check.sh",
+    "security-audit": "npm audit --audit-level=moderate",
+    "security-scan": "npm run security-check && npm run security-audit"
   },
   "prisma": {
     "seed": "node prisma/seed.js"

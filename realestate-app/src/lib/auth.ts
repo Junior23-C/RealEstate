@@ -3,6 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import { prisma } from "@/lib/db"
 import bcrypt from "bcryptjs"
+import { isSessionInvalidated } from "./session-invalidation"
 
 export const authOptions: NextAuthOptions = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -81,6 +82,15 @@ export const authOptions: NextAuthOptions = {
         token.iat = Math.floor(Date.now() / 1000)
       }
       
+      // Check if session has been invalidated
+      if (token.id && token.iat) {
+        const sessionInvalidated = await isSessionInvalidated(token.id as string, token.iat as number)
+        if (sessionInvalidated) {
+          // Return null to invalidate the session
+          return null
+        }
+      }
+      
       // Token rotation: refresh if token is older than 1 hour
       const tokenAge = Math.floor(Date.now() / 1000) - (token.iat as number)
       if (tokenAge > 3600) { // 1 hour
@@ -91,7 +101,7 @@ export const authOptions: NextAuthOptions = {
       return token
     },
     async session({ session, token }) {
-      if (session?.user) {
+      if (session?.user && token) {
         session.user.role = token.role
         session.user.id = token.id as string
       }

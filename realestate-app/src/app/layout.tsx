@@ -5,6 +5,7 @@ import { Providers } from "@/components/providers";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/next";
 import { OrganizationStructuredData } from "@/components/structured-data";
+import { getCSPNonce } from "@/lib/security/use-nonce";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -77,16 +78,19 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const nonce = await getCSPNonce()
+  
   return (
     <html lang="sq" suppressHydrationWarning>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="theme-color" content="#000000" />
+        {nonce && <meta name="csp-nonce" content={nonce} />}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://images.unsplash.com" />

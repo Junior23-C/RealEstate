@@ -4,6 +4,8 @@ import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/db"
 import bcrypt from "bcryptjs"
 import { passwordChangeSchema } from "@/lib/schemas/admin"
+import { invalidateUserSessions } from "@/lib/session-invalidation"
+import { SecureLogger } from "@/lib/logger"
 
 export async function PUT(request: Request) {
   const session = await getServerSession(authOptions)
@@ -59,7 +61,20 @@ export async function PUT(request: Request) {
       }
     })
 
-    return NextResponse.json({ success: true })
+    // Invalidate all existing sessions for this user
+    await invalidateUserSessions(user.id, 'password_change')
+    
+    // Log the security event
+    SecureLogger.logSecurityEvent("Password changed", {
+      userId: user.id,
+      email: user.email,
+      ip: request.headers.get('x-forwarded-for') || 'unknown'
+    })
+
+    return NextResponse.json({ 
+      success: true,
+      message: "Password updated successfully. Please log in again with your new password."
+    })
   } catch (error) {
     console.error("Error updating password:", error)
     return NextResponse.json(
