@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server"
-import { writeFile, mkdir } from "fs/promises"
 import path from "path"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
@@ -153,12 +152,10 @@ export async function POST(request: NextRequest) {
     const extension = path.extname(file.name) || getExtensionFromMimeType(file.type)
     const filename = `${timestamp}_${randomString}${extension}`
     
-    // Create upload directory
-    const uploadDir = path.join(process.cwd(), "public", "uploads", "documents")
-    await mkdir(uploadDir, { recursive: true })
-    
-    const filepath = path.join(uploadDir, filename)
-    await writeFile(filepath, buffer)
+    // For Vercel deployment, store file as base64 data URL
+    // In a full production setup, you'd use cloud storage like S3/Cloudinary
+    const base64Data = buffer.toString('base64')
+    const dataUrl = `data:${file.type};base64,${base64Data}`
 
     // Save document metadata to database
     const document = await prisma.document.create({
@@ -167,7 +164,7 @@ export async function POST(request: NextRequest) {
         originalName: file.name,
         fileSize: file.size,
         mimeType: file.type,
-        url: `/uploads/documents/${filename}`,
+        url: dataUrl,
         type: documentType as DocumentType,
         description: description || null,
         leaseId: leaseId || null,

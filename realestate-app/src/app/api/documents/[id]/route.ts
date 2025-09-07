@@ -1,6 +1,4 @@
 import { NextRequest, NextResponse } from "next/server"
-import { unlink } from "fs/promises"
-import path from "path"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/db"
@@ -27,14 +25,8 @@ export async function DELETE(
       return NextResponse.json({ error: "Document not found" }, { status: 404 })
     }
 
-    // Delete the physical file
-    try {
-      const filePath = path.join(process.cwd(), "public", document.url)
-      await unlink(filePath)
-    } catch (error) {
-      console.warn("Failed to delete physical file:", error)
-      // Continue with database deletion even if file deletion fails
-    }
+    // For data URLs, no physical file to delete
+    // In a cloud storage setup, you'd delete the file from S3/Cloudinary here
 
     // Delete from database
     await prisma.document.delete({
