@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from '@/lib/db'
-import { notificationService } from '@/lib/notifications'
+import { NotificationHelpers } from '@/lib/notifications'
 
 export async function GET() {
   const session = await getServerSession(authOptions)
@@ -57,35 +57,15 @@ export async function POST(request: Request) {
       }
     })
 
-    // Send notifications to all configured channels
+    // Send real-time notification to admin
     try {
-      console.log('🔔 Attempting to send notifications for inquiry:', inquiry.id)
-      const primaryImage = inquiry.property.images[0]
-      
-      // Ensure image URL is absolute
-      let imageUrl = primaryImage?.url
-      if (imageUrl && !imageUrl.startsWith('http')) {
-        // Convert relative URL to absolute
-        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://aliaj-re.com'
-        imageUrl = `${baseUrl}${imageUrl.startsWith('/') ? '' : '/'}${imageUrl}`
-      }
-      
-      const notificationData = {
+      await NotificationHelpers.newInquiry({
         name: inquiry.name,
-        email: inquiry.email,
-        phone: inquiry.phone || undefined,
-        message: inquiry.message,
         propertyTitle: inquiry.property.title,
-        propertyId: inquiry.property.id,
-        propertyImageUrl: imageUrl
-      }
+        inquiryId: inquiry.id
+      })
       
-      console.log('📋 Notification data:', notificationData)
-      
-      const results = await notificationService.sendInquiryNotifications(notificationData)
-      
-      console.log('✅ Notifications sent successfully for inquiry:', inquiry.id)
-      console.log('📊 Notification results:', results)
+      console.log('✅ Real-time notification sent for inquiry:', inquiry.id)
     } catch (notificationError) {
       console.error('⚠️ Notification sending failed:', notificationError)
       // Don't fail the inquiry creation if notifications fail

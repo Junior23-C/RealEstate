@@ -5,10 +5,12 @@ import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { 
   Home, Building2, Users, MessageSquare, Settings, BarChart3, 
-  Menu, X, ChevronRight, Bell, Search, LogOut, User
+  Menu, X, ChevronRight, Search, LogOut, User, TrendingUp
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { signOut } from 'next-auth/react'
+import { NotificationProvider } from './notification-provider'
+import { NotificationDropdown } from './notification-dropdown'
 
 interface AdminLayoutProps {
   children: React.ReactNode
@@ -28,6 +30,7 @@ export default function AdminLayout({ children, user }: AdminLayoutProps) {
     { id: 'tenants', label: 'Qiramarrësit', icon: Users, href: '/admin/rentals/tenants' },
     { id: 'inquiries', label: 'Pyetjet', icon: MessageSquare, href: '/admin/inquiries' },
     { id: 'rentals', label: 'Qiratë', icon: BarChart3, href: '/admin/rentals' },
+    { id: 'analytics', label: 'Analitika', icon: TrendingUp, href: '/admin/analytics' },
     { id: 'settings', label: 'Cilësimet', icon: Settings, href: '/admin/settings' }
   ]
 
@@ -38,6 +41,7 @@ export default function AdminLayout({ children, user }: AdminLayoutProps) {
     if (pathname.includes('/tenants')) return 'tenants'
     if (pathname.includes('/inquiries')) return 'inquiries'
     if (pathname.includes('/rentals')) return 'rentals'
+    if (pathname.includes('/analytics')) return 'analytics'
     if (pathname.includes('/settings')) return 'settings'
     return 'dashboard'
   }
@@ -54,7 +58,8 @@ export default function AdminLayout({ children, user }: AdminLayoutProps) {
   }, [])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+    <NotificationProvider>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
       {/* Glassmorphic Sidebar */}
       <AnimatePresence>
         {sidebarOpen && (
@@ -157,15 +162,8 @@ export default function AdminLayout({ children, user }: AdminLayoutProps) {
             </div>
 
             <div className="flex items-center gap-3">
-              {/* Notification Bell */}
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="relative p-2 hover:bg-slate-100/50 dark:hover:bg-slate-800/50 rounded-lg transition-colors"
-              >
-                <Bell className="h-5 w-5" />
-                <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full animate-pulse" />
-              </motion.button>
+              {/* Notification Dropdown */}
+              <NotificationDropdown />
             </div>
           </div>
         </header>
@@ -175,6 +173,7 @@ export default function AdminLayout({ children, user }: AdminLayoutProps) {
           {children}
         </main>
       </div>
-    </div>
+      </div>
+    </NotificationProvider>
   )
 }
