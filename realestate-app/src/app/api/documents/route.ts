@@ -158,32 +158,47 @@ export async function POST(request: NextRequest) {
     const dataUrl = `data:${file.type};base64,${base64Data}`
 
     // Save document metadata to database
-    const document = await prisma.document.create({
-      data: {
-        filename,
-        originalName: file.name,
-        fileSize: file.size,
-        mimeType: file.type,
-        url: dataUrl,
-        type: documentType as DocumentType,
-        description: description || null,
-        leaseId: leaseId || null,
-        propertyId: propertyId || null,
-        tenantId: tenantId || null,
-        uploadedBy: session.user.email || session.user.id
-      },
-      include: {
-        lease: {
-          select: {
-            leaseNumber: true,
-            property: { select: { title: true } },
-            tenant: { select: { firstName: true, lastName: true } }
-          }
+    let document
+    try {
+      document = await prisma.document.create({
+        data: {
+          filename,
+          originalName: file.name,
+          fileSize: file.size,
+          mimeType: file.type,
+          url: dataUrl,
+          type: documentType as DocumentType,
+          description: description || null,
+          leaseId: leaseId || null,
+          propertyId: propertyId || null,
+          tenantId: tenantId || null,
+          uploadedBy: session.user.email || session.user.id
         },
-        property: { select: { title: true } },
-        tenant: { select: { firstName: true, lastName: true } }
+        include: {
+          lease: {
+            select: {
+              leaseNumber: true,
+              property: { select: { title: true } },
+              tenant: { select: { firstName: true, lastName: true } }
+            }
+          },
+          property: { select: { title: true } },
+          tenant: { select: { firstName: true, lastName: true } }
+        }
+      })
+    } catch (dbError) {
+      console.error("Database error creating document:", dbError)
+      
+      // If Document table doesn't exist, return a helpful error
+      if (dbError instanceof Error && dbError.message.includes('does not exist')) {
+        return NextResponse.json({
+          error: "Document management system is not yet available. Database schema update in progress."
+        }, { status: 503 })
       }
-    })
+      
+      // Re-throw other database errors
+      throw dbError
+    }
 
     return NextResponse.json({
       success: true,
@@ -193,8 +208,21 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error("Document upload error:", error)
+    
+    // More detailed error for debugging
+    let errorMessage = "Failed to upload document"
+    if (error instanceof Error) {
+      errorMessage = `Upload failed: ${error.message}`
+      // Log the full error details
+      console.error("Full error details:", {
+        message: error.message,
+        stack: error.stack,
+        name: error.name
+      })
+    }
+    
     return NextResponse.json(
-      { error: "Failed to upload document" },
+      { error: errorMessage },
       { status: 500 }
     )
   }
