@@ -265,6 +265,10 @@ export async function GET(request: NextRequest) {
     // Calculate actual conversion rate
     const actualConversionRate = totalPropertyViews > 0 ? (totalInquiries / totalPropertyViews * 100) : 0
     
+    // Calculate bounce rate (sessions with only 1 page view)
+    const singlePageSessions = userSessions.filter(s => s.pageViews === 1).length
+    const actualBounceRate = userSessions.length > 0 ? (singlePageSessions / userSessions.length * 100) : 0
+    
     // Calculate average response time
     const responseData = inquiryResponses.filter(r => r.responseTime)
     const averageResponseTime = responseData.length > 0 
@@ -276,10 +280,41 @@ export async function GET(request: NextRequest) {
       ? ((totalInquiries - previousInquiries) / previousInquiries * 100) 
       : totalInquiries > 0 ? 100 : 0
 
+    // Calculate visitor growth
+    const previousVisitors = await prisma.userSession.count({
+      where: {
+        startedAt: { gte: previousStartDate, lte: previousEndDate },
+        isBot: false
+      }
+    })
+    const visitorGrowth = previousVisitors > 0 
+      ? ((uniqueVisitors - previousVisitors) / previousVisitors * 100) 
+      : uniqueVisitors > 0 ? 100 : 0
+
+    // Calculate conversion growth
+    const previousPropertyViews = await prisma.propertyView.count({
+      where: { createdAt: { gte: previousStartDate, lte: previousEndDate } }
+    })
+    const previousConversionRate = previousPropertyViews > 0 ? (previousInquiries / previousPropertyViews * 100) : 0
+    const conversionGrowth = previousConversionRate > 0 
+      ? ((actualConversionRate - previousConversionRate) / previousConversionRate * 100) 
+      : actualConversionRate > 0 ? 100 : 0
+
     // Revenue calculations
     const paidPayments = rentPayments.filter(p => p.status === 'PAID')
     const totalRevenue = paidPayments.reduce((sum, p) => sum + p.amount, 0)
-    const revenueGrowth = 15.3 // Would calculate from previous period
+    
+    // Calculate revenue growth from previous period
+    const previousPeriodPayments = await prisma.payment.findMany({
+      where: {
+        status: 'PAID',
+        createdAt: { gte: previousStartDate, lte: previousEndDate }
+      }
+    })
+    const previousRevenue = previousPeriodPayments.reduce((sum, p) => sum + p.amount, 0)
+    const revenueGrowth = previousRevenue > 0 
+      ? ((totalRevenue - previousRevenue) / previousRevenue * 100) 
+      : totalRevenue > 0 ? 100 : 0
 
     // Geographic data
     const locationData = userSessions.reduce((acc, session) => {
@@ -318,7 +353,7 @@ export async function GET(request: NextRequest) {
         uniqueVisitors,
         totalPropertyViews,
         averageSessionDuration: Math.round(averageSessionDuration),
-        bounceRate: 45.2, // Would calculate from actual session data
+        bounceRate: Math.round(actualBounceRate * 10) / 10,
         totalRevenue,
         monthlyRecurringRevenue: totalMonthlyRent._sum.monthlyRent || 0
       },
@@ -327,8 +362,8 @@ export async function GET(request: NextRequest) {
       growthMetrics: {
         inquiryGrowth: Math.round(inquiryGrowth * 10) / 10,
         revenueGrowth: Math.round(revenueGrowth * 10) / 10,
-        visitorGrowth: 12.5, // Would calculate from previous period
-        conversionGrowth: 8.3 // Would calculate from previous period
+        visitorGrowth: Math.round(visitorGrowth * 10) / 10,
+        conversionGrowth: Math.round(conversionGrowth * 10) / 10
       },
 
       // Geographic insights
