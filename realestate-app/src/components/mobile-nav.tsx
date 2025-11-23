@@ -20,7 +20,6 @@ export function MobileNav({ companyName }: MobileNavProps) {
     { href: "/", label: "Kryefaqja", icon: Home },
     { href: "/properties", label: "Pronat", icon: Building2 },
     { href: "/contact", label: "Kontakt", icon: Phone },
-    { href: "/admin/login", label: "Admin", icon: User },
   ]
 
   return (
