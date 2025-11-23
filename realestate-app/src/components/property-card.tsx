@@ -29,7 +29,7 @@ interface PropertyCardProps {
 export function PropertyCard({ property, index = 0 }: PropertyCardProps) {
   const primaryImage = property.images.find(img => img.isPrimary) || property.images[0]
   const [imageLoaded, setImageLoaded] = useState(false)
-  
+
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('sq-AL', {
       style: 'currency',
@@ -79,7 +79,7 @@ export function PropertyCard({ property, index = 0 }: PropertyCardProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: index * 0.1 }}
     >
-      <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
+      <Card className="overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
         <Link href={`/properties/${property.id}`}>
           <div className="relative h-64 w-full overflow-hidden">
             {primaryImage ? (
@@ -91,9 +91,8 @@ export function PropertyCard({ property, index = 0 }: PropertyCardProps) {
                   src={primaryImage.url}
                   alt={primaryImage.alt || property.title}
                   fill
-                  className={`object-cover transition-all duration-500 hover:scale-110 ${
-                    imageLoaded ? 'opacity-100' : 'opacity-0'
-                  }`}
+                  className={`object-cover transition-all duration-500 hover:scale-110 ${imageLoaded ? 'opacity-100' : 'opacity-0'
+                    }`}
                   sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   priority={index < 3}
                   placeholder="blur"
@@ -116,20 +115,20 @@ export function PropertyCard({ property, index = 0 }: PropertyCardProps) {
             </div>
           </div>
         </Link>
-        
+
         <CardContent className="p-6">
           <h3 className="text-2xl font-bold mb-2">
             {formatPrice(property.price)}
             {property.status === "FOR_RENT" && <span className="text-base font-normal">/muaj</span>}
           </h3>
-          
+
           <h4 className="font-semibold text-lg mb-2 line-clamp-1">{property.title}</h4>
-          
+
           <div className="flex items-center text-muted-foreground mb-4">
             <MapPin className="h-4 w-4 mr-1" />
             <span className="text-sm">{property.city}, {property.state}</span>
           </div>
-          
+
           <div className="flex items-center gap-4 text-sm">
             <div className="flex items-center gap-1">
               <Bed className="h-4 w-4 text-muted-foreground" />
@@ -145,7 +144,7 @@ export function PropertyCard({ property, index = 0 }: PropertyCardProps) {
             </div>
           </div>
         </CardContent>
-        
+
         <CardFooter className="p-6 pt-0">
           <Button asChild className="w-full">
             <Link href={`/properties/${property.id}`}>Shiko Detajet</Link>

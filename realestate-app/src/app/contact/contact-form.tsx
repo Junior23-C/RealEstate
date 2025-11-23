@@ -6,8 +6,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { toast } from "sonner"
+import { Loader2 } from "lucide-react"
 
 export function ContactForm() {
+  const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -17,7 +20,8 @@ export function ContactForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+    setIsLoading(true)
+
     try {
       const response = await fetch('/api/contact', {
         method: 'POST',
@@ -26,12 +30,21 @@ export function ContactForm() {
         },
         body: JSON.stringify(formData),
       })
-      
+
       if (response.ok) {
         setFormData({ name: "", email: "", phone: "", message: "" })
+        toast.success("Mesazhi u dërgua me sukses!", {
+          description: "Do t'ju kontaktojmë së shpejti."
+        })
+      } else {
+        throw new Error("Failed to send message")
       }
     } catch {
-      // Handle error silently for now
+      toast.error("Ndodhi një gabim!", {
+        description: "Ju lutem provoni përsëri më vonë."
+      })
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -60,9 +73,10 @@ export function ContactForm() {
               value={formData.name}
               onChange={handleChange}
               required
+              disabled={isLoading}
             />
           </div>
-          
+
           <div>
             <Label htmlFor="email">Email</Label>
             <Input
@@ -72,9 +86,10 @@ export function ContactForm() {
               value={formData.email}
               onChange={handleChange}
               required
+              disabled={isLoading}
             />
           </div>
-          
+
           <div>
             <Label htmlFor="phone">Telefoni (Opsional)</Label>
             <Input
@@ -83,9 +98,10 @@ export function ContactForm() {
               type="tel"
               value={formData.phone}
               onChange={handleChange}
+              disabled={isLoading}
             />
           </div>
-          
+
           <div>
             <Label htmlFor="message">Mesazhi</Label>
             <Textarea
@@ -95,11 +111,19 @@ export function ContactForm() {
               value={formData.message}
               onChange={handleChange}
               required
+              disabled={isLoading}
             />
           </div>
-          
-          <Button type="submit" className="w-full">
-            Dërgo Mesazhin
+
+          <Button type="submit" className="w-full" disabled={isLoading}>
+            {isLoading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Duke dërguar...
+              </>
+            ) : (
+              "Dërgo Mesazhin"
+            )}
           </Button>
         </form>
       </CardContent>

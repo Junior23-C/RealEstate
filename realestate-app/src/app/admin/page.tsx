@@ -18,7 +18,7 @@ export const revalidate = 60
 export default async function AdminPage() {
   // Optimize authentication check
   const session = await getServerSession(authOptions)
-  
+
   if (!session || session.user.role !== "ADMIN") {
     redirect("/admin/login")
   }
@@ -51,13 +51,15 @@ export default async function AdminPage() {
     const stats = {
       totalProperties,
       totalInquiries,
-      forRent: propertyStats.find(s => s.status === "FOR_RENT")?._count || 0,
-      forSale: propertyStats.find(s => s.status === "FOR_SALE")?._count || 0,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      forRent: (propertyStats.find((s: any) => s.status === "FOR_RENT")?._count as any) || 0,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      forSale: (propertyStats.find((s: any) => s.status === "FOR_SALE")?._count as any) || 0,
     }
 
     return (
       <AdminLayout user={session.user}>
-        <AdminDashboard 
+        <AdminDashboard
           stats={stats}
           recentInquiries={recentInquiries}
         />
@@ -65,7 +67,7 @@ export default async function AdminPage() {
     )
   } catch (error) {
     console.error("Error loading admin dashboard:", error)
-    
+
     // Fallback to basic stats if database fails
     const fallbackStats = {
       totalProperties: 0,
@@ -76,7 +78,7 @@ export default async function AdminPage() {
 
     return (
       <AdminLayout user={session?.user}>
-        <AdminDashboard 
+        <AdminDashboard
           stats={fallbackStats}
           recentInquiries={[]}
         />

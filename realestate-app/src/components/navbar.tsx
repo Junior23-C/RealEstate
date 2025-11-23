@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Home, Building2, Phone, User } from "lucide-react"
 import { useEffect, useState } from "react"
+import { MobileNav } from "./mobile-nav"
 
 interface NavbarProps {
   companyName?: string
@@ -33,15 +34,19 @@ export function Navbar({ companyName = "Aliaj Real Estate" }: NavbarProps) {
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center">
+        <div className="mr-4 md:hidden">
+          <MobileNav companyName={companyName} />
+        </div>
+
         <Link href="/" className="mr-6 flex items-center space-x-2" aria-label="Aliaj Real Estate - Home">
           <Building2 className="h-6 w-6" aria-hidden="true" />
           <span className="hidden font-bold sm:inline-block">
             {companyName}
           </span>
         </Link>
-        
+
         <div className="flex flex-1 items-center justify-between space-x-2">
-          <nav className="flex items-center space-x-6" role="navigation" aria-label="Main navigation">
+          <nav className="hidden md:flex items-center space-x-6" role="navigation" aria-label="Main navigation">
             {navItems.map((item) => (
               <Link
                 key={item.href}
@@ -60,20 +65,20 @@ export function Navbar({ companyName = "Aliaj Real Estate" }: NavbarProps) {
               </Link>
             ))}
           </nav>
-          
+
           <div className="flex items-center space-x-4">
             {/* Only show admin buttons on admin subdomain or localhost */}
             {(isAdminSubdomain || (typeof window !== 'undefined' && window.location.hostname === "localhost")) && (
               <>
                 {session?.user?.role === "ADMIN" ? (
-                  <Button variant="default" size="sm" asChild>
+                  <Button variant="default" size="sm" asChild className="hidden md:flex">
                     <Link href="/admin">
                       <User className="h-4 w-4 mr-2" />
                       Admin
                     </Link>
                   </Button>
                 ) : (
-                  <Button variant="ghost" size="icon" asChild>
+                  <Button variant="ghost" size="icon" asChild className="hidden md:flex">
                     <Link href="/admin/login">
                       <User className="h-5 w-5" />
                       <span className="sr-only">Admin Login</span>
