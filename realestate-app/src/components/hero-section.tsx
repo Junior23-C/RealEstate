@@ -5,12 +5,39 @@ import Image from "next/image"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
+import { useEffect, useState } from "react"
+
+function StatCounter({ end, duration = 2000, suffix = "" }: { end: number; duration?: number; suffix?: string }) {
+  const [count, setCount] = useState(0)
+
+  useEffect(() => {
+    let startTime: number
+    let animationFrame: number
+
+    const animate = (timestamp: number) => {
+      if (!startTime) startTime = timestamp
+      const progress = timestamp - startTime
+      const percentage = Math.min(progress / duration, 1)
+
+      setCount(Math.floor(end * percentage))
+
+      if (percentage < 1) {
+        animationFrame = requestAnimationFrame(animate)
+      }
+    }
+
+    animationFrame = requestAnimationFrame(animate)
+    return () => cancelAnimationFrame(animationFrame)
+  }, [end, duration])
+
+  return <span>{count}{suffix}</span>
+}
 
 export function HeroSection() {
   return (
     <section className="relative h-[70vh] flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-r from-background to-background/60 z-10" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-background/60 z-10" />
         <motion.div
           initial={{ scale: 1.1 }}
           animate={{ scale: 1 }}
@@ -29,7 +56,7 @@ export function HeroSection() {
           />
         </motion.div>
       </div>
-      
+
       <div className="container relative z-20">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -43,6 +70,34 @@ export function HeroSection() {
           <p className="text-xl mb-8 text-muted-foreground">
             Zbuloni prona të jashtëzakonshme me qira dhe për shitje në Tiranë, Durrës dhe në të gjithë Shqipërinë. Partneri juaj i besuar në pasuritë e paluajtshme.
           </p>
+
+          {/* Statistics */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="grid grid-cols-3 gap-6 mb-8 p-6 bg-background/80 backdrop-blur rounded-lg border"
+          >
+            <div className="text-center">
+              <div className="text-3xl font-bold text-primary">
+                <StatCounter end={500} suffix="+" />
+              </div>
+              <div className="text-sm text-muted-foreground mt-1">Prona</div>
+            </div>
+            <div className="text-center border-x">
+              <div className="text-3xl font-bold text-primary">
+                <StatCounter end={98} suffix="%" />
+              </div>
+              <div className="text-sm text-muted-foreground mt-1">Klientë të Kënaqur</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-primary">
+                <StatCounter end={10} suffix="+" />
+              </div>
+              <div className="text-sm text-muted-foreground mt-1">Vite Përvojë</div>
+            </div>
+          </motion.div>
+
           <div className="flex gap-4">
             <Button size="lg" asChild>
               <Link href="/properties">

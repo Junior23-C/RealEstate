@@ -1,46 +1,28 @@
-"use client"
-
-import { useState } from "react"
-import Image from "next/image"
-import { motion } from "framer-motion"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { 
-  Bed, Bath, Square, Calendar, MapPin, Home, 
-  ChevronLeft, ChevronRight, X, Maximize2
-} from "lucide-react"
-import { InquiryForm } from "./inquiry-form"
-
-interface PropertyDetailProps {
-  property: {
-    id: string
-    title: string
-    description: string
-    price: number
-    type: string
-    status: string
-    address: string
-    city: string
-    state: string
-    zipCode: string
-    bedrooms: number
-    bathrooms: number
-    squareFeet: number
-    lotSize?: number | null
-    yearBuilt?: number | null
-    features?: string | null
-    createdAt: Date
-    updatedAt: Date
-    images: Array<{
-      id: string
-      url: string
-      alt?: string | null
-      isPrimary: boolean
-    }>
-    _count: {
-      inquiries: number
-    }
+description: string
+price: number
+type: string
+status: string
+address: string
+city: string
+state: string
+zipCode: string
+bedrooms: number
+bathrooms: number
+squareFeet: number
+lotSize ?: number | null
+yearBuilt ?: number | null
+features ?: string | null
+createdAt: Date
+updatedAt: Date
+images: Array<{
+  id: string
+  url: string
+  alt?: string | null
+  isPrimary: boolean
+}>
+_count: {
+  inquiries: number
+}
   }
 }
 
@@ -123,7 +105,7 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
                     priority={currentImageIndex === 0}
                   />
-                  
+
                   {property.images.length > 1 && (
                     <>
                       <button
@@ -140,7 +122,7 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
                       </button>
                     </>
                   )}
-                  
+
                   <button
                     onClick={() => setShowFullscreen(true)}
                     className="absolute top-4 right-4 bg-background/80 backdrop-blur p-2 rounded-full hover:bg-background transition-colors"
@@ -154,7 +136,7 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
                 </div>
               )}
             </div>
-            
+
             {/* Thumbnail Strip */}
             {property.images.length > 1 && (
               <div className="flex gap-2 mt-4 overflow-x-auto pb-2">
@@ -162,9 +144,8 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
                   <button
                     key={image.id}
                     onClick={() => setCurrentImageIndex(index)}
-                    className={`relative h-20 w-32 rounded-md overflow-hidden flex-shrink-0 ${
-                      index === currentImageIndex ? 'ring-2 ring-primary' : ''
-                    }`}
+                    className={`relative h-20 w-32 rounded-md overflow-hidden flex-shrink-0 ${index === currentImageIndex ? 'ring-2 ring-primary' : ''
+                      }`}
                   >
                     <Image
                       src={image.url}
@@ -241,7 +222,7 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
                       </div>
                     )}
                   </div>
-                  
+
                   {property.lotSize && (
                     <div className="mt-4 pt-4 border-t">
                       <p className="text-sm text-muted-foreground">Madhësia e Parçelës</p>
@@ -291,8 +272,8 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
                   <p className="text-sm text-muted-foreground">
                     Na kontaktoni sot për të planifikuar një vizitë ose për të marrë më shumë informacion rreth kësaj prone.
                   </p>
-                  <Button 
-                    className="w-full" 
+                  <Button
+                    className="w-full"
                     size="lg"
                     onClick={() => setShowInquiryForm(true)}
                   >
@@ -342,7 +323,7 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
           >
             <X className="h-6 w-6" />
           </button>
-          
+
           <div className="h-full w-full flex items-center justify-center p-4 md:p-8">
             <div className="relative h-full w-full max-w-7xl touch-manipulation">
               <Image
@@ -352,7 +333,7 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
                 className="object-contain"
                 sizes="100vw"
               />
-              
+
               {property.images.length > 1 && (
                 <>
                   <button
@@ -376,10 +357,10 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
 
       {/* Inquiry Form Modal */}
       {showInquiryForm && (
-        <InquiryForm 
-          propertyId={property.id} 
+        <InquiryForm
+          propertyId={property.id}
           propertyTitle={property.title}
-          onClose={() => setShowInquiryForm(false)} 
+          onClose={() => setShowInquiryForm(false)}
         />
       )}
     </>
